@@ -4,160 +4,229 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصافي | كوتش صحة</title>
-    <!-- استدعاء مكتبة التصميم Tailwind CSS -->
+    
+    <!-- مكتبة التصميم Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- استدعاء خطوط جوجل (الخط العربي) -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الحركات السلسة AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- خطوط جوجل الفخمة (Alexandria) -->
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Alexandria', 'sans-serif'] },
+                    colors: {
+                        dark: '#0a0a0c', // لون أسود عميق فخم جداً
+                        surface: '#151518',
+                        neon: '#4ade80',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #0a0a0a; /* خلفية داكنة فخمة */
-            color: #ffffff;
+            background-color: #0a0a0c;
+            color: #e5e5e5;
+            -webkit-font-smoothing: antialiased;
         }
-        /* تأثير الزجاج الفخم للبطاقات */
-        .glass-card {
-            background: rgba(24, 24, 27, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            transition: transform 0.2s, border-color 0.2s;
+        /* تصميم البطاقات الزجاجية الفخمة */
+        .premium-card {
+            background: rgba(21, 21, 24, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
-        .glass-card:hover {
+        .premium-card:hover {
+            border-color: rgba(74, 222, 128, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        /* تأثير التدرج للنصوص */
+        .text-gradient {
+            background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* تصميم الزر الفخم */
+        .btn-premium {
+            background: white;
+            color: black;
+            transition: all 0.3s ease;
+        }
+        .btn-premium:hover {
             transform: scale(1.02);
-            border-color: rgba(16, 185, 129, 0.6);
-        }
-        /* لون النيون الأخضر الخاص بهويتك */
-        .text-neon {
-            color: #4ade80;
-            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
-<body class="pb-20">
+<body class="selection:bg-neon selection:text-black">
 
-    <!-- شريط التنقل العلوي -->
-    <nav class="p-6 flex justify-between items-center border-b border-gray-800">
-        <div>
-            <h1 class="text-3xl font-black text-neon">منصافي</h1>
-            <p class="text-xs text-gray-400 mt-1">كوتش صحة - دليلك الشامل</p>
+    <!-- شريط التنقل (Navbar) -->
+    <nav class="fixed w-full z-50 bg-dark/80 backdrop-blur-md border-b border-white/5 transition-all">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-neon rounded-lg flex items-center justify-center font-bold text-black">M</div>
+                <h1 class="text-xl font-bold text-white tracking-wide">منصافي</h1>
+            </div>
+            <button class="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-full text-sm font-semibold transition">
+                دخول المشتركات
+            </button>
         </div>
-        <button class="bg-green-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:bg-green-400 transition">
-            دخول المشتركات
-        </button>
     </nav>
 
-    <!-- قسم الترحيب والمقدمة -->
-    <header class="p-6 mt-4 text-center">
-        <h2 class="text-2xl font-bold mb-2">البداية من الصفر 🚀</h2>
-        <p class="text-gray-300 text-sm leading-relaxed max-w-lg mx-auto">
-            تجنبي التشتت والأغلاط، وابدئي بطريقة صحيحة لاختيار النظام المناسب لكِ، وحساب سعراتك لضمان الاستمرارية بدون حرمان.
-        </p>
-    </header>
-
-    <!-- الفهرس الشامل (الأقسام الـ 16) -->
-    <main class="p-6 max-w-4xl mx-auto">
-        <h3 class="text-xl font-bold mb-6 border-b border-gray-800 pb-2">فهرس المحتويات</h3>
-        
-        <!-- شبكة الأقسام -->
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            
-            <!-- القسم 1 -->
-            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
-                <div class="text-3xl mb-2">🧠</div>
-                <h4 class="font-bold text-sm">1. أسماء العضلات وتقسيماتها</h4>
+    <!-- القسم الرئيسي (Hero Section) -->
+    <main class="pt-32 pb-20 px-6">
+        <div class="max-w-3xl mx-auto text-center" data-aos="fade-up" data-aos-duration="1000">
+            <div class="inline-block bg-neon/10 border border-neon/20 text-neon px-4 py-1.5 rounded-full text-xs font-bold mb-6">
+                🚀 إطلاق حصري لفترة محدودة
             </div>
-
-            <!-- القسم 2 -->
-            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
-                <div class="text-3xl mb-2">🏋️</div>
-                <h4 class="font-bold text-sm">2. شرح أدوات النادي</h4>
-            </div>
-
-            <!-- القسم 5: جدول 3 أيام -->
-            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
-                <div class="text-3xl mb-2">📅</div>
-                <h4 class="font-bold text-sm">5. جدول تمارين 3 أيام</h4>
-            </div>
-
-            <!-- القسم 6: جدول 4 أيام -->
-            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
-                <div class="text-3xl mb-2">⚡</div>
-                <h4 class="font-bold text-sm">6. جدول تمارين 4 أيام</h4>
-            </div>
-
-            <!-- القسم 12: مكتبة التمارين -->
-            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
-                <div class="text-3xl mb-2">📚</div>
-                <h4 class="font-bold text-sm">12. مكتبة التمارين الكبرى</h4>
-            </div>
-
-            <!-- القسم 14: تحدي 90 يوم -->
-            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
-                <div class="text-3xl mb-2">🏆</div>
-                <h4 class="font-bold text-sm">14. تحدي الـ 90 يوم</h4>
-            </div>
+            <h2 class="text-4xl md:text-6xl font-black leading-tight mb-6">
+                اصنع نسختك الأفضل بذكاء، <br>
+                <span class="text-gradient">وبدون حرمان.</span>
+            </h2>
+            <p class="text-gray-400 text-lg mb-10 leading-relaxed max-w-2xl mx-auto">
+                خارطة طريق متكاملة تختصر عليك سنوات من التجارب العشوائية في النادي والتغذية. تعلم الصنعة وكُن "كوتش نفسك".
+            </p>
         </div>
 
-        <!-- معاينة قسم: شفرة الماكروز والتغذية -->
-        <section class="mt-12">
-            <h3 class="text-2xl font-bold text-neon mb-4">شفرة الماكروز والتغذية 🥗</h3>
-            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-6">
-                <p class="text-sm text-gray-300 mb-6 leading-relaxed">
-                    تعلمي كيفية حساب معدل الحرق الأساسي (BMR) واحتياجك اليومي (TDEE)، مع توضيح الخرافات، تجهيز الوجبات، التعامل مع السعرات السائلة، وقراءة الملصقات الغذائية.
-                </p>
+        <!-- قسم عرض الباقة (Pricing & Bundle) -->
+        <div class="max-w-5xl mx-auto mt-12" data-aos="fade-up" data-aos-delay="200">
+            <div class="premium-card rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                <!-- تأثير إضاءة خافت في الخلفية -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-neon/20 blur-[100px] rounded-full"></div>
                 
-                <h4 class="font-bold mb-3 border-b border-gray-700 pb-2">جداول التغذية الجاهزة:</h4>
-                <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="bg-green-900/30 border border-green-500/50 rounded-xl p-3">
-                        <div class="text-xl font-bold text-green-400">1,560 سعرة</div>
-                        <div class="text-xs text-gray-400">4 وجبات باليوم</div>
+                <div class="grid md:grid-cols-2 gap-12 items-center relative z-10">
+                    
+                    <!-- تفاصيل الباقة -->
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2">باقة التحول الشامل 🏆</h3>
+                        <p class="text-gray-400 text-sm mb-8">الزبدة اللي بتختصر عليك فلوس الاشتراكات وتعب التجارب العشوائية.</p>
+                        
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start gap-3">
+                                <span class="text-neon text-xl">🍏</span>
+                                <div>
+                                    <strong class="block text-white">كتاب "شفرة الماكروز"</strong>
+                                    <span class="text-xs text-gray-400">تعلم كيف تحسب أكلك وتصل لهدفك بدون حرمان.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-neon text-xl">🏋️‍♂️</span>
+                                <div>
+                                    <strong class="block text-white">كتاب "موسوعة التمارين"</strong>
+                                    <span class="text-xs text-gray-400">شرح بصري لتكنيك التمارين وجداول جاهزة للتطبيق.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-neon text-xl">📱</span>
+                                <div>
+                                    <strong class="block text-white">قالب المتابعة (Notion)</strong>
+                                    <span class="text-xs text-gray-400">متتبع رقمي لتسجيل أوزانك وقياسات تطورك.</span>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="bg-blue-900/30 border border-blue-500/50 rounded-xl p-3">
-                        <div class="text-xl font-bold text-blue-400">2,000 سعرة</div>
-                        <div class="text-xs text-gray-400">للتضخيم أو المحافظة</div>
-                    </div>
-                    <div class="bg-yellow-900/30 border border-yellow-500/50 rounded-xl p-3">
-                        <div class="text-xl font-bold text-yellow-400">2,500 سعرة</div>
-                        <div class="text-xs text-gray-400">جدول تغذية متكامل</div>
-                    </div>
-                    <div class="bg-red-900/30 border border-red-500/50 rounded-xl p-3">
-                        <div class="text-xl font-bold text-red-400">3,000 سعرة</div>
-                        <div class="text-xs text-gray-400">للبناء العضلي العالي</div>
+
+                    <!-- التسعير والهدايا -->
+                    <div class="bg-black/50 border border-white/10 rounded-2xl p-8 text-center">
+                        <div class="text-sm font-bold text-gray-400 mb-2">عرض الطلب المسبق</div>
+                        <div class="flex justify-center items-center gap-3 mb-4">
+                            <span class="text-5xl font-black text-white">30</span>
+                            <div class="text-left flex flex-col">
+                                <span class="text-sm text-white">ريال</span>
+                                <span class="text-xs text-gray-500 line-through">150 ريال</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-900/30 border border-green-500/30 text-green-400 text-xs py-2 px-4 rounded-lg mb-6 inline-block">
+                            وفر 80% قبل الإطلاق الرسمي
+                        </div>
+
+                        <div class="text-right text-sm text-gray-300 space-y-2 mb-8 bg-white/5 p-4 rounded-xl border border-white/5">
+                            <p class="font-bold mb-2">🎁 هدايا للمبادرين:</p>
+                            <p>✓ 15 يوم تدريب شخصي مجاني.</p>
+                            <p>✓ انضمام لقروب تليجرام التفاعلي.</p>
+                        </div>
+
+                        <button class="w-full btn-premium py-4 rounded-xl font-bold text-lg shadow-lg">
+                            احجز باقتك الآن
+                        </button>
+                        <p class="text-xs text-gray-500 mt-3">* السعر سيعود لـ 150 ريال فور الإطلاق.</p>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- معاينة قسم: جداول التمارين -->
-        <section class="mt-12">
-            <h3 class="text-2xl font-bold text-neon mb-4">مثال: جدول تمارين 3 أيام 💪</h3>
-            <div class="space-y-3">
-                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex justify-between items-center">
-                    <div>
-                        <div class="text-xs text-gray-400 mb-1">السبت</div>
-                        <div class="font-bold text-sm">صدر + أكتاف + ترايسبس (Upper Body)</div>
-                    </div>
-                    <button class="text-green-400 text-xs font-bold border border-green-400 rounded-full px-3 py-1">عرض التمارين</button>
-                </div>
-                
-                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex justify-between items-center">
-                    <div>
-                        <div class="text-xs text-gray-400 mb-1">الاثنين</div>
-                        <div class="font-bold text-sm">ظهر + بايسبس + سواعد</div>
-                    </div>
-                    <button class="text-green-400 text-xs font-bold border border-green-400 rounded-full px-3 py-1">عرض التمارين</button>
-                </div>
-
-                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex justify-between items-center">
-                    <div>
-                        <div class="text-xs text-gray-400 mb-1">الأربعاء</div>
-                        <div class="font-bold text-sm">أرجل + عضلات البطن (Legs & Core)</div>
-                    </div>
-                    <button class="text-green-400 text-xs font-bold border border-green-400 rounded-full px-3 py-1">عرض التمارين</button>
-                </div>
-            </div>
-        </section>
-
+        </div>
     </main>
 
+    <!-- الفهرس السريع بأسلوب مينيماليست -->
+    <section class="max-w-5xl mx-auto px-6 pb-24">
+        <div class="flex justify-between items-end mb-8 border-b border-white/10 pb-4" data-aos="fade-up">
+            <h3 class="text-2xl font-bold">نظرة على المحتوى</h3>
+            <span class="text-sm text-gray-500">16 قسم متكامل</span>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- كروت الفهرس -->
+            <div class="premium-card p-6 rounded-2xl text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-2xl mb-3 opacity-80">🧠</div>
+                <h4 class="text-sm font-semibold">أسماء العضلات وتقسيماتها</h4>
+            </div>
+            <div class="premium-card p-6 rounded-2xl text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="text-2xl mb-3 opacity-80">🏋️</div>
+                <h4 class="text-sm font-semibold">شرح أدوات النادي</h4>
+            </div>
+            <div class="premium-card p-6 rounded-2xl text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-2xl mb-3 opacity-80">📅</div>
+                <h4 class="text-sm font-semibold">جداول 3 و 4 أيام</h4>
+            </div>
+            <div class="premium-card p-6 rounded-2xl text-center" data-aos="fade-up" data-aos-delay="400">
+                <div class="text-2xl mb-3 opacity-80">🏆</div>
+                <h4 class="text-sm font-semibold">تحدي الـ 90 يوم</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- تذييل الصفحة (Footer) -->
+    <footer class="border-t border-white/5 py-8 text-center text-gray-500 text-sm">
+        <p>© 2024 منصافي. صُنع بشغف لتحقيق أهدافك.</p>
+    </footer>
+
+    <!-- استدعاء سكريبت الحركات AOS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true, // الحركة تشتغل مرة واحدة عند النزول
+            offset: 50,
+        });
+    </script>
+
+    <!-- كود ربط قاعدة بيانات Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"; 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZuXrMysUsfnMMBr9pjUNFwSCiR3lH9qo",
+            authDomain: "coach-c7e80.firebaseapp.com",
+            projectId: "coach-c7e80",
+            storageBucket: "coach-c7e80.firebasestorage.app",
+            messagingSenderId: "559057818861",
+            appId: "1:559057818861:web:bebce4f3470c44f729e8e4",
+            measurementId: "G-MNLTKBYJ7W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        console.log("تم ربط الموقع بـ Firebase بنجاح! 🚀");
+    </script>
 </body>
 </html>

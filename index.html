@@ -52,10 +52,27 @@
             -webkit-text-fill-color: transparent;
         }
         .modal-overlay {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
         }
         .hidden-section { display: none !important; }
+        
+        /* تصميم حقول الإدخال */
+        .input-field {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            transition: all 0.3s;
+            margin-bottom: 12px;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
     </style>
 </head>
 <body class="selection:bg-accent selection:text-black relative">
@@ -67,17 +84,20 @@
                 <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center font-black text-black text-lg">C</div>
                 <h1 class="text-xl font-bold tracking-wide">كوتش صحة</h1>
             </div>
-            <button id="loginBtn" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all">
-                دخول المتدربات
-            </button>
-            <button id="logoutBtn" class="hidden-section bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-2.5 rounded-full text-sm font-medium transition-all">
-                تسجيل الخروج
-            </button>
+            <div class="flex items-center gap-4">
+                <span id="userGreeting" class="hidden-section text-sm text-gray-400 font-medium"></span>
+                <button id="navLoginBtn" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all">
+                    دخول المتدربات
+                </button>
+                <button id="navLogoutBtn" class="hidden-section bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-2.5 rounded-full text-sm font-medium transition-all">
+                    تسجيل الخروج
+                </button>
+            </div>
         </div>
     </nav>
 
     <!-- ========================================== -->
-    <!-- واجهة المبيعات (تختفي عند تسجيل الدخول) -->
+    <!-- 1. واجهة المبيعات (تختفي عند تسجيل الدخول) -->
     <!-- ========================================== -->
     <div id="landingPage" class="pt-40 pb-24 px-6 relative">
         <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
@@ -106,11 +126,11 @@
                         </ul>
                     </div>
                     <div class="bg-[#0a0a0a] border border-white/5 rounded-3xl p-8 text-center">
-                        <div class="text-sm text-gray-500 mb-4">عرض الطلب المسبق</div>
+                        <div class="text-sm text-gray-500 mb-4">اشتركي الآن وابدئي فوراً</div>
                         <div class="text-6xl font-black text-white mb-2">30 <span class="text-xl font-medium text-gray-400">ريال</span></div>
                         <div class="text-sm text-gray-600 line-through mb-8">150 ريال</div>
-                        <button id="openModalBtn" class="w-full bg-white text-black hover:scale-105 transition py-4 rounded-2xl font-bold text-base">
-                            لدي كود اشتراك
+                        <button id="heroJoinBtn" class="w-full bg-white text-black hover:scale-105 transition py-4 rounded-2xl font-bold text-base">
+                            تسجيل حساب جديد
                         </button>
                     </div>
                 </div>
@@ -119,44 +139,85 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- نافذة إدخال الكود (Modal) -->
+    <!-- 2. نافذة المصادقة (Auth Modal) -->
     <!-- ========================================== -->
-    <div id="loginModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
-        <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full text-center relative">
-            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-            <div class="w-16 h-16 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">🔒</div>
-            <h3 class="text-xl font-bold mb-2">بوابة المتدربات</h3>
-            <p class="text-xs text-gray-400 mb-6">أدخلي كود الاشتراك السري للوصول (الكود: COACH2024)</p>
+    <div id="authModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
+        <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full relative">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
             
-            <input type="text" id="accessCode" placeholder="أدخلي الكود هنا..." class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-center text-white mb-4 focus:outline-none focus:border-accent">
-            <button id="verifyCodeBtn" class="w-full bg-accent text-black font-bold py-3 rounded-xl hover:bg-accent/80 transition">
-                فتح البوابة
-            </button>
-            <p id="errorMessage" class="text-red-500 text-xs mt-3 hidden-section">الكود غير صحيح، حاولي مجدداً.</p>
+            <div class="w-16 h-16 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🔒</div>
+            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-center">تسجيل الدخول</h3>
+
+            <!-- رسائل الخطأ والنجاح -->
+            <div id="authMessage" class="hidden-section text-center text-xs p-3 rounded-lg mb-4"></div>
+
+            <!-- نموذج الدخول / التسجيل / استعادة المرور -->
+            <form id="authForm" class="space-y-2">
+                <input type="text" id="nameInput" placeholder="الاسم الكريم (للتسجيل فقط)" class="input-field hidden-section">
+                <input type="email" id="emailInput" placeholder="البريد الإلكتروني" required class="input-field">
+                <input type="password" id="passwordInput" placeholder="كلمة المرور" required class="input-field">
+                
+                <button type="submit" id="submitAuthBtn" class="w-full bg-accent text-black font-bold py-3 rounded-xl hover:bg-accent/80 transition mt-4">
+                    دخول
+                </button>
+            </form>
+
+            <!-- روابط التبديل بين النماذج -->
+            <div class="mt-6 text-center text-sm text-gray-400 space-y-3 flex flex-col">
+                <button id="toggleForgotBtn" class="hover:text-accent transition">نسيت كلمة المرور؟</button>
+                <div class="border-t border-white/10 pt-3">
+                    <span id="toggleText">ليس لديك حساب؟</span>
+                    <button id="toggleAuthModeBtn" class="text-accent font-bold hover:underline ml-1">إنشاء حساب</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- بوابة المتدربات (تظهر فقط بعد الدخول) -->
+    <!-- 3. بوابة المتدربات والملف الشخصي (تظهر بعد الدخول) -->
     <!-- ========================================== -->
     <div id="dashboardPage" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
-        <h2 class="text-3xl font-bold mb-2">أهلاً بكِ في عالمك الجديد 🚀</h2>
-        <p class="text-gray-400 mb-10">منظومتك جاهزة، دعينا نبدأ العمل.</p>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+            <div>
+                <h2 class="text-3xl font-bold mb-2">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
+                <p class="text-gray-400">منظومتك جاهزة، دعينا نبدأ العمل.</p>
+            </div>
+        </div>
 
         <div class="grid md:grid-cols-2 gap-6">
             
+            <!-- إعدادات الملف الشخصي -->
+            <div class="minimal-card p-6 border-accent/20 border">
+                <h3 class="text-xl font-bold mb-4 text-white">⚙️ إعدادات الملف الشخصي</h3>
+                <p class="text-xs text-gray-400 mb-6">يمكنك تعديل اسمك ليظهر في لوحة التحكم.</p>
+                <form id="profileForm" class="space-y-4">
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">الإيميل (لا يمكن تغييره)</label>
+                        <input type="email" id="profileEmail" disabled class="input-field opacity-50 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">الاسم</label>
+                        <input type="text" id="profileName" placeholder="أدخلي اسمك" class="input-field">
+                    </div>
+                    <button type="submit" id="saveProfileBtn" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition">
+                        حفظ التعديلات
+                    </button>
+                    <p id="profileMsg" class="text-accent text-xs text-center hidden-section">تم التحديث بنجاح!</p>
+                </form>
+            </div>
+
             <!-- حاسبة الماكروز -->
             <div class="minimal-card p-6">
-                <h3 class="text-xl font-bold mb-4 text-accent">حاسبة شفرة الماكروز 🥗</h3>
+                <h3 class="text-xl font-bold mb-4 text-white">🥗 حاسبة شفرة الماكروز</h3>
                 <p class="text-xs text-gray-400 mb-6">أدخلي بياناتك لمعرفة سعراتك اليومية للثبات.</p>
                 
                 <div class="space-y-4 text-sm">
-                    <input type="number" id="calcWeight" placeholder="الوزن (kg)" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                    <input type="number" id="calcHeight" placeholder="الطول (cm)" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                    <input type="number" id="calcAge" placeholder="العمر" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                    <button id="calcBtn" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition">احسبي سعراتي</button>
+                    <input type="number" id="calcWeight" placeholder="الوزن (kg)" class="input-field">
+                    <input type="number" id="calcHeight" placeholder="الطول (cm)" class="input-field">
+                    <input type="number" id="calcAge" placeholder="العمر" class="input-field">
+                    <button id="calcBtn" class="w-full bg-accent/20 text-accent font-bold py-3 rounded-lg hover:bg-accent hover:text-black transition">احسبي سعراتي</button>
                 </div>
-                <div id="calcResult" class="hidden-section mt-6 text-center bg-accent/10 border border-accent/20 rounded-lg p-4">
+                <div id="calcResult" class="hidden-section mt-6 text-center bg-black rounded-lg p-4 border border-white/5">
                     <p class="text-xs text-gray-400">احتياجك اليومي (TDEE) تقريباً:</p>
                     <p class="text-3xl font-black text-accent mt-1" id="caloriesOutput">0</p>
                     <p class="text-xs text-gray-400 mt-1">سعرة حرارية</p>
@@ -164,12 +225,33 @@
             </div>
 
             <!-- متتبع الماء -->
-            <div class="minimal-card p-6">
-                <h3 class="text-xl font-bold mb-4 text-accent">متتبع الـ 90 يوم (الماء) 💧</h3>
-                <p class="text-xs text-gray-400 mb-6">اضغطي على الدائرة عند شرب كوب ماء (يحفظ تلقائياً).</p>
-                
-                <div class="grid grid-cols-6 gap-3" id="waterTracker">
-                    <!-- تتولد الدوائر هنا -->
+            <div class="minimal-card p-6 md:col-span-2">
+                <h3 class="text-xl font-bold mb-4 text-white">💧 متتبع الـ 90 يوم (الماء)</h3>
+                <p class="text-xs text-gray-400 mb-6">اضغطي على الدائرة عند شرب كوب ماء (يحفظ تلقائياً في جهازك).</p>
+                <div class="grid grid-cols-6 md:grid-cols-12 gap-3" id="waterTracker">
+                    <!-- تتولد الدوائر برمجياً -->
+                </div>
+            </div>
+            
+            <!-- جداول التمارين -->
+            <div class="minimal-card p-6 md:col-span-2">
+                <h3 class="text-xl font-bold mb-4 text-white">🏋️‍♀️ جداول التمارين والموسوعة</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-black border border-white/5 p-4 rounded-xl text-center">
+                        <div class="text-xs text-gray-500 mb-1">الجدول الأول</div>
+                        <div class="font-bold mb-3 text-sm">نظام 3 أيام (شامل)</div>
+                        <button class="text-accent text-xs border border-accent rounded-full px-4 py-2 w-full hover:bg-accent hover:text-black transition">بدء التمرين</button>
+                    </div>
+                    <div class="bg-black border border-white/5 p-4 rounded-xl text-center">
+                        <div class="text-xs text-gray-500 mb-1">الجدول الثاني</div>
+                        <div class="font-bold mb-3 text-sm">نظام 4 أيام (علوي/سفلي)</div>
+                        <button class="text-accent text-xs border border-accent rounded-full px-4 py-2 w-full hover:bg-accent hover:text-black transition">بدء التمرين</button>
+                    </div>
+                    <div class="bg-black border border-white/5 p-4 rounded-xl text-center">
+                        <div class="text-xs text-gray-500 mb-1">الموسوعة</div>
+                        <div class="font-bold mb-3 text-sm">دليل الأداء الحركي</div>
+                        <button class="bg-white text-black font-bold text-xs rounded-full px-4 py-2 w-full hover:bg-gray-200 transition">تصفح الموسوعة</button>
+                    </div>
                 </div>
             </div>
 
@@ -179,69 +261,260 @@
     <!-- مكتبة الحركات -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <!-- الأكواد البرمجية الفعالة (JavaScript) -->
-    <script>
-        // تهيئة الحركات
+    <!-- أكواد Firebase والمنطق البرمجي (JavaScript Module) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            sendPasswordResetEmail, 
+            onAuthStateChanged, 
+            signOut,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // إعدادات مشروعك
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZuXrMysUsfnMMBr9pjUNFwSCiR3lH9qo",
+            authDomain: "coach-c7e80.firebaseapp.com",
+            projectId: "coach-c7e80",
+            storageBucket: "coach-c7e80.firebasestorage.app",
+            messagingSenderId: "559057818861",
+            appId: "1:559057818861:web:bebce4f3470c44f729e8e4"
+        };
+
+        // تهيئة Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // تشغيل مكتبة الحركات
         AOS.init({ once: true });
 
-        // تعريف العناصر لتسهيل التحكم بها
-        const loginBtn = document.getElementById('loginBtn');
-        const openModalBtn = document.getElementById('openModalBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
+        // -- تعريف متغيرات الواجهة --
+        let authMode = 'login'; // login | register | reset
+        
+        // الأزرار
+        const navLoginBtn = document.getElementById('navLoginBtn');
+        const heroJoinBtn = document.getElementById('heroJoinBtn');
+        const navLogoutBtn = document.getElementById('navLogoutBtn');
+        const toggleAuthModeBtn = document.getElementById('toggleAuthModeBtn');
+        const toggleForgotBtn = document.getElementById('toggleForgotBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
-        const verifyCodeBtn = document.getElementById('verifyCodeBtn');
-        const loginModal = document.getElementById('loginModal');
+        const submitAuthBtn = document.getElementById('submitAuthBtn');
+        const calcBtn = document.getElementById('calcBtn');
+        const profileForm = document.getElementById('profileForm');
+        const authForm = document.getElementById('authForm');
+
+        // الواجهات والنوافذ
+        const authModal = document.getElementById('authModal');
         const landingPage = document.getElementById('landingPage');
         const dashboardPage = document.getElementById('dashboardPage');
-        const errorMessage = document.getElementById('errorMessage');
-        const accessCodeInput = document.getElementById('accessCode');
+        
+        // الحقول والنصوص
+        const modalTitle = document.getElementById('modalTitle');
+        const toggleText = document.getElementById('toggleText');
+        const nameInput = document.getElementById('nameInput');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const authMessage = document.getElementById('authMessage');
+        const userGreeting = document.getElementById('userGreeting');
+        const dashName = document.getElementById('dashName');
 
-        // 1. نظام تسجيل الدخول وإخفاء الواجهات
-        function showDashboard() {
-            landingPage.classList.add('hidden-section');
-            dashboardPage.classList.remove('hidden-section');
-            loginBtn.classList.add('hidden-section');
-            logoutBtn.classList.remove('hidden-section');
-            initWaterTracker(); // تفعيل دوائر الماء عند الدخول
-        }
+        // -- 1. مراقب حالة تسجيل الدخول (يعمل تلقائياً عند فتح الموقع) --
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // المستخدم مسجل دخول
+                landingPage.classList.add('hidden-section');
+                authModal.classList.add('hidden-section');
+                dashboardPage.classList.remove('hidden-section');
+                
+                navLoginBtn.classList.add('hidden-section');
+                navLogoutBtn.classList.remove('hidden-section');
+                
+                const displayName = user.displayName || "بطلة";
+                userGreeting.innerText = `أهلاً، ${displayName}`;
+                userGreeting.classList.remove('hidden-section');
+                dashName.innerText = displayName;
 
-        // التحقق مما إذا كانت المتدربة مسجلة دخول مسبقاً
-        if(localStorage.getItem('isLoggedIn') === 'true') {
-            showDashboard();
-        }
-
-        // فتح نافذة الكود
-        loginBtn.addEventListener('click', () => loginModal.classList.remove('hidden-section'));
-        openModalBtn.addEventListener('click', () => loginModal.classList.remove('hidden-section'));
-
-        // إغلاق نافذة الكود
-        closeModalBtn.addEventListener('click', () => loginModal.classList.add('hidden-section'));
-
-        // التحقق من الكود
-        verifyCodeBtn.addEventListener('click', () => {
-            const code = accessCodeInput.value.trim().toUpperCase();
-            if(code === 'COACH2024') {
-                localStorage.setItem('isLoggedIn', 'true');
-                loginModal.classList.add('hidden-section');
-                errorMessage.classList.add('hidden-section');
-                accessCodeInput.value = '';
-                showDashboard();
+                // تعبئة بيانات الملف الشخصي
+                document.getElementById('profileEmail').value = user.email;
+                document.getElementById('profileName').value = user.displayName || "";
+                
+                initWaterTracker(); // تفعيل دوائر الماء
             } else {
-                errorMessage.classList.remove('hidden-section');
+                // المستخدم غير مسجل دخول
+                landingPage.classList.remove('hidden-section');
+                dashboardPage.classList.add('hidden-section');
+                
+                navLoginBtn.classList.remove('hidden-section');
+                navLogoutBtn.classList.add('hidden-section');
+                userGreeting.classList.add('hidden-section');
             }
         });
 
-        // تسجيل الخروج
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('isLoggedIn');
-            landingPage.classList.remove('hidden-section');
-            dashboardPage.classList.add('hidden-section');
-            loginBtn.classList.remove('hidden-section');
-            logoutBtn.classList.add('hidden-section');
+        // -- 2. إدارة نافذة المصادقة (Modal) --
+        const openModal = (mode = 'login') => {
+            authMode = mode;
+            updateModalUI();
+            authModal.classList.remove('hidden-section');
+        };
+
+        navLoginBtn.addEventListener('click', () => openModal('login'));
+        heroJoinBtn.addEventListener('click', () => openModal('register'));
+        closeModalBtn.addEventListener('click', () => {
+            authModal.classList.add('hidden-section');
+            showMessage("", ""); // مسح الرسائل
         });
 
-        // 2. حاسبة الماكروز الذكية
-        const calcBtn = document.getElementById('calcBtn');
+        // التبديل بين الدخول والتسجيل
+        toggleAuthModeBtn.addEventListener('click', () => {
+            authMode = (authMode === 'login') ? 'register' : 'login';
+            updateModalUI();
+        });
+
+        // التبديل إلى استعادة كلمة المرور
+        toggleForgotBtn.addEventListener('click', () => {
+            authMode = 'reset';
+            updateModalUI();
+        });
+
+        function updateModalUI() {
+            showMessage("", "");
+            if (authMode === 'login') {
+                modalTitle.innerText = "تسجيل الدخول";
+                nameInput.classList.add('hidden-section');
+                passwordInput.classList.remove('hidden-section');
+                passwordInput.required = true;
+                submitAuthBtn.innerText = "دخول";
+                toggleText.innerText = "ليس لديك حساب؟";
+                toggleAuthModeBtn.innerText = "إنشاء حساب";
+                toggleAuthModeBtn.classList.remove('hidden-section');
+                toggleForgotBtn.classList.remove('hidden-section');
+            } else if (authMode === 'register') {
+                modalTitle.innerText = "إنشاء حساب جديد";
+                nameInput.classList.remove('hidden-section');
+                passwordInput.classList.remove('hidden-section');
+                passwordInput.required = true;
+                submitAuthBtn.innerText = "تسجيل الحساب";
+                toggleText.innerText = "لديك حساب بالفعل؟";
+                toggleAuthModeBtn.innerText = "تسجيل الدخول";
+                toggleAuthModeBtn.classList.remove('hidden-section');
+                toggleForgotBtn.classList.add('hidden-section');
+            } else if (authMode === 'reset') {
+                modalTitle.innerText = "استعادة كلمة المرور";
+                nameInput.classList.add('hidden-section');
+                passwordInput.classList.add('hidden-section');
+                passwordInput.required = false;
+                submitAuthBtn.innerText = "إرسال رابط الاستعادة";
+                toggleText.innerText = "تذكرت كلمة المرور؟";
+                toggleAuthModeBtn.innerText = "تسجيل الدخول";
+                toggleAuthModeBtn.classList.remove('hidden-section');
+                toggleForgotBtn.classList.add('hidden-section');
+            }
+        }
+
+        function showMessage(msg, type) {
+            if (!msg) {
+                authMessage.classList.add('hidden-section');
+                return;
+            }
+            authMessage.innerText = msg;
+            authMessage.classList.remove('hidden-section', 'bg-red-500/20', 'text-red-400', 'bg-green-500/20', 'text-green-400');
+            
+            if (type === 'error') {
+                authMessage.classList.add('bg-red-500/20', 'text-red-400');
+            } else {
+                authMessage.classList.add('bg-green-500/20', 'text-green-400');
+            }
+        }
+
+        // -- 3. تنفيذ العمليات (إنشاء، دخول، استعادة) --
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            const name = nameInput.value.trim();
+
+            submitAuthBtn.disabled = true;
+            submitAuthBtn.innerText = "جاري التحميل...";
+
+            if (authMode === 'register') {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        // تحديث اسم المستخدم
+                        return updateProfile(userCredential.user, { displayName: name });
+                    })
+                    .then(() => {
+                        authModal.classList.add('hidden-section');
+                    })
+                    .catch((error) => {
+                        showMessage("حدث خطأ: " + getArabicError(error.code), "error");
+                    })
+                    .finally(() => resetBtn("تسجيل الحساب"));
+            } 
+            else if (authMode === 'login') {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => {
+                        authModal.classList.add('hidden-section');
+                    })
+                    .catch((error) => {
+                        showMessage("الإيميل أو كلمة المرور غير صحيحة.", "error");
+                    })
+                    .finally(() => resetBtn("دخول"));
+            }
+            else if (authMode === 'reset') {
+                sendPasswordResetEmail(auth, email)
+                    .then(() => {
+                        showMessage("تم إرسال رابط استعادة كلمة المرور لإيميلك.", "success");
+                    })
+                    .catch((error) => {
+                        showMessage("حدث خطأ: تأكدي من كتابة الإيميل بشكل صحيح.", "error");
+                    })
+                    .finally(() => resetBtn("إرسال رابط الاستعادة"));
+            }
+        });
+
+        function resetBtn(text) {
+            submitAuthBtn.disabled = false;
+            submitAuthBtn.innerText = text;
+        }
+
+        // تحويل أخطاء فايربيس للغة العربية
+        function getArabicError(errorCode) {
+            if(errorCode === 'auth/email-already-in-use') return "الإيميل مسجل مسبقاً.";
+            if(errorCode === 'auth/weak-password') return "كلمة المرور ضعيفة (يجب أن تكون 6 أحرف فأكثر).";
+            if(errorCode === 'auth/invalid-email') return "صيغة الإيميل غير صحيحة.";
+            return "حاول مرة أخرى.";
+        }
+
+        // -- 4. تسجيل الخروج --
+        navLogoutBtn.addEventListener('click', () => {
+            signOut(auth);
+        });
+
+        // -- 5. تعديل الملف الشخصي --
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('profileName').value.trim();
+            const user = auth.currentUser;
+            const btn = document.getElementById('saveProfileBtn');
+            const msg = document.getElementById('profileMsg');
+
+            if(user && newName) {
+                btn.innerText = "جاري الحفظ...";
+                updateProfile(user, { displayName: newName }).then(() => {
+                    dashName.innerText = newName;
+                    userGreeting.innerText = `أهلاً، ${newName}`;
+                    msg.classList.remove('hidden-section');
+                    setTimeout(() => msg.classList.add('hidden-section'), 3000);
+                }).finally(() => {
+                    btn.innerText = "حفظ التعديلات";
+                });
+            }
+        });
+
+        // -- 6. حاسبة الماكروز --
         calcBtn.addEventListener('click', () => {
             const weight = parseFloat(document.getElementById('calcWeight').value);
             const height = parseFloat(document.getElementById('calcHeight').value);
@@ -258,36 +531,33 @@
             }
         });
 
-        // 3. متتبع الماء التفاعلي
+        // -- 7. متتبع الماء التفاعلي --
         function initWaterTracker() {
             const container = document.getElementById('waterTracker');
+            if(!container) return;
             container.innerHTML = ''; 
             
-            let waterData = JSON.parse(localStorage.getItem('waterData')) || Array(12).fill(false);
+            // ربط حفظ الماء بحساب المستخدم الحالي
+            const userId = auth.currentUser ? auth.currentUser.uid : 'guest';
+            const storageKey = `waterData_${userId}`;
+            
+            let waterData = JSON.parse(localStorage.getItem(storageKey)) || Array(12).fill(false);
 
             waterData.forEach((isDrank, index) => {
                 const circle = document.createElement('div');
-                
-                // تصميم الدائرة بناءً على حالتها (ممتلئة أم فارغة)
                 circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${
                     isDrank 
-                    ? 'bg-blue-500 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-110' 
+                    ? 'bg-accent border-accent text-black scale-110 shadow-[0_0_15px_rgba(16,185,129,0.5)]' 
                     : 'bg-transparent border-white/20 hover:border-white/50'
                 }`;
                 
-                if(isDrank) {
-                    circle.innerHTML = '<span class="text-sm">💧</span>';
-                }
+                if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
 
-                // إضافة التفاعل عند الضغط على الدائرة
                 circle.addEventListener('click', () => {
                     waterData[index] = !waterData[index];
-                    localStorage.setItem('waterData', JSON.stringify(waterData));
-                    initWaterTracker(); // إعادة رسم الدوائر فوراً
-                    
-                    if(waterData[index] && navigator.vibrate) {
-                        navigator.vibrate(50); // اهتزاز الجوال
-                    }
+                    localStorage.setItem(storageKey, JSON.stringify(waterData));
+                    initWaterTracker(); // إعادة رسم
+                    if(waterData[index] && navigator.vibrate) navigator.vibrate(50);
                 });
 
                 container.appendChild(circle);

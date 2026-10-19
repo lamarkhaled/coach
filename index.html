@@ -72,7 +72,7 @@
         </div>
     </div>
 
-    <!-- نافذة المصادقة الدخول/التسجيل -->
+    <!-- نافذة المصادقة (الدخول/التسجيل) -->
     <div id="authModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
         <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full relative">
             <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
@@ -103,7 +103,7 @@
         <h2 class="text-3xl font-bold mb-8 text-accent">👑 لوحة تحكم الكوتش (المدير)</h2>
         
         <div class="grid md:grid-cols-3 gap-6">
-            <!-- توليد الأكواد -->
+            <!-- 1. توليد الأكواد -->
             <div class="minimal-card p-6 md:col-span-1">
                 <h3 class="text-lg font-bold mb-4">🔑 إنشاء أكواد التفعيل</h3>
                 <input type="text" id="newCodeInput" placeholder="اكتبي الكود (مثال: VIP90)" class="input-field uppercase">
@@ -113,17 +113,17 @@
                 </select>
                 <button id="generateCodeBtn" class="w-full bg-white text-black font-bold py-2 rounded-lg mb-6 hover:bg-gray-200 transition">إنشاء الكود</button>
                 
-                <h3 class="text-sm font-bold mb-2 text-gray-400">الأكواد في النظام:</h3>
+                <h3 class="text-sm font-bold mb-2 text-gray-400">الأكواد في النظام (تحديث لحظي):</h3>
                 <div id="codesList" class="space-y-2 text-xs overflow-y-auto max-h-40 pr-2">
                     <!-- تُجلب الأكواد هنا -->
                 </div>
             </div>
 
-            <!-- المحادثات المباشرة للمدير -->
-            <div class="minimal-card p-6 md:col-span-2 flex flex-col h-[500px]">
+            <!-- 2. المحادثات المباشرة -->
+            <div class="minimal-card p-6 md:col-span-2 flex flex-col h-[400px]">
                 <h3 class="text-lg font-bold mb-4">💬 محادثات المتدربات</h3>
                 <div class="flex h-full gap-4">
-                    <!-- قائمة المتدربات -->
+                    <!-- قائمة المتدربات للدردشة -->
                     <div class="w-1/3 border-l border-white/10 pl-4 overflow-y-auto" id="adminUsersList">
                         <!-- تظهر أسماء المتدربات هنا -->
                     </div>
@@ -141,6 +141,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 3. جدول إدارة حسابات المشتركين الجدد (التحكم الكامل) -->
+            <div class="minimal-card p-6 md:col-span-3 mt-4">
+                <h3 class="text-lg font-bold mb-4">👥 إدارة حسابات المتدربات</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right text-gray-400">
+                        <thead class="text-xs text-white uppercase bg-white/5 border-b border-white/10">
+                            <tr>
+                                <th class="px-4 py-3">الاسم</th>
+                                <th class="px-4 py-3">الإيميل</th>
+                                <th class="px-4 py-3">حالة الحساب</th>
+                                <th class="px-4 py-3">الكود المستخدم</th>
+                                <th class="px-4 py-3">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminAllUsersList">
+                            <!-- جدول المشتركين يظهر هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -150,7 +172,7 @@
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
 
-        <!-- نافذة طلب كود التفعيل (تظهر إذا لم يكن الحساب مفعلاً) -->
+        <!-- نافذة طلب كود التفعيل -->
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
             <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
@@ -230,7 +252,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const ADMIN_EMAIL = 'lm6p12@gmail.com'; // إيميل المدير المعتمد
+        const ADMIN_EMAIL = 'lm6p12@gmail.com'; // إيميل الإدارة
 
         AOS.init({ once: true });
 
@@ -262,7 +284,20 @@
                     adminDashboard.classList.add('hidden-section');
                     userDashboard.classList.remove('hidden-section');
                     document.getElementById('dashName').innerText = user.displayName || 'بطلة';
-                    checkUserSubscription(user.uid);
+                    // جلب حالة المتدربة لحظياً (عشان لو قفلتي حسابها من الإدارة يتقفل عندها فوراً)
+                    onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            if (data.isActivated) {
+                                activationOverlay.classList.add('hidden-section');
+                                premiumContent.classList.remove('hidden-section');
+                                initUserChat(user.uid);
+                            } else {
+                                premiumContent.classList.add('hidden-section');
+                                activationOverlay.classList.remove('hidden-section');
+                            }
+                        }
+                    });
                     initWaterTracker(user.uid);
                 }
             } else {
@@ -276,25 +311,11 @@
 
         document.getElementById('navLogoutBtn').addEventListener('click', () => signOut(auth));
 
-        // --- التحكم باشتراكات المتدربات (User Side) ---
-        async function checkUserSubscription(uid) {
-            const userDoc = await getDoc(doc(db, 'users', uid));
-            const data = userDoc.data();
-            if (data && data.isActivated) {
-                activationOverlay.classList.add('hidden-section');
-                premiumContent.classList.remove('hidden-section');
-                initUserChat(uid);
-            } else {
-                premiumContent.classList.add('hidden-section');
-                activationOverlay.classList.remove('hidden-section');
-            }
-        }
-
+        // --- التفعيل للمتدربة (استخدام الكود) ---
         document.getElementById('activateAccBtn').addEventListener('click', async () => {
             const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
             const msg = document.getElementById('activationMsg');
             msg.classList.remove('hidden-section', 'text-green-400', 'text-red-400');
-            
             if(!codeInput) return;
 
             try {
@@ -307,7 +328,6 @@
                     
                     msg.innerText = "تم التفعيل بنجاح! جاري تحميل الباقة...";
                     msg.classList.add('text-green-400');
-                    setTimeout(() => checkUserSubscription(currentUser.uid), 1500);
                 } else {
                     msg.innerText = "الكود غير صحيح أو مستخدم مسبقاً.";
                     msg.classList.add('text-red-400');
@@ -322,8 +342,10 @@
         function initAdminDashboard() {
             loadActivationCodes();
             loadChatUsers();
+            loadAllUsers(); // تشغيل جدول التحكم بالحسابات
         }
 
+        // إنشاء الأكواد
         document.getElementById('generateCodeBtn').addEventListener('click', async () => {
             const code = document.getElementById('newCodeInput').value.trim().toUpperCase();
             const duration = document.getElementById('codeDuration').value;
@@ -336,32 +358,76 @@
                     createdAt: serverTimestamp()
                 });
                 document.getElementById('newCodeInput').value = '';
-                loadActivationCodes();
             } catch(e) {
-                alert("حدث خطأ أثناء حفظ الكود. تأكدي من صلاحيات Firestore.");
+                alert("حدث خطأ أثناء حفظ الكود.");
             }
         });
 
-        async function loadActivationCodes() {
-            const q = query(collection(db, 'activation_codes'), orderBy('createdAt', 'desc'));
-            const snap = await getDocs(q);
-            let html = '';
-            snap.forEach(doc => {
-                const data = doc.data();
-                const status = data.active ? '<span class="text-green-400">متاح</span>' : `<span class="text-red-400">مستخدم (${data.usedBy})</span>`;
-                html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1">
-                            <strong>${doc.id}</strong> <span>${status}</span>
-                         </div>`;
+        // جلب الأكواد لحظياً (تحديث الحل لتجنب أخطاء الفهرسة)
+        function loadActivationCodes() {
+            const q = query(collection(db, 'activation_codes'));
+            onSnapshot(q, (snap) => {
+                let html = '';
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const status = data.active ? '<span class="text-green-400">متاح</span>' : `<span class="text-red-400">مستخدم (${data.usedBy})</span>`;
+                    html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1">
+                                <strong>${doc.id}</strong> <span>${status}</span>
+                             </div>`;
+                });
+                document.getElementById('codesList').innerHTML = html || 'لا توجد أكواد.';
             });
-            document.getElementById('codesList').innerHTML = html || 'لا توجد أكواد.';
         }
 
-        async function loadChatUsers() {
+        // جلب قائمة المستخدمين للتحكم فيهم (تفعيل وإلغاء تفعيل)
+        function loadAllUsers() {
+            const q = query(collection(db, 'users'));
+            onSnapshot(q, (snap) => {
+                let html = '';
+                snap.forEach(docSnap => {
+                    const user = docSnap.data();
+                    if(user.email === ADMIN_EMAIL) return; // إخفاء الإيميل الخاص بك من القائمة
+                    
+                    const status = user.isActivated ? '<span class="text-green-400 font-bold">مفعل</span>' : '<span class="text-yellow-400">غير مفعل</span>';
+                    const code = user.codeUsed || 'لا يوجد';
+                    
+                    // زر الإجراء (لو كانت مفعلة يعطيك خيار إلغاء، ولو غير مفعلة يعطيك خيار تفعيل)
+                    const actionBtn = user.isActivated 
+                        ? `<button onclick="window.toggleUserStatus('${docSnap.id}', false)" class="text-red-400 hover:text-red-300 font-bold">إلغاء التفعيل</button>`
+                        : `<button onclick="window.toggleUserStatus('${docSnap.id}', true)" class="text-green-400 hover:text-green-300 font-bold">تفعيل يدوي</button>`;
+
+                    html += `
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition">
+                            <td class="px-4 py-3 text-white font-bold">${user.name || 'بدون اسم'}</td>
+                            <td class="px-4 py-3">${user.email}</td>
+                            <td class="px-4 py-3">${status}</td>
+                            <td class="px-4 py-3">${code}</td>
+                            <td class="px-4 py-3">${actionBtn}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('adminAllUsersList').innerHTML = html || '<tr><td colspan="5" class="text-center py-4">لا توجد متدربات مسجلات بعد.</td></tr>';
+            });
+        }
+
+        // وظيفة تغيير حالة حساب المتدربة من الإدارة
+        window.toggleUserStatus = async (uid, newStatus) => {
+            const actionText = newStatus ? "تفعيل" : "إلغاء تفعيل";
+            if(confirm(`هل أنت متأكدة من ${actionText} حساب هذه المتدربة؟`)) {
+                await updateDoc(doc(db, 'users', uid), {
+                    isActivated: newStatus
+                });
+            }
+        };
+
+        // إدارة المحادثات للمدير
+        function loadChatUsers() {
             const q = query(collection(db, 'users'), where('isActivated', '==', true));
             onSnapshot(q, (snapshot) => {
                 let html = '';
                 snapshot.forEach(doc => {
                     const user = doc.data();
+                    if(user.email === ADMIN_EMAIL) return;
                     html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${user.name || user.email}')">
                                 <div class="font-bold text-sm text-white">${user.name || 'متدربة'}</div>
                                 <div class="text-[10px] text-gray-500">${user.email}</div>
@@ -406,7 +472,6 @@
         // --- محادثة المتدربة (User Side) ---
         function initUserChat(uid) {
             if(unsubscribeUserChat) unsubscribeUserChat();
-            
             const q = query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc'));
             unsubscribeUserChat = onSnapshot(q, (snap) => {
                 let html = '';
@@ -435,14 +500,12 @@
         // --- معالجة نماذج التسجيل ---
         document.getElementById('navLoginBtn').addEventListener('click', () => { document.getElementById('authModal').classList.remove('hidden-section'); });
         document.getElementById('heroJoinBtn').addEventListener('click', () => { 
-            isLoginMode = false;
-            updateAuthUI();
+            isLoginMode = false; updateAuthUI();
             document.getElementById('authModal').classList.remove('hidden-section'); 
         });
         document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('authModal').classList.add('hidden-section'); });
         
         let isLoginMode = true;
-        
         function updateAuthUI() {
             document.getElementById('nameInput').classList.toggle('hidden-section', isLoginMode);
             document.getElementById('toggleText').innerText = isLoginMode ? 'ليس لديك حساب؟' : 'لديك حساب بالفعل؟';
@@ -450,10 +513,7 @@
             document.getElementById('modalTitle').innerText = isLoginMode ? 'تسجيل الدخول' : 'حساب جديد';
         }
 
-        document.getElementById('toggleAuthModeBtn').addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            updateAuthUI();
-        });
+        document.getElementById('toggleAuthModeBtn').addEventListener('click', () => { isLoginMode = !isLoginMode; updateAuthUI(); });
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -463,27 +523,22 @@
             const msg = document.getElementById('authMessage');
             const btn = document.getElementById('submitAuthBtn');
             
-            btn.disabled = true;
-            btn.innerText = "جاري التحميل...";
-
+            btn.disabled = true; btn.innerText = "جاري التحميل...";
             try {
                 if(isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: name });
-                    // إنشاء ملف للمستخدم في قاعدة البيانات
                     await setDoc(doc(db, 'users', cred.user.uid), {
                         email: email, name: name, isActivated: false, role: email === ADMIN_EMAIL ? 'admin' : 'user'
                     });
                 }
             } catch (error) {
-                msg.innerText = "حدث خطأ. تأكدي من صحة البيانات وأن الإيميل غير مسجل مسبقاً.";
-                msg.classList.remove('hidden-section');
-                msg.classList.add('bg-red-500/20', 'text-red-400');
+                msg.innerText = "حدث خطأ. تأكدي من صحة البيانات.";
+                msg.classList.remove('hidden-section'); msg.classList.add('bg-red-500/20', 'text-red-400');
             } finally {
-                btn.disabled = false;
-                btn.innerText = "دخول";
+                btn.disabled = false; btn.innerText = "دخول";
             }
         });
 
@@ -492,22 +547,18 @@
             const weight = parseFloat(document.getElementById('calcWeight').value);
             const height = parseFloat(document.getElementById('calcHeight').value);
             const age = parseFloat(document.getElementById('calcAge').value);
-            
             if(weight && height && age) {
                 const bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
                 const tdee = Math.round(bmr * 1.375);
                 document.getElementById('caloriesOutput').innerText = tdee;
                 document.getElementById('calcResult').classList.remove('hidden-section');
-            } else {
-                alert("الرجاء إدخال الأرقام بشكل صحيح.");
-            }
+            } else { alert("الرجاء إدخال الأرقام بشكل صحيح."); }
         });
 
         function initWaterTracker(uid) {
             const container = document.getElementById('waterTracker');
             if(!container) return;
             container.innerHTML = ''; 
-            
             const storageKey = `waterData_${uid}`;
             let waterData = JSON.parse(localStorage.getItem(storageKey)) || Array(12).fill(false);
 
@@ -517,7 +568,6 @@
                     isDrank ? 'bg-accent border-accent text-black scale-110 shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'bg-transparent border-white/20 hover:border-white/50'
                 }`;
                 if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
-
                 circle.addEventListener('click', () => {
                     waterData[index] = !waterData[index];
                     localStorage.setItem(storageKey, JSON.stringify(waterData));

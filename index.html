@@ -51,12 +51,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        /* تصميم النوافذ المنبثقة */
         .modal-overlay {
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
         }
-        /* إخفاء الأقسام */
         .hidden-section { display: none !important; }
     </style>
 </head>
@@ -72,14 +70,14 @@
             <button id="loginBtn" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all">
                 دخول المتدربات
             </button>
-            <button id="logoutBtn" class="hidden-section bg-red-500/10 text-red-400 px-6 py-2.5 rounded-full text-sm font-medium transition-all">
+            <button id="logoutBtn" class="hidden-section bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-2.5 rounded-full text-sm font-medium transition-all">
                 تسجيل الخروج
             </button>
         </div>
     </nav>
 
     <!-- ========================================== -->
-    <!-- 1. واجهة المبيعات (تختفي عند تسجيل الدخول) -->
+    <!-- واجهة المبيعات (تختفي عند تسجيل الدخول) -->
     <!-- ========================================== -->
     <div id="landingPage" class="pt-40 pb-24 px-6 relative">
         <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
@@ -91,7 +89,7 @@
                 <span class="text-accent-gradient">وبدون حرمان.</span>
             </h2>
             <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto font-light">
-                منظومة رقمية متكاملة تختصر عليك سنوات من التجارب العشوائية. جداول ذكية، تغذية مرنة، ومتابعة دقيقة تغنيك عن أي مدرب.
+                منظومة رقمية متكاملة تختصر عليك سنوات من التجارب العشوائية. جداول ذكية، تغذية مرنة، ومتابعة دقيقة.
             </p>
         </div>
 
@@ -100,18 +98,18 @@
                 <div class="grid md:grid-cols-2 gap-16 items-center">
                     <div>
                         <h3 class="text-2xl font-bold mb-3">باقة التحول الشامل 🏆</h3>
-                        <p class="text-gray-400 text-sm mb-8 leading-relaxed">المنظومة الرقمية التي تضع بين يديك كل أسرار التغذية والتدريب.</p>
+                        <p class="text-gray-400 text-sm mb-8 leading-relaxed">المنظومة الرقمية التي تضع بين يديك أسرار التغذية والتدريب.</p>
                         <ul class="space-y-4 text-sm text-gray-300">
                             <li>✅ نظام "شفرة الماكروز" لحساب السعرات.</li>
                             <li>✅ الموسوعة الحركية وجداول التمارين.</li>
                             <li>✅ متتبع الإنجاز الذكي وتحدي الـ 90 يوم.</li>
                         </ul>
                     </div>
-                    <div class="bg-[#0a0a0a] border border-white/5 rounded-3xl p-8 relative text-center">
+                    <div class="bg-[#0a0a0a] border border-white/5 rounded-3xl p-8 text-center">
                         <div class="text-sm text-gray-500 mb-4">عرض الطلب المسبق</div>
                         <div class="text-6xl font-black text-white mb-2">30 <span class="text-xl font-medium text-gray-400">ريال</span></div>
                         <div class="text-sm text-gray-600 line-through mb-8">150 ريال</div>
-                        <button onclick="document.getElementById('loginModal').classList.remove('hidden-section')" class="w-full bg-white text-black hover:scale-105 transition py-4 rounded-2xl font-bold text-base">
+                        <button id="openModalBtn" class="w-full bg-white text-black hover:scale-105 transition py-4 rounded-2xl font-bold text-base">
                             لدي كود اشتراك
                         </button>
                     </div>
@@ -125,10 +123,10 @@
     <!-- ========================================== -->
     <div id="loginModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
         <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full text-center relative">
-            <button onclick="document.getElementById('loginModal').classList.add('hidden-section')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
             <div class="w-16 h-16 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">🔒</div>
             <h3 class="text-xl font-bold mb-2">بوابة المتدربات</h3>
-            <p class="text-xs text-gray-400 mb-6">أدخلي كود الاشتراك السري للوصول للمنظومة (للتجربة اكتب: COACH2024)</p>
+            <p class="text-xs text-gray-400 mb-6">أدخلي كود الاشتراك السري للوصول (الكود: COACH2024)</p>
             
             <input type="text" id="accessCode" placeholder="أدخلي الكود هنا..." class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-center text-white mb-4 focus:outline-none focus:border-accent">
             <button id="verifyCodeBtn" class="w-full bg-accent text-black font-bold py-3 rounded-xl hover:bg-accent/80 transition">
@@ -139,7 +137,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- 2. بوابة المتدربات (تظهر فقط بعد الدخول) -->
+    <!-- بوابة المتدربات (تظهر فقط بعد الدخول) -->
     <!-- ========================================== -->
     <div id="dashboardPage" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-2">أهلاً بكِ في عالمك الجديد 🚀</h2>
@@ -147,16 +145,16 @@
 
         <div class="grid md:grid-cols-2 gap-6">
             
-            <!-- حاسبة الماكروز التفاعلية -->
+            <!-- حاسبة الماكروز -->
             <div class="minimal-card p-6">
                 <h3 class="text-xl font-bold mb-4 text-accent">حاسبة شفرة الماكروز 🥗</h3>
                 <p class="text-xs text-gray-400 mb-6">أدخلي بياناتك لمعرفة سعراتك اليومية للثبات.</p>
                 
                 <div class="space-y-4 text-sm">
-                    <input type="number" id="calcWeight" placeholder="الوزن (kg)" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white">
-                    <input type="number" id="calcHeight" placeholder="الطول (cm)" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white">
-                    <input type="number" id="calcAge" placeholder="العمر" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white">
-                    <button onclick="calculateMacros()" class="w-full bg-white text-black font-bold py-3 rounded-lg">احسبي سعراتي</button>
+                    <input type="number" id="calcWeight" placeholder="الوزن (kg)" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                    <input type="number" id="calcHeight" placeholder="الطول (cm)" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                    <input type="number" id="calcAge" placeholder="العمر" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                    <button id="calcBtn" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition">احسبي سعراتي</button>
                 </div>
                 <div id="calcResult" class="hidden-section mt-6 text-center bg-accent/10 border border-accent/20 rounded-lg p-4">
                     <p class="text-xs text-gray-400">احتياجك اليومي (TDEE) تقريباً:</p>
@@ -165,94 +163,75 @@
                 </div>
             </div>
 
-            <!-- متتبع تحدي الـ 90 يوم (الماء) -->
+            <!-- متتبع الماء -->
             <div class="minimal-card p-6">
                 <h3 class="text-xl font-bold mb-4 text-accent">متتبع الـ 90 يوم (الماء) 💧</h3>
                 <p class="text-xs text-gray-400 mb-6">اضغطي على الدائرة عند شرب كوب ماء (يحفظ تلقائياً).</p>
                 
                 <div class="grid grid-cols-6 gap-3" id="waterTracker">
-                    <!-- سيتم توليد الدوائر عبر الجافاسكربت -->
-                </div>
-            </div>
-
-            <!-- جداول التمارين -->
-            <div class="minimal-card p-6 md:col-span-2">
-                <h3 class="text-xl font-bold mb-4 text-accent">جداول التمارين الذكية 🏋️‍♀️</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-[#050505] border border-white/5 p-4 rounded-xl">
-                        <div class="text-xs text-gray-500 mb-1">الجدول الأول</div>
-                        <div class="font-bold mb-3">نظام 3 أيام (شامل)</div>
-                        <button class="text-accent text-xs border border-accent rounded-full px-4 py-1.5 w-full">بدء التمرين</button>
-                    </div>
-                    <div class="bg-[#050505] border border-white/5 p-4 rounded-xl">
-                        <div class="text-xs text-gray-500 mb-1">الجدول الثاني</div>
-                        <div class="font-bold mb-3">نظام 4 أيام (علوي/سفلي)</div>
-                        <button class="text-accent text-xs border border-accent rounded-full px-4 py-1.5 w-full">بدء التمرين</button>
-                    </div>
-                    <div class="bg-[#050505] border border-white/5 p-4 rounded-xl">
-                        <div class="text-xs text-gray-500 mb-1">الموسوعة</div>
-                        <div class="font-bold mb-3">دليل الأداء الحركي</div>
-                        <button class="bg-white text-black font-bold text-xs rounded-full px-4 py-1.5 w-full">تصفح الموسوعة</button>
-                    </div>
+                    <!-- تتولد الدوائر هنا -->
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- مكتبات الانيميشن وفايربيس -->
+    <!-- مكتبة الحركات -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"; 
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZuXrMysUsfnMMBr9pjUNFwSCiR3lH9qo",
-            authDomain: "coach-c7e80.firebaseapp.com",
-            projectId: "coach-c7e80",
-            storageBucket: "coach-c7e80.firebasestorage.app",
-            messagingSenderId: "559057818861",
-            appId: "1:559057818861:web:bebce4f3470c44f729e8e4"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        console.log("Firebase Connected! 🟢");
-    </script>
-
-    <!-- أكواد تشغيل الميزات (JavaScript) -->
+    <!-- الأكواد البرمجية الفعالة (JavaScript) -->
     <script>
+        // تهيئة الحركات
         AOS.init({ once: true });
 
-        // 1. نظام تسجيل الدخول وإخفاء/إظهار البوابة
+        // تعريف العناصر لتسهيل التحكم بها
         const loginBtn = document.getElementById('loginBtn');
+        const openModalBtn = document.getElementById('openModalBtn');
         const logoutBtn = document.getElementById('logoutBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
         const verifyCodeBtn = document.getElementById('verifyCodeBtn');
         const loginModal = document.getElementById('loginModal');
         const landingPage = document.getElementById('landingPage');
         const dashboardPage = document.getElementById('dashboardPage');
         const errorMessage = document.getElementById('errorMessage');
+        const accessCodeInput = document.getElementById('accessCode');
 
-        // التحقق من وجود جلسة سابقة محفوظة
+        // 1. نظام تسجيل الدخول وإخفاء الواجهات
+        function showDashboard() {
+            landingPage.classList.add('hidden-section');
+            dashboardPage.classList.remove('hidden-section');
+            loginBtn.classList.add('hidden-section');
+            logoutBtn.classList.remove('hidden-section');
+            initWaterTracker(); // تفعيل دوائر الماء عند الدخول
+        }
+
+        // التحقق مما إذا كانت المتدربة مسجلة دخول مسبقاً
         if(localStorage.getItem('isLoggedIn') === 'true') {
             showDashboard();
         }
 
-        loginBtn.addEventListener('click', () => {
-            loginModal.classList.remove('hidden-section');
-        });
+        // فتح نافذة الكود
+        loginBtn.addEventListener('click', () => loginModal.classList.remove('hidden-section'));
+        openModalBtn.addEventListener('click', () => loginModal.classList.remove('hidden-section'));
 
+        // إغلاق نافذة الكود
+        closeModalBtn.addEventListener('click', () => loginModal.classList.add('hidden-section'));
+
+        // التحقق من الكود
         verifyCodeBtn.addEventListener('click', () => {
-            const code = document.getElementById('accessCode').value.trim().toUpperCase();
-            // كود تجريبي لفتح البوابة (يمكنك تغييره)
-            if(code === 'COACH2024' || code === 'VIP') {
+            const code = accessCodeInput.value.trim().toUpperCase();
+            if(code === 'COACH2024') {
                 localStorage.setItem('isLoggedIn', 'true');
                 loginModal.classList.add('hidden-section');
+                errorMessage.classList.add('hidden-section');
+                accessCodeInput.value = '';
                 showDashboard();
             } else {
                 errorMessage.classList.remove('hidden-section');
             }
         });
 
+        // تسجيل الخروج
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('isLoggedIn');
             landingPage.classList.remove('hidden-section');
@@ -261,53 +240,54 @@
             logoutBtn.classList.add('hidden-section');
         });
 
-        function showDashboard() {
-            landingPage.classList.add('hidden-section');
-            dashboardPage.classList.remove('hidden-section');
-            loginBtn.classList.add('hidden-section');
-            logoutBtn.classList.remove('hidden-section');
-            initWaterTracker(); // تفعيل دوائر الماء
-        }
-
         // 2. حاسبة الماكروز الذكية
-        function calculateMacros() {
+        const calcBtn = document.getElementById('calcBtn');
+        calcBtn.addEventListener('click', () => {
             const weight = parseFloat(document.getElementById('calcWeight').value);
             const height = parseFloat(document.getElementById('calcHeight').value);
             const age = parseFloat(document.getElementById('calcAge').value);
             
-            if(weight && height && age) {
-                // معادلة BMR تقريبية للنساء + ضربها في عامل نشاط متوسط
+            if(weight > 0 && height > 0 && age > 0) {
                 const bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-                const tdee = Math.round(bmr * 1.375); // نشاط خفيف
+                const tdee = Math.round(bmr * 1.375); // معامل نشاط خفيف
                 
                 document.getElementById('caloriesOutput').innerText = tdee;
                 document.getElementById('calcResult').classList.remove('hidden-section');
             } else {
-                alert("الرجاء إدخال جميع البيانات بشكل صحيح!");
+                alert("الرجاء إدخال جميع البيانات بشكل صحيح (أرقام فقط).");
             }
-        }
+        });
 
-        // 3. متتبع شرب الماء التفاعلي (يحفظ الإنجاز)
+        // 3. متتبع الماء التفاعلي
         function initWaterTracker() {
             const container = document.getElementById('waterTracker');
-            container.innerHTML = ''; // تفريغ الحاوية
+            container.innerHTML = ''; 
             
-            // استرجاع البيانات المحفوظة أو إنشاء مصفوفة جديدة
             let waterData = JSON.parse(localStorage.getItem('waterData')) || Array(12).fill(false);
 
             waterData.forEach((isDrank, index) => {
                 const circle = document.createElement('div');
-                circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${isDrank ? 'bg-blue-500 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-transparent border-white/20'}`;
                 
-                if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
+                // تصميم الدائرة بناءً على حالتها (ممتلئة أم فارغة)
+                circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${
+                    isDrank 
+                    ? 'bg-blue-500 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-110' 
+                    : 'bg-transparent border-white/20 hover:border-white/50'
+                }`;
+                
+                if(isDrank) {
+                    circle.innerHTML = '<span class="text-sm">💧</span>';
+                }
 
+                // إضافة التفاعل عند الضغط على الدائرة
                 circle.addEventListener('click', () => {
-                    waterData[index] = !waterData[index]; // عكس الحالة
-                    localStorage.setItem('waterData', JSON.stringify(waterData)); // حفظ
-                    initWaterTracker(); // إعادة رسم الدوائر
+                    waterData[index] = !waterData[index];
+                    localStorage.setItem('waterData', JSON.stringify(waterData));
+                    initWaterTracker(); // إعادة رسم الدوائر فوراً
                     
-                    // إرسال اهتزاز للهاتف عند الشرب (يعمل على الجوالات)
-                    if(waterData[index] && navigator.vibrate) navigator.vibrate(50);
+                    if(waterData[index] && navigator.vibrate) {
+                        navigator.vibrate(50); // اهتزاز الجوال
+                    }
                 });
 
                 container.appendChild(circle);

@@ -104,13 +104,11 @@
             <p class="text-sm text-gray-400 mb-6" id="mtEmail">email@example.com</p>
 
             <div class="space-y-6">
-                <!-- عرض التقدم (شرب الماء) -->
                 <div class="bg-black border border-white/5 p-4 rounded-xl">
                     <h4 class="text-sm font-bold mb-3">💧 تقدم شرب الماء</h4>
                     <div class="flex gap-2 flex-wrap" id="mtWaterProgress"></div>
                 </div>
 
-                <!-- تحديد الجدول -->
                 <div class="bg-black border border-white/5 p-4 rounded-xl">
                     <h4 class="text-sm font-bold mb-3">🏋️‍♀️ تعيين جدول التمارين للمتدربة</h4>
                     <select id="mtScheduleSelect" class="input-field !mb-4">
@@ -182,7 +180,6 @@
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
 
-        <!-- 1. نافذة التفعيل -->
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
             <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
@@ -193,7 +190,6 @@
             <p id="activationMsg" class="text-xs mt-3 hidden-section"></p>
         </div>
 
-        <!-- 2. الاستبيان (يظهر مرة واحدة بعد التفعيل) -->
         <div id="onboardingOverlay" class="hidden-section bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 mb-8">
             <div class="text-center mb-8">
                 <h3 class="text-3xl font-bold mb-2 text-accent">تهانينا! تم تفعيل حسابك 🎉</h3>
@@ -233,7 +229,6 @@
             </form>
         </div>
 
-        <!-- 3. محتوى الباقة الأساسي -->
         <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
             <div class="minimal-card p-6 md:col-span-2 bg-accent/5 border border-accent/30">
                 <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
@@ -277,7 +272,6 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <!-- أكواد Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -372,7 +366,6 @@
 
         document.getElementById('navLogoutBtn').addEventListener('click', () => signOut(auth));
 
-        // --- التفعيل ---
         document.getElementById('activateAccBtn').addEventListener('click', async () => {
             const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
             const msg = document.getElementById('activationMsg');
@@ -391,7 +384,6 @@
             } catch(e) {}
         });
 
-        // --- الاستبيان التلقائي ---
         document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const goal = document.getElementById('obGoal').value;
@@ -423,7 +415,6 @@
             }
         }
 
-        // --- الأدمن ---
         function initAdminDashboard() {
             onSnapshot(query(collection(db, 'activation_codes')), (snap) => {
                 let html = '';
@@ -499,7 +490,6 @@
             }
         });
 
-        // --- محادثة المتدربة ---
         function initUserChat(uid) {
             if(unsubscribeUserChat) unsubscribeUserChat();
             unsubscribeUserChat = onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
@@ -513,7 +503,6 @@
             if(input.value.trim() && currentUser) { await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: input.value.trim(), sender: 'user', timestamp: serverTimestamp() }); input.value = ''; }
         });
 
-        // --- التسجيل والماكروز ---
         document.getElementById('navLoginBtn').addEventListener('click', () => document.getElementById('authModal').classList.remove('hidden-section'));
         document.getElementById('heroJoinBtn').addEventListener('click', () => { isLoginMode = false; updateAuthUI(); document.getElementById('authModal').classList.remove('hidden-section'); });
         document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('authModal').classList.add('hidden-section'));

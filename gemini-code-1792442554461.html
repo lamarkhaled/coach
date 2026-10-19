@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصافي | كوتش صحة</title>
+    <!-- استدعاء مكتبة التصميم Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- استدعاء خطوط جوجل (الخط العربي) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #0a0a0a; /* خلفية داكنة فخمة */
+            color: #ffffff;
+        }
+        /* تأثير الزجاج الفخم للبطاقات */
+        .glass-card {
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .glass-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+        /* لون النيون الأخضر الخاص بهويتك */
+        .text-neon {
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- شريط التنقل العلوي -->
+    <nav class="p-6 flex justify-between items-center border-b border-gray-800">
+        <div>
+            <h1 class="text-3xl font-black text-neon">منصافي</h1>
+            <p class="text-xs text-gray-400 mt-1">كوتش صحة - دليلك الشامل</p>
+        </div>
+        <button class="bg-green-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:bg-green-400 transition">
+            دخول المشتركات
+        </button>
+    </nav>
+
+    <!-- قسم الترحيب والمقدمة -->
+    <header class="p-6 mt-4 text-center">
+        <h2 class="text-2xl font-bold mb-2">البداية من الصفر 🚀</h2>
+        <p class="text-gray-300 text-sm leading-relaxed max-w-lg mx-auto">
+            تجنبي التشتت والأغلاط، وابدئي بطريقة صحيحة لاختيار النظام المناسب لكِ، وحساب سعراتك لضمان الاستمرارية بدون حرمان.
+        </p>
+    </header>
+
+    <!-- الفهرس الشامل (الأقسام الـ 16) -->
+    <main class="p-6 max-w-4xl mx-auto">
+        <h3 class="text-xl font-bold mb-6 border-b border-gray-800 pb-2">فهرس المحتويات</h3>
+        
+        <!-- شبكة الأقسام -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            
+            <!-- القسم 1 -->
+            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
+                <div class="text-3xl mb-2">🧠</div>
+                <h4 class="font-bold text-sm">1. أسماء العضلات وتقسيماتها</h4>
+            </div>
+
+            <!-- القسم 2 -->
+            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
+                <div class="text-3xl mb-2">🏋️</div>
+                <h4 class="font-bold text-sm">2. شرح أدوات النادي</h4>
+            </div>
+
+            <!-- القسم 5: جدول 3 أيام -->
+            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
+                <div class="text-3xl mb-2">📅</div>
+                <h4 class="font-bold text-sm">5. جدول تمارين 3 أيام</h4>
+            </div>
+
+            <!-- القسم 6: جدول 4 أيام -->
+            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
+                <div class="text-3xl mb-2">⚡</div>
+                <h4 class="font-bold text-sm">6. جدول تمارين 4 أيام</h4>
+            </div>
+
+            <!-- القسم 12: مكتبة التمارين -->
+            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
+                <div class="text-3xl mb-2">📚</div>
+                <h4 class="font-bold text-sm">12. مكتبة التمارين الكبرى</h4>
+            </div>
+
+            <!-- القسم 14: تحدي 90 يوم -->
+            <div class="glass-card rounded-2xl p-5 text-center cursor-pointer">
+                <div class="text-3xl mb-2">🏆</div>
+                <h4 class="font-bold text-sm">14. تحدي الـ 90 يوم</h4>
+            </div>
+        </div>
+
+        <!-- معاينة قسم: شفرة الماكروز والتغذية -->
+        <section class="mt-12">
+            <h3 class="text-2xl font-bold text-neon mb-4">شفرة الماكروز والتغذية 🥗</h3>
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-6">
+                <p class="text-sm text-gray-300 mb-6 leading-relaxed">
+                    تعلمي كيفية حساب معدل الحرق الأساسي (BMR) واحتياجك اليومي (TDEE)، مع توضيح الخرافات، تجهيز الوجبات، التعامل مع السعرات السائلة، وقراءة الملصقات الغذائية.
+                </p>
+                
+                <h4 class="font-bold mb-3 border-b border-gray-700 pb-2">جداول التغذية الجاهزة:</h4>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-green-900/30 border border-green-500/50 rounded-xl p-3">
+                        <div class="text-xl font-bold text-green-400">1,560 سعرة</div>
+                        <div class="text-xs text-gray-400">4 وجبات باليوم</div>
+                    </div>
+                    <div class="bg-blue-900/30 border border-blue-500/50 rounded-xl p-3">
+                        <div class="text-xl font-bold text-blue-400">2,000 سعرة</div>
+                        <div class="text-xs text-gray-400">للتضخيم أو المحافظة</div>
+                    </div>
+                    <div class="bg-yellow-900/30 border border-yellow-500/50 rounded-xl p-3">
+                        <div class="text-xl font-bold text-yellow-400">2,500 سعرة</div>
+                        <div class="text-xs text-gray-400">جدول تغذية متكامل</div>
+                    </div>
+                    <div class="bg-red-900/30 border border-red-500/50 rounded-xl p-3">
+                        <div class="text-xl font-bold text-red-400">3,000 سعرة</div>
+                        <div class="text-xs text-gray-400">للبناء العضلي العالي</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- معاينة قسم: جداول التمارين -->
+        <section class="mt-12">
+            <h3 class="text-2xl font-bold text-neon mb-4">مثال: جدول تمارين 3 أيام 💪</h3>
+            <div class="space-y-3">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex justify-between items-center">
+                    <div>
+                        <div class="text-xs text-gray-400 mb-1">السبت</div>
+                        <div class="font-bold text-sm">صدر + أكتاف + ترايسبس (Upper Body)</div>
+                    </div>
+                    <button class="text-green-400 text-xs font-bold border border-green-400 rounded-full px-3 py-1">عرض التمارين</button>
+                </div>
+                
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex justify-between items-center">
+                    <div>
+                        <div class="text-xs text-gray-400 mb-1">الاثنين</div>
+                        <div class="font-bold text-sm">ظهر + بايسبس + سواعد</div>
+                    </div>
+                    <button class="text-green-400 text-xs font-bold border border-green-400 rounded-full px-3 py-1">عرض التمارين</button>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex justify-between items-center">
+                    <div>
+                        <div class="text-xs text-gray-400 mb-1">الأربعاء</div>
+                        <div class="font-bold text-sm">أرجل + عضلات البطن (Legs & Core)</div>
+                    </div>
+                    <button class="text-green-400 text-xs font-bold border border-green-400 rounded-full px-3 py-1">عرض التمارين</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

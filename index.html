@@ -106,7 +106,7 @@
             <div class="space-y-6">
                 <!-- عرض التقدم (شرب الماء) -->
                 <div class="bg-black border border-white/5 p-4 rounded-xl">
-                    <h4 class="text-sm font-bold mb-3">💧 تقدم شرب الماء (تحدي الـ 90 يوم)</h4>
+                    <h4 class="text-sm font-bold mb-3">💧 تقدم شرب الماء</h4>
                     <div class="flex gap-2 flex-wrap" id="mtWaterProgress"></div>
                 </div>
 
@@ -122,7 +122,7 @@
                         <option value="home">جدول تمارين في البيت بدون أجهزة</option>
                     </select>
                     <button id="mtSaveScheduleBtn" class="w-full bg-accent text-black font-bold py-2 rounded-xl hover:bg-accent/80 transition">حفظ وتحديث الجدول</button>
-                    <p id="mtSaveMsg" class="text-xs text-green-400 text-center mt-2 hidden-section">تم تحديث جدول المتدربة بنجاح!</p>
+                    <p id="mtSaveMsg" class="text-xs text-green-400 text-center mt-2 hidden-section">تم التحديث بنجاح!</p>
                 </div>
             </div>
         </div>
@@ -132,10 +132,9 @@
     <!-- لوحة تحكم الإدارة (تظهر فقط لـ lm6p12@gmail.com) -->
     <!-- ========================================================= -->
     <div id="adminDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold mb-8 text-accent">👑 لوحة تحكم الكوتش (المدير)</h2>
+        <h2 class="text-3xl font-bold mb-8 text-accent">👑 لوحة تحكم الكوتش</h2>
         
         <div class="grid md:grid-cols-3 gap-6">
-            <!-- 1. الأكواد -->
             <div class="minimal-card p-6 md:col-span-1">
                 <h3 class="text-lg font-bold mb-4">🔑 إنشاء أكواد التفعيل</h3>
                 <input type="text" id="newCodeInput" placeholder="اكتبي الكود (مثال: VIP90)" class="input-field uppercase">
@@ -143,7 +142,6 @@
                 <div id="codesList" class="space-y-2 text-xs overflow-y-auto max-h-40 pr-2"></div>
             </div>
 
-            <!-- 2. المحادثات -->
             <div class="minimal-card p-6 md:col-span-2 flex flex-col h-[400px]">
                 <h3 class="text-lg font-bold mb-4">💬 محادثات المتدربات</h3>
                 <div class="flex h-full gap-4">
@@ -159,7 +157,6 @@
                 </div>
             </div>
 
-            <!-- 3. جدول المتدربات المتقدم -->
             <div class="minimal-card p-6 md:col-span-3 mt-4">
                 <h3 class="text-lg font-bold mb-4">👥 متابعة وإدارة المتدربات</h3>
                 <div class="overflow-x-auto">
@@ -169,7 +166,6 @@
                                 <th class="px-4 py-3">الاسم</th>
                                 <th class="px-4 py-3">الإيميل</th>
                                 <th class="px-4 py-3">الحالة</th>
-                                <th class="px-4 py-3">الكود</th>
                                 <th class="px-4 py-3 text-center">الإجراءات</th>
                             </tr>
                         </thead>
@@ -181,12 +177,12 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- بوابة المتدربات (الواجهة المخصصة) -->
+    <!-- بوابة المتدربات -->
     <!-- ========================================================= -->
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
 
-        <!-- 1. نافذة طلب كود التفعيل -->
+        <!-- 1. نافذة التفعيل -->
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
             <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
@@ -197,63 +193,58 @@
             <p id="activationMsg" class="text-xs mt-3 hidden-section"></p>
         </div>
 
-        <!-- 2. نافذة الاستبيان الترحيبي (Onboarding) - تظهر بعد التفعيل مباشرة -->
+        <!-- 2. الاستبيان (يظهر مرة واحدة بعد التفعيل) -->
         <div id="onboardingOverlay" class="hidden-section bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 mb-8">
             <div class="text-center mb-8">
                 <h3 class="text-3xl font-bold mb-2 text-accent">تهانينا! تم تفعيل حسابك 🎉</h3>
-                <p class="text-gray-400">عشان كوتش صحة تصمم لك الخطة اللي تناسبك، جاوبي على هالأسئلة السريعة:</p>
+                <p class="text-gray-400">جاوبي على هالأسئلة السريعة عشان نخصص لك الخطة:</p>
             </div>
             
             <form id="onboardingForm" class="max-w-xl mx-auto space-y-6">
                 <div>
-                    <label class="block text-sm font-bold mb-2">1. وش هو هدفك الأساسي حالياً؟</label>
+                    <label class="block text-sm font-bold mb-2">1. هدفك الأساسي؟</label>
                     <select id="obGoal" class="input-field" required>
                         <option value="" disabled selected>اختاري هدفك...</option>
                         <option value="خسارة دهون وشد الجسم">خسارة دهون وشد الجسم</option>
                         <option value="بناء عضلي وزيادة وزن">بناء عضلي وزيادة وزن</option>
-                        <option value="إعادة تكوين جسماني (خسارة وبناء بنفس الوقت)">إعادة تكوين جسماني</option>
+                        <option value="إعادة تكوين جسماني">إعادة تكوين جسماني</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold mb-2">2. وش مستواك في النادي؟</label>
+                    <label class="block text-sm font-bold mb-2">2. مستواك بالنادي؟</label>
                     <select id="obLevel" class="input-field" required>
                         <option value="" disabled selected>مستواك...</option>
-                        <option value="مبتدئة (أول مرة أتمرن)">مبتدئة (أول مرة أتمرن)</option>
-                        <option value="متوسطة (أعرف الأساسيات)">متوسطة (أعرف الأساسيات)</option>
-                        <option value="متقدمة (أتمرن من فترة طويلة)">متقدمة (أتمرن من فترة طويلة)</option>
+                        <option value="مبتدئة">مبتدئة</option>
+                        <option value="متوسطة">متوسطة</option>
+                        <option value="متقدمة">متقدمة</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold mb-2">3. كم يوم تقدرين تتمرنين في الأسبوع؟</label>
+                    <label class="block text-sm font-bold mb-2">3. أيام التدريب؟</label>
                     <select id="obDays" class="input-field" required>
                         <option value="" disabled selected>عدد الأيام...</option>
                         <option value="3 أيام">3 أيام</option>
                         <option value="4 أيام">4 أيام</option>
                         <option value="5 أيام أو أكثر">5 أيام أو أكثر</option>
-                        <option value="أتمرن في البيت">أتمرن في البيت</option>
+                        <option value="بالبيت">أتمرن في البيت</option>
                     </select>
                 </div>
                 <button type="submit" id="submitOnboardingBtn" class="w-full bg-accent text-black font-bold py-4 rounded-xl hover:bg-accent/80 transition text-lg mt-4">إرسال وبدء التحول 🚀</button>
             </form>
         </div>
 
-        <!-- 3. محتوى الباقة (مخفي حتى الانتهاء من الاستبيان) -->
+        <!-- 3. محتوى الباقة الأساسي -->
         <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
-            
-            <!-- الجدول المخصص من الكوتش -->
             <div class="minimal-card p-6 md:col-span-2 bg-accent/5 border border-accent/30">
                 <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
-                    <span>📅 جدولك التدريبي المخصص</span>
+                    <span>📅 جدولك المخصص</span>
                     <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">من الكوتش</span>
                 </h3>
-                <p class="text-sm text-gray-400 mb-4">قامت كوتش صحة بتحديد هذا الجدول خصيصاً لك بناءً على إجاباتك.</p>
-                
                 <div id="userActiveScheduleBox" class="bg-black rounded-xl p-6 text-center border border-white/5">
                     <div class="animate-pulse text-gray-500 text-sm">جاري جلب الجدول...</div>
                 </div>
             </div>
 
-            <!-- الشات والحاسبة -->
             <div class="minimal-card p-6 border border-white/10">
                 <h3 class="text-lg font-bold mb-4 text-white">💬 تواصلي مع الكوتش</h3>
                 <div id="userChatBox" class="chat-box bg-black/50 border border-white/5 rounded-xl p-4 mb-4"></div>
@@ -286,11 +277,11 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <!-- أكواد Firebase والمنطق -->
+    <!-- أكواد Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAZuXrMysUsfnMMBr9pjUNFwSCiR3lH9qo",
@@ -318,6 +309,8 @@
         let currentUser = null;
         let activeAdminChatUserId = null;
         let currentManageTraineeId = null;
+        let unsubscribeUserChat = null;
+        let unsubscribeAdminChat = null;
 
         const schedulesDict = {
             'none': 'لم يتم تعيين جدول بعد. سيتم مراجعة إجاباتك وتحديد جدولك قريباً.',
@@ -325,7 +318,7 @@
             '4days': 'جدول 4 أيام في الأسبوع (علوي / سفلي - Upper/Lower)',
             '5days': 'جدول 5 أيام في الأسبوع (تقسيم عضلي)',
             '6days': 'جدول 6 أيام في الأسبوع (متقدم)',
-            'home': 'جدول التمارين المنزلية (بدون أجهزة)'
+            'home': 'جدول التمارين المنزلية'
         };
 
         onAuthStateChanged(auth, async (user) => {
@@ -348,7 +341,6 @@
                     onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
                         if (docSnap.exists()) {
                             const data = docSnap.data();
-                            // منطق التوجيه: تفعيل -> استبيان -> محتوى الباقة
                             if (data.isActivated) {
                                 activationOverlay.classList.add('hidden-section');
                                 if(data.onboardingCompleted) {
@@ -399,7 +391,7 @@
             } catch(e) {}
         });
 
-        // --- استبيان التعارف (Onboarding) وإرسال الرسالة التلقائية ---
+        // --- الاستبيان التلقائي ---
         document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const goal = document.getElementById('obGoal').value;
@@ -407,163 +399,95 @@
             const days = document.getElementById('obDays').value;
             const btn = document.getElementById('submitOnboardingBtn');
 
-            btn.disabled = true;
-            btn.innerText = "جاري الحفظ وتجهيز الباقة...";
+            btn.disabled = true; btn.innerText = "جاري الحفظ وتجهيز الباقة...";
 
             try {
-                // 1. تحديث ملف المتدربة
                 await setDoc(doc(db, 'users', currentUser.uid), { 
-                    onboardingCompleted: true,
-                    goals: goal,
-                    level: level,
-                    daysAvailable: days
+                    onboardingCompleted: true, goals: goal, level: level, daysAvailable: days
                 }, { merge: true });
 
-                // 2. إرسال رسالة تلقائية في الشات للكوتش
-                const autoMessage = `أهلاً كوتش! توني فعلت اشتراكي وهذي بياناتي عشان تحددين لي الجدول:
-🎯 هدفي: ${goal}
-💪 مستواي: ${level}
-📅 وقتي: أقدر أتمرن ${days} في الأسبوع.
-أنتظر توجيهاتك! 🔥`;
-
-                await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { 
-                    text: autoMessage, 
-                    sender: 'user', 
-                    timestamp: serverTimestamp() 
-                });
-
-                // الواجهة ستتحدث تلقائياً بفضل onSnapshot
+                const autoMessage = `أهلاً كوتش! توني فعلت اشتراكي وهذي بياناتي:\n🎯 هدفي: ${goal}\n💪 مستواي: ${level}\n📅 وقتي: ${days} بالأسبوع.\nأنتظر الجدول!`;
+                await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: autoMessage, sender: 'user', timestamp: serverTimestamp() });
             } catch(error) {
-                alert("حدث خطأ أثناء حفظ الإجابات.");
-                btn.disabled = false;
-                btn.innerText = "إرسال وبدء التحول 🚀";
+                alert("حدث خطأ.");
+                btn.disabled = false; btn.innerText = "إرسال وبدء التحول 🚀";
             }
         });
 
-        // --- عرض الجدول للمتدربة ---
         function updateUserScheduleUI(scheduleCode) {
             const box = document.getElementById('userActiveScheduleBox');
             if(scheduleCode === 'none') {
                 box.innerHTML = `<div class="text-gray-400 text-sm py-4">${schedulesDict[scheduleCode]}</div>`;
             } else {
-                box.innerHTML = `
-                    <div class="text-5xl mb-3">🔥</div>
-                    <div class="text-2xl font-black text-accent mb-2">${schedulesDict[scheduleCode]}</div>
-                    <button class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm mt-2 hover:bg-gray-200">الاطلاع على الجدول وبدء التمرين</button>
-                `;
+                box.innerHTML = `<div class="text-5xl mb-3">🔥</div><div class="text-2xl font-black text-accent mb-2">${schedulesDict[scheduleCode]}</div><button class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm mt-2">الاطلاع على الجدول وبدء التمرين</button>`;
             }
         }
 
-        // --- لوحة الأدمن (بدون تغييرات جوهرية، تعمل بشكل ممتاز) ---
+        // --- الأدمن ---
         function initAdminDashboard() {
-            loadActivationCodes();
-            loadChatUsers();
-            loadAllUsers();
-        }
-
-        document.getElementById('generateCodeBtn').addEventListener('click', async () => {
-            const code = document.getElementById('newCodeInput').value.trim().toUpperCase();
-            if(!code) return;
-            await setDoc(doc(db, 'activation_codes', code), { active: true, createdAt: serverTimestamp() });
-            document.getElementById('newCodeInput').value = '';
-        });
-
-        function loadActivationCodes() {
             onSnapshot(query(collection(db, 'activation_codes')), (snap) => {
                 let html = '';
                 snap.forEach(doc => {
                     const d = doc.data();
-                    html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1">
-                                <strong>${doc.id}</strong> <span>${d.active ? '<span class="text-green-400">متاح</span>' : '<span class="text-red-400">مستخدم</span>'}</span>
-                             </div>`;
+                    html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1"><strong>${doc.id}</strong> <span>${d.active ? '<span class="text-green-400">متاح</span>' : '<span class="text-red-400">مستخدم</span>'}</span></div>`;
                 });
                 document.getElementById('codesList').innerHTML = html;
             });
-        }
 
-        function loadAllUsers() {
             onSnapshot(query(collection(db, 'users')), (snap) => {
                 let html = '';
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
                     if(u.email === ADMIN_EMAIL) return;
-                    
                     const status = u.isActivated ? '<span class="text-green-400">مفعل</span>' : '<span class="text-yellow-400">غير مفعل</span>';
-                    
-                    const manageBtn = `<button onclick="window.openTraineeManager('${docSnap.id}', '${u.name}', '${u.email}', '${u.assignedSchedule || 'none'}')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-lg text-xs font-bold transition">ملف المتدربة</button>`;
-                    const toggleBtn = u.isActivated 
-                        ? `<button onclick="window.toggleStatus('${docSnap.id}', false)" class="text-red-400 hover:text-red-300 font-bold text-xs">إيقاف</button>`
-                        : `<button onclick="window.toggleStatus('${docSnap.id}', true)" class="text-green-400 hover:text-green-300 font-bold text-xs">تفعيل</button>`;
-
-                    html += `
-                        <tr class="border-b border-white/5 hover:bg-white/5">
-                            <td class="px-4 py-3 text-white font-bold">${u.name || 'بدون اسم'}</td>
-                            <td class="px-4 py-3">${u.email}</td>
-                            <td class="px-4 py-3">${status}</td>
-                            <td class="px-4 py-3">${u.codeUsed || '-'}</td>
-                            <td class="px-4 py-3 flex gap-2 justify-center">${manageBtn} ${toggleBtn}</td>
-                        </tr>
-                    `;
+                    const manageBtn = `<button onclick="window.openTraineeManager('${docSnap.id}', '${u.name}', '${u.email}', '${u.assignedSchedule || 'none'}')" class="bg-white/10 px-3 py-1 rounded-lg text-xs font-bold">إدارة</button>`;
+                    html += `<tr class="border-b border-white/5"><td class="px-4 py-3">${u.name || 'بدون اسم'}</td><td class="px-4 py-3">${u.email}</td><td class="px-4 py-3">${status}</td><td class="px-4 py-3 flex gap-2 justify-center">${manageBtn}</td></tr>`;
                 });
                 document.getElementById('adminAllUsersList').innerHTML = html;
             });
-        }
 
-        window.toggleStatus = async (uid, val) => {
-            await updateDoc(doc(db, 'users', uid), { isActivated: val });
-        };
-
-        window.openTraineeManager = (uid, name, email, schedule) => {
-            currentManageTraineeId = uid;
-            document.getElementById('mtName').innerText = name;
-            document.getElementById('mtEmail').innerText = email;
-            document.getElementById('mtScheduleSelect').value = schedule;
-            document.getElementById('mtSaveMsg').classList.add('hidden-section');
-            
-            const waterData = JSON.parse(localStorage.getItem(`waterData_${uid}`)) || Array(12).fill(false);
-            let waterHtml = '';
-            waterData.forEach(d => {
-                waterHtml += `<div class="w-6 h-6 rounded-full border ${d ? 'bg-accent border-accent' : 'border-white/20'}"></div>`;
-            });
-            document.getElementById('mtWaterProgress').innerHTML = waterHtml;
-            document.getElementById('manageTraineeModal').classList.remove('hidden-section');
-        };
-
-        document.getElementById('mtSaveScheduleBtn').addEventListener('click', async () => {
-            const selected = document.getElementById('mtScheduleSelect').value;
-            if(currentManageTraineeId) {
-                await updateDoc(doc(db, 'users', currentManageTraineeId), { assignedSchedule: selected });
-                document.getElementById('mtSaveMsg').classList.remove('hidden-section');
-                setTimeout(() => document.getElementById('manageTraineeModal').classList.add('hidden-section'), 1500);
-            }
-        });
-
-        // --- الشات للمدير ---
-        function loadChatUsers() {
             onSnapshot(query(collection(db, 'users'), where('isActivated', '==', true)), (snap) => {
                 let html = '';
                 snap.forEach(doc => {
                     const u = doc.data();
-                    if(u.email === ADMIN_EMAIL) return;
-                    html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${u.name}')">
-                                <div class="font-bold text-sm text-white">${u.name}</div>
-                             </div>`;
+                    if(u.email !== ADMIN_EMAIL) html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${u.name}')"><div class="font-bold text-sm text-white">${u.name}</div></div>`;
                 });
                 document.getElementById('adminUsersList').innerHTML = html;
             });
         }
 
+        document.getElementById('generateCodeBtn').addEventListener('click', async () => {
+            const code = document.getElementById('newCodeInput').value.trim().toUpperCase();
+            if(code) { await setDoc(doc(db, 'activation_codes', code), { active: true, createdAt: serverTimestamp() }); document.getElementById('newCodeInput').value = ''; }
+        });
+
+        window.openTraineeManager = (uid, name, email, schedule) => {
+            currentManageTraineeId = uid;
+            document.getElementById('mtName').innerText = name; document.getElementById('mtEmail').innerText = email;
+            document.getElementById('mtScheduleSelect').value = schedule;
+            document.getElementById('mtSaveMsg').classList.add('hidden-section');
+            const waterData = JSON.parse(localStorage.getItem(`waterData_${uid}`)) || Array(12).fill(false);
+            let waterHtml = ''; waterData.forEach(d => { waterHtml += `<div class="w-6 h-6 rounded-full border ${d ? 'bg-accent border-accent' : 'border-white/20'}"></div>`; });
+            document.getElementById('mtWaterProgress').innerHTML = waterHtml;
+            document.getElementById('manageTraineeModal').classList.remove('hidden-section');
+        };
+
+        document.getElementById('mtSaveScheduleBtn').addEventListener('click', async () => {
+            if(currentManageTraineeId) {
+                await updateDoc(doc(db, 'users', currentManageTraineeId), { assignedSchedule: document.getElementById('mtScheduleSelect').value });
+                document.getElementById('mtSaveMsg').classList.remove('hidden-section');
+                setTimeout(() => document.getElementById('manageTraineeModal').classList.add('hidden-section'), 1500);
+            }
+        });
+
         window.openAdminChat = (uid, name) => {
             activeAdminChatUserId = uid;
             document.getElementById('adminActiveChatView').classList.remove('hidden-section');
             document.getElementById('adminChatHeader').innerText = `محادثة: ${name}`;
-            onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
-                let html = '';
-                snap.forEach(doc => {
-                    const m = doc.data();
-                    html += `<div class="msg-bubble ${m.sender === 'admin' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`;
-                });
-                document.getElementById('adminChatBox').innerHTML = html;
+            if(unsubscribeAdminChat) unsubscribeAdminChat();
+            unsubscribeAdminChat = onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
+                let html = ''; snap.forEach(doc => { const m = doc.data(); html += `<div class="msg-bubble ${m.sender === 'admin' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`; });
+                document.getElementById('adminChatBox').innerHTML = html; document.getElementById('adminChatBox').scrollTop = document.getElementById('adminChatBox').scrollHeight;
             });
         };
 
@@ -575,35 +499,23 @@
             }
         });
 
-        // --- الشات للمتدربة ---
+        // --- محادثة المتدربة ---
         function initUserChat(uid) {
             if(unsubscribeUserChat) unsubscribeUserChat();
-            const q = query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc'));
-            unsubscribeUserChat = onSnapshot(q, (snap) => {
-                let html = '';
-                snap.forEach(doc => {
-                    const m = doc.data();
-                    html += `<div class="msg-bubble ${m.sender === 'user' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`;
-                });
-                const box = document.getElementById('userChatBox');
-                box.innerHTML = html || '<div class="text-center text-xs text-gray-500 my-2">بدء المحادثة مع الكوتش...</div>';
-                box.scrollTop = box.scrollHeight;
+            unsubscribeUserChat = onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
+                let html = ''; snap.forEach(doc => { const m = doc.data(); html += `<div class="msg-bubble ${m.sender === 'user' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`; });
+                document.getElementById('userChatBox').innerHTML = html; document.getElementById('userChatBox').scrollTop = document.getElementById('userChatBox').scrollHeight;
             });
         }
 
         document.getElementById('userSendBtn').addEventListener('click', async () => {
             const input = document.getElementById('userChatInput');
-            if(input.value.trim() && currentUser) {
-                await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: input.value.trim(), sender: 'user', timestamp: serverTimestamp() });
-                input.value = '';
-            }
+            if(input.value.trim() && currentUser) { await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: input.value.trim(), sender: 'user', timestamp: serverTimestamp() }); input.value = ''; }
         });
 
         // --- التسجيل والماكروز ---
         document.getElementById('navLoginBtn').addEventListener('click', () => document.getElementById('authModal').classList.remove('hidden-section'));
-        document.getElementById('heroJoinBtn').addEventListener('click', () => { 
-            isLoginMode = false; updateAuthUI(); document.getElementById('authModal').classList.remove('hidden-section'); 
-        });
+        document.getElementById('heroJoinBtn').addEventListener('click', () => { isLoginMode = false; updateAuthUI(); document.getElementById('authModal').classList.remove('hidden-section'); });
         document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('authModal').classList.add('hidden-section'));
         
         let isLoginMode = true;
@@ -617,11 +529,8 @@
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('emailInput').value.trim();
-            const password = document.getElementById('passwordInput').value;
-            const name = document.getElementById('nameInput').value.trim();
-            const btn = document.getElementById('submitAuthBtn');
-            btn.disabled = true;
+            const email = document.getElementById('emailInput').value.trim(); const password = document.getElementById('passwordInput').value; const name = document.getElementById('nameInput').value.trim();
+            const btn = document.getElementById('submitAuthBtn'); btn.disabled = true;
             try {
                 if(isLoginMode) await signInWithEmailAndPassword(auth, email, password);
                 else {
@@ -629,36 +538,23 @@
                     await updateProfile(cred.user, { displayName: name });
                     await setDoc(doc(db, 'users', cred.user.uid), { email, name, isActivated: false });
                 }
-            } catch (e) { alert('تأكدي من صحة البيانات.'); } 
-            finally { btn.disabled = false; }
+            } catch (e) { alert('تأكدي من صحة البيانات.'); } finally { btn.disabled = false; }
         });
 
         document.getElementById('calcBtn').addEventListener('click', () => {
-            const weight = parseFloat(document.getElementById('calcWeight').value);
-            const height = parseFloat(document.getElementById('calcHeight').value);
-            const age = parseFloat(document.getElementById('calcAge').value);
-            if(weight && height && age) {
-                const bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-                document.getElementById('caloriesOutput').innerText = Math.round(bmr * 1.375);
-                document.getElementById('calcResult').classList.remove('hidden-section');
-            }
+            const weight = parseFloat(document.getElementById('calcWeight').value); const height = parseFloat(document.getElementById('calcHeight').value); const age = parseFloat(document.getElementById('calcAge').value);
+            if(weight && height && age) { document.getElementById('caloriesOutput').innerText = Math.round(((10 * weight) + (6.25 * height) - (5 * age) - 161) * 1.375); document.getElementById('calcResult').classList.remove('hidden-section'); }
         });
 
         function initWaterTracker(uid) {
             const container = document.getElementById('waterTracker');
-            if(!container) return;
-            container.innerHTML = ''; 
-            const storageKey = `waterData_${uid}`;
+            if(!container) return; container.innerHTML = ''; const storageKey = `waterData_${uid}`;
             let waterData = JSON.parse(localStorage.getItem(storageKey)) || Array(12).fill(false);
             waterData.forEach((isDrank, index) => {
                 const circle = document.createElement('div');
                 circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${isDrank ? 'bg-accent border-accent text-black scale-110' : 'border-white/20 hover:border-white/50'}`;
                 if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
-                circle.addEventListener('click', () => {
-                    waterData[index] = !waterData[index];
-                    localStorage.setItem(storageKey, JSON.stringify(waterData));
-                    initWaterTracker(uid);
-                });
+                circle.addEventListener('click', () => { waterData[index] = !waterData[index]; localStorage.setItem(storageKey, JSON.stringify(waterData)); initWaterTracker(uid); });
                 container.appendChild(circle);
             });
         }

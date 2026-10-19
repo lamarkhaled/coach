@@ -18,8 +18,6 @@
                         brand: '#050505',
                         surface: '#111111',
                         accent: '#10b981',
-                        chatUser: '#10b981',
-                        chatAdmin: '#27272a'
                     }
                 }
             }
@@ -62,7 +60,7 @@
         </div>
     </nav>
 
-    <!-- 1. واجهة المبيعات -->
+    <!-- واجهة المبيعات -->
     <div id="landingPage" class="pt-40 pb-24 px-6 relative">
         <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
             <div class="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent px-4 py-1.5 rounded-full text-xs font-bold mb-8">إطلاق حصري لفترة محدودة</div>
@@ -74,7 +72,7 @@
         </div>
     </div>
 
-    <!-- 2. نافذة المصادقة -->
+    <!-- نافذة المصادقة الدخول/التسجيل -->
     <div id="authModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
         <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full relative">
             <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
@@ -85,7 +83,7 @@
             <form id="authForm" class="space-y-2">
                 <input type="text" id="nameInput" placeholder="الاسم الكريم (للتسجيل فقط)" class="input-field hidden-section">
                 <input type="email" id="emailInput" placeholder="البريد الإلكتروني" required class="input-field">
-                <input type="password" id="passwordInput" placeholder="كلمة المرور" required class="input-field">
+                <input type="password" id="passwordInput" placeholder="كلمة المرور (6 أحرف فأكثر)" required class="input-field">
                 <button type="submit" id="submitAuthBtn" class="w-full bg-accent text-black font-bold py-3 rounded-xl hover:bg-accent/80 transition mt-4">دخول</button>
             </form>
             
@@ -99,29 +97,29 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- 3. لوحة تحكم الإدارة (تظهر فقط لـ lm6p12@gmail.com) -->
+    <!-- لوحة تحكم الإدارة (تظهر فقط لـ lm6p12@gmail.com) -->
     <!-- ========================================================= -->
     <div id="adminDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold mb-8 text-accent">👑 لوحة تحكم الكوتش (المدير)</h2>
         
         <div class="grid md:grid-cols-3 gap-6">
-            <!-- قسم الأكواد والاشتراكات -->
+            <!-- توليد الأكواد -->
             <div class="minimal-card p-6 md:col-span-1">
-                <h3 class="text-lg font-bold mb-4">🔑 توليد أكواد التفعيل</h3>
+                <h3 class="text-lg font-bold mb-4">🔑 إنشاء أكواد التفعيل</h3>
                 <input type="text" id="newCodeInput" placeholder="اكتبي الكود (مثال: VIP90)" class="input-field uppercase">
                 <select id="codeDuration" class="input-field">
                     <option value="30">باقة 30 يوم</option>
                     <option value="90">باقة 90 يوم</option>
                 </select>
-                <button id="generateCodeBtn" class="w-full bg-white text-black font-bold py-2 rounded-lg mb-6">إنشاء الكود</button>
+                <button id="generateCodeBtn" class="w-full bg-white text-black font-bold py-2 rounded-lg mb-6 hover:bg-gray-200 transition">إنشاء الكود</button>
                 
-                <h3 class="text-sm font-bold mb-2 text-gray-400">الأكواد النشطة / المولدة:</h3>
-                <div id="codesList" class="space-y-2 text-xs">
+                <h3 class="text-sm font-bold mb-2 text-gray-400">الأكواد في النظام:</h3>
+                <div id="codesList" class="space-y-2 text-xs overflow-y-auto max-h-40 pr-2">
                     <!-- تُجلب الأكواد هنا -->
                 </div>
             </div>
 
-            <!-- قسم المحادثات المباشرة -->
+            <!-- المحادثات المباشرة للمدير -->
             <div class="minimal-card p-6 md:col-span-2 flex flex-col h-[500px]">
                 <h3 class="text-lg font-bold mb-4">💬 محادثات المتدربات</h3>
                 <div class="flex h-full gap-4">
@@ -132,13 +130,13 @@
                     
                     <!-- شاشة الدردشة النشطة -->
                     <div class="w-2/3 flex flex-col relative hidden-section" id="adminActiveChatView">
-                        <div class="text-sm font-bold border-b border-white/10 pb-2 mb-4 text-accent" id="adminChatHeader">اسم المتدربة</div>
+                        <div class="text-sm font-bold border-b border-white/10 pb-2 mb-4 text-accent" id="adminChatHeader">اختر متدربة للمحادثة</div>
                         <div id="adminChatBox" class="chat-box flex-grow mb-4">
                             <!-- الرسائل -->
                         </div>
                         <div class="flex gap-2">
                             <input type="text" id="adminChatInput" placeholder="اكتبي ردك هنا..." class="input-field !mb-0">
-                            <button id="adminSendBtn" class="bg-accent text-black px-4 rounded-xl font-bold">إرسال</button>
+                            <button id="adminSendBtn" class="bg-accent text-black px-4 rounded-xl font-bold hover:bg-accent/80 transition">إرسال</button>
                         </div>
                     </div>
                 </div>
@@ -147,7 +145,7 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- 4. بوابة المتدربات (تظهر لجميع المشتركين) -->
+    <!-- بوابة المتدربات (للمشتركين العاديين) -->
     <!-- ========================================================= -->
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
@@ -156,18 +154,18 @@
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
             <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
-            <p class="text-sm text-gray-400 mb-6">الرجاء إدخال كود التفعيل الذي حصلتِ عليه عند الشراء لفتح الباقة بالكامل.</p>
+            <p class="text-sm text-gray-400 mb-6">الرجاء إدخال كود التفعيل لفتح الباقة بالكامل.</p>
             <div class="max-w-xs mx-auto flex gap-2">
                 <input type="text" id="userActivationInput" placeholder="أدخلي الكود هنا" class="input-field !mb-0 text-center uppercase">
-                <button id="activateAccBtn" class="bg-accent text-black font-bold px-6 rounded-xl">تفعيل</button>
+                <button id="activateAccBtn" class="bg-accent text-black font-bold px-6 rounded-xl hover:bg-accent/80 transition">تفعيل</button>
             </div>
             <p id="activationMsg" class="text-xs mt-3 hidden-section"></p>
         </div>
 
-        <!-- محتوى الباقة (مخفي حتى التفعيل) -->
+        <!-- محتوى الباقة (مخفي حتى يتم التفعيل) -->
         <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
             
-            <!-- شات الكوتش -->
+            <!-- شات المتدربة مع الكوتش -->
             <div class="minimal-card p-6 border border-accent/20">
                 <h3 class="text-xl font-bold mb-4 text-white flex justify-between items-center">
                     <span>💬 تواصلي مع كوتش صحة</span>
@@ -178,7 +176,7 @@
                 </div>
                 <div class="flex gap-2">
                     <input type="text" id="userChatInput" placeholder="رسالتك..." class="input-field !mb-0 text-sm">
-                    <button id="userSendBtn" class="bg-white text-black px-4 rounded-xl font-bold text-sm">إرسال</button>
+                    <button id="userSendBtn" class="bg-white text-black px-4 rounded-xl font-bold text-sm hover:bg-gray-200 transition">إرسال</button>
                 </div>
             </div>
 
@@ -191,13 +189,30 @@
                     <input type="number" id="calcAge" placeholder="العمر" class="input-field">
                     <button id="calcBtn" class="w-full bg-accent/20 text-accent font-bold py-3 rounded-lg hover:bg-accent hover:text-black transition">احسبي سعراتي</button>
                 </div>
+                <!-- نتيجة الحاسبة -->
+                <div id="calcResult" class="hidden-section mt-4 text-center bg-black border border-white/5 rounded-lg p-4">
+                    <p class="text-xs text-gray-400">احتياجك اليومي (TDEE):</p>
+                    <p class="text-3xl font-black text-accent mt-1" id="caloriesOutput">0</p>
+                    <p class="text-xs text-gray-400">سعرة حرارية</p>
+                </div>
             </div>
+            
+            <!-- متتبع الماء -->
+            <div class="minimal-card p-6 md:col-span-2">
+                <h3 class="text-xl font-bold mb-4 text-white">💧 متتبع الـ 90 يوم (الماء)</h3>
+                <p class="text-xs text-gray-400 mb-6">اضغطي على الدائرة عند شرب كوب ماء.</p>
+                <div class="grid grid-cols-6 md:grid-cols-12 gap-3" id="waterTracker">
+                    <!-- دوائر الماء تتولد برمجياً -->
+                </div>
+            </div>
+
         </div>
     </div>
 
+    <!-- مكتبة الحركات -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <!-- Firebase Logic -->
+    <!-- أكواد Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -215,11 +230,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const ADMIN_EMAIL = 'lm6p12@gmail.com';
+        const ADMIN_EMAIL = 'lm6p12@gmail.com'; // إيميل المدير المعتمد
 
         AOS.init({ once: true });
 
-        // واجهات
         const landingPage = document.getElementById('landingPage');
         const adminDashboard = document.getElementById('adminDashboard');
         const userDashboard = document.getElementById('userDashboard');
@@ -240,17 +254,16 @@
                 document.getElementById('navLoginBtn').classList.add('hidden-section');
                 document.getElementById('navLogoutBtn').classList.remove('hidden-section');
 
-                // هل هو الأدمن؟
                 if (user.email === ADMIN_EMAIL) {
                     userDashboard.classList.add('hidden-section');
                     adminDashboard.classList.remove('hidden-section');
                     initAdminDashboard();
                 } else {
-                    // متدربة عادية
                     adminDashboard.classList.add('hidden-section');
                     userDashboard.classList.remove('hidden-section');
                     document.getElementById('dashName').innerText = user.displayName || 'بطلة';
                     checkUserSubscription(user.uid);
+                    initWaterTracker(user.uid);
                 }
             } else {
                 landingPage.classList.remove('hidden-section');
@@ -277,7 +290,6 @@
             }
         }
 
-        // تفعيل الكود للمتدربة
         document.getElementById('activateAccBtn').addEventListener('click', async () => {
             const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
             const msg = document.getElementById('activationMsg');
@@ -285,20 +297,23 @@
             
             if(!codeInput) return;
 
-            const codeRef = doc(db, 'activation_codes', codeInput);
-            const codeSnap = await getDoc(codeRef);
+            try {
+                const codeRef = doc(db, 'activation_codes', codeInput);
+                const codeSnap = await getDoc(codeRef);
 
-            if (codeSnap.exists() && codeSnap.data().active === true) {
-                // تفعيل حساب المتدربة
-                await setDoc(doc(db, 'users', currentUser.uid), { isActivated: true, codeUsed: codeInput }, { merge: true });
-                // تعطيل الكود
-                await updateDoc(codeRef, { active: false, usedBy: currentUser.email });
-                
-                msg.innerText = "تم التفعيل بنجاح! جاري تحميل الباقة...";
-                msg.classList.add('text-green-400');
-                setTimeout(() => checkUserSubscription(currentUser.uid), 1500);
-            } else {
-                msg.innerText = "الكود غير صحيح أو مستخدم مسبقاً.";
+                if (codeSnap.exists() && codeSnap.data().active === true) {
+                    await setDoc(doc(db, 'users', currentUser.uid), { isActivated: true, codeUsed: codeInput }, { merge: true });
+                    await updateDoc(codeRef, { active: false, usedBy: currentUser.email });
+                    
+                    msg.innerText = "تم التفعيل بنجاح! جاري تحميل الباقة...";
+                    msg.classList.add('text-green-400');
+                    setTimeout(() => checkUserSubscription(currentUser.uid), 1500);
+                } else {
+                    msg.innerText = "الكود غير صحيح أو مستخدم مسبقاً.";
+                    msg.classList.add('text-red-400');
+                }
+            } catch(e) {
+                msg.innerText = "حدث خطأ، تأكدي من اتصالك بالإنترنت.";
                 msg.classList.add('text-red-400');
             }
         });
@@ -309,19 +324,22 @@
             loadChatUsers();
         }
 
-        // 1. توليد الأكواد
         document.getElementById('generateCodeBtn').addEventListener('click', async () => {
             const code = document.getElementById('newCodeInput').value.trim().toUpperCase();
             const duration = document.getElementById('codeDuration').value;
             if(!code) return alert('اكتبي الكود أولاً');
 
-            await setDoc(doc(db, 'activation_codes', code), {
-                duration: duration,
-                active: true,
-                createdAt: serverTimestamp()
-            });
-            document.getElementById('newCodeInput').value = '';
-            loadActivationCodes();
+            try {
+                await setDoc(doc(db, 'activation_codes', code), {
+                    duration: duration,
+                    active: true,
+                    createdAt: serverTimestamp()
+                });
+                document.getElementById('newCodeInput').value = '';
+                loadActivationCodes();
+            } catch(e) {
+                alert("حدث خطأ أثناء حفظ الكود. تأكدي من صلاحيات Firestore.");
+            }
         });
 
         async function loadActivationCodes() {
@@ -331,27 +349,25 @@
             snap.forEach(doc => {
                 const data = doc.data();
                 const status = data.active ? '<span class="text-green-400">متاح</span>' : `<span class="text-red-400">مستخدم (${data.usedBy})</span>`;
-                html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center">
+                html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1">
                             <strong>${doc.id}</strong> <span>${status}</span>
                          </div>`;
             });
             document.getElementById('codesList').innerHTML = html || 'لا توجد أكواد.';
         }
 
-        // 2. إدارة محادثات المتدربات (Admin)
         async function loadChatUsers() {
-            // جلب المتدربات اللاتي تم تفعيل حساباتهن
             const q = query(collection(db, 'users'), where('isActivated', '==', true));
             onSnapshot(q, (snapshot) => {
                 let html = '';
                 snapshot.forEach(doc => {
                     const user = doc.data();
-                    html += `<div class="user-list-item" onclick="window.openAdminChat('${doc.id}', '${user.name || user.email}')">
+                    html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${user.name || user.email}')">
                                 <div class="font-bold text-sm text-white">${user.name || 'متدربة'}</div>
                                 <div class="text-[10px] text-gray-500">${user.email}</div>
                              </div>`;
                 });
-                document.getElementById('adminUsersList').innerHTML = html;
+                document.getElementById('adminUsersList').innerHTML = html || '<p class="text-xs text-gray-500 mt-2">لا يوجد متدربات مفعلات بعد.</p>';
             });
         }
 
@@ -418,15 +434,25 @@
 
         // --- معالجة نماذج التسجيل ---
         document.getElementById('navLoginBtn').addEventListener('click', () => { document.getElementById('authModal').classList.remove('hidden-section'); });
+        document.getElementById('heroJoinBtn').addEventListener('click', () => { 
+            isLoginMode = false;
+            updateAuthUI();
+            document.getElementById('authModal').classList.remove('hidden-section'); 
+        });
         document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('authModal').classList.add('hidden-section'); });
         
         let isLoginMode = true;
-        document.getElementById('toggleAuthModeBtn').addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            document.getElementById('nameInput').classList.toggle('hidden-section');
+        
+        function updateAuthUI() {
+            document.getElementById('nameInput').classList.toggle('hidden-section', isLoginMode);
             document.getElementById('toggleText').innerText = isLoginMode ? 'ليس لديك حساب؟' : 'لديك حساب بالفعل؟';
             document.getElementById('toggleAuthModeBtn').innerText = isLoginMode ? 'إنشاء حساب' : 'تسجيل الدخول';
             document.getElementById('modalTitle').innerText = isLoginMode ? 'تسجيل الدخول' : 'حساب جديد';
+        }
+
+        document.getElementById('toggleAuthModeBtn').addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            updateAuthUI();
         });
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
@@ -435,6 +461,10 @@
             const password = document.getElementById('passwordInput').value;
             const name = document.getElementById('nameInput').value.trim();
             const msg = document.getElementById('authMessage');
+            const btn = document.getElementById('submitAuthBtn');
+            
+            btn.disabled = true;
+            btn.innerText = "جاري التحميل...";
 
             try {
                 if(isLoginMode) {
@@ -442,17 +472,60 @@
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: name });
-                    // حفظ بيانات المتدربة في الداتابيس لتظهر للأدمن
+                    // إنشاء ملف للمستخدم في قاعدة البيانات
                     await setDoc(doc(db, 'users', cred.user.uid), {
                         email: email, name: name, isActivated: false, role: email === ADMIN_EMAIL ? 'admin' : 'user'
                     });
                 }
             } catch (error) {
-                msg.innerText = "تأكدي من صحة البيانات.";
-                msg.classList.remove('hidden-section', 'bg-green-500/20', 'text-green-400');
+                msg.innerText = "حدث خطأ. تأكدي من صحة البيانات وأن الإيميل غير مسجل مسبقاً.";
+                msg.classList.remove('hidden-section');
                 msg.classList.add('bg-red-500/20', 'text-red-400');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "دخول";
             }
         });
+
+        // --- حاسبة الماكروز والمتتبع ---
+        document.getElementById('calcBtn').addEventListener('click', () => {
+            const weight = parseFloat(document.getElementById('calcWeight').value);
+            const height = parseFloat(document.getElementById('calcHeight').value);
+            const age = parseFloat(document.getElementById('calcAge').value);
+            
+            if(weight && height && age) {
+                const bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+                const tdee = Math.round(bmr * 1.375);
+                document.getElementById('caloriesOutput').innerText = tdee;
+                document.getElementById('calcResult').classList.remove('hidden-section');
+            } else {
+                alert("الرجاء إدخال الأرقام بشكل صحيح.");
+            }
+        });
+
+        function initWaterTracker(uid) {
+            const container = document.getElementById('waterTracker');
+            if(!container) return;
+            container.innerHTML = ''; 
+            
+            const storageKey = `waterData_${uid}`;
+            let waterData = JSON.parse(localStorage.getItem(storageKey)) || Array(12).fill(false);
+
+            waterData.forEach((isDrank, index) => {
+                const circle = document.createElement('div');
+                circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${
+                    isDrank ? 'bg-accent border-accent text-black scale-110 shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'bg-transparent border-white/20 hover:border-white/50'
+                }`;
+                if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
+
+                circle.addEventListener('click', () => {
+                    waterData[index] = !waterData[index];
+                    localStorage.setItem(storageKey, JSON.stringify(waterData));
+                    initWaterTracker(uid);
+                });
+                container.appendChild(circle);
+            });
+        }
     </script>
 </body>
 </html>

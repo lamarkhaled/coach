@@ -107,9 +107,7 @@
                 <!-- عرض التقدم (شرب الماء) -->
                 <div class="bg-black border border-white/5 p-4 rounded-xl">
                     <h4 class="text-sm font-bold mb-3">💧 تقدم شرب الماء (تحدي الـ 90 يوم)</h4>
-                    <div class="flex gap-2 flex-wrap" id="mtWaterProgress">
-                        <!-- تظهر الدوائر هنا -->
-                    </div>
+                    <div class="flex gap-2 flex-wrap" id="mtWaterProgress"></div>
                 </div>
 
                 <!-- تحديد الجدول -->
@@ -188,16 +186,58 @@
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
 
+        <!-- 1. نافذة طلب كود التفعيل -->
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
             <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
-            <div class="max-w-xs mx-auto flex gap-2">
+            <div class="max-w-xs mx-auto flex gap-2 mt-6">
                 <input type="text" id="userActivationInput" placeholder="كود التفعيل" class="input-field !mb-0 text-center uppercase">
                 <button id="activateAccBtn" class="bg-accent text-black font-bold px-6 rounded-xl hover:bg-accent/80 transition">تفعيل</button>
             </div>
             <p id="activationMsg" class="text-xs mt-3 hidden-section"></p>
         </div>
 
+        <!-- 2. نافذة الاستبيان الترحيبي (Onboarding) - تظهر بعد التفعيل مباشرة -->
+        <div id="onboardingOverlay" class="hidden-section bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 mb-8">
+            <div class="text-center mb-8">
+                <h3 class="text-3xl font-bold mb-2 text-accent">تهانينا! تم تفعيل حسابك 🎉</h3>
+                <p class="text-gray-400">عشان كوتش صحة تصمم لك الخطة اللي تناسبك، جاوبي على هالأسئلة السريعة:</p>
+            </div>
+            
+            <form id="onboardingForm" class="max-w-xl mx-auto space-y-6">
+                <div>
+                    <label class="block text-sm font-bold mb-2">1. وش هو هدفك الأساسي حالياً؟</label>
+                    <select id="obGoal" class="input-field" required>
+                        <option value="" disabled selected>اختاري هدفك...</option>
+                        <option value="خسارة دهون وشد الجسم">خسارة دهون وشد الجسم</option>
+                        <option value="بناء عضلي وزيادة وزن">بناء عضلي وزيادة وزن</option>
+                        <option value="إعادة تكوين جسماني (خسارة وبناء بنفس الوقت)">إعادة تكوين جسماني</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">2. وش مستواك في النادي؟</label>
+                    <select id="obLevel" class="input-field" required>
+                        <option value="" disabled selected>مستواك...</option>
+                        <option value="مبتدئة (أول مرة أتمرن)">مبتدئة (أول مرة أتمرن)</option>
+                        <option value="متوسطة (أعرف الأساسيات)">متوسطة (أعرف الأساسيات)</option>
+                        <option value="متقدمة (أتمرن من فترة طويلة)">متقدمة (أتمرن من فترة طويلة)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">3. كم يوم تقدرين تتمرنين في الأسبوع؟</label>
+                    <select id="obDays" class="input-field" required>
+                        <option value="" disabled selected>عدد الأيام...</option>
+                        <option value="3 أيام">3 أيام</option>
+                        <option value="4 أيام">4 أيام</option>
+                        <option value="5 أيام أو أكثر">5 أيام أو أكثر</option>
+                        <option value="أتمرن في البيت">أتمرن في البيت</option>
+                    </select>
+                </div>
+                <button type="submit" id="submitOnboardingBtn" class="w-full bg-accent text-black font-bold py-4 rounded-xl hover:bg-accent/80 transition text-lg mt-4">إرسال وبدء التحول 🚀</button>
+            </form>
+        </div>
+
+        <!-- 3. محتوى الباقة (مخفي حتى الانتهاء من الاستبيان) -->
         <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
             
             <!-- الجدول المخصص من الكوتش -->
@@ -206,10 +246,9 @@
                     <span>📅 جدولك التدريبي المخصص</span>
                     <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">من الكوتش</span>
                 </h3>
-                <p class="text-sm text-gray-400 mb-4">قامت كوتش صحة بتحديد هذا الجدول خصيصاً لك بناءً على أهدافك.</p>
+                <p class="text-sm text-gray-400 mb-4">قامت كوتش صحة بتحديد هذا الجدول خصيصاً لك بناءً على إجاباتك.</p>
                 
                 <div id="userActiveScheduleBox" class="bg-black rounded-xl p-6 text-center border border-white/5">
-                    <!-- يظهر الجدول هنا برمجياً -->
                     <div class="animate-pulse text-gray-500 text-sm">جاري جلب الجدول...</div>
                 </div>
             </div>
@@ -274,14 +313,14 @@
         const userDashboard = document.getElementById('userDashboard');
         const premiumContent = document.getElementById('premiumContent');
         const activationOverlay = document.getElementById('activationOverlay');
+        const onboardingOverlay = document.getElementById('onboardingOverlay');
 
         let currentUser = null;
         let activeAdminChatUserId = null;
         let currentManageTraineeId = null;
 
-        // القاموس لترجمة أسماء الجداول للواجهة
         const schedulesDict = {
-            'none': 'لم يتم تعيين جدول بعد. سيتم التواصل معك قريباً.',
+            'none': 'لم يتم تعيين جدول بعد. سيتم مراجعة إجاباتك وتحديد جدولك قريباً.',
             '3days': 'جدول 3 أيام في الأسبوع (شامل للجسم - Full Body)',
             '4days': 'جدول 4 أيام في الأسبوع (علوي / سفلي - Upper/Lower)',
             '5days': 'جدول 5 أيام في الأسبوع (تقسيم عضلي)',
@@ -309,13 +348,21 @@
                     onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
                         if (docSnap.exists()) {
                             const data = docSnap.data();
+                            // منطق التوجيه: تفعيل -> استبيان -> محتوى الباقة
                             if (data.isActivated) {
                                 activationOverlay.classList.add('hidden-section');
-                                premiumContent.classList.remove('hidden-section');
-                                initUserChat(user.uid);
-                                updateUserScheduleUI(data.assignedSchedule || 'none');
+                                if(data.onboardingCompleted) {
+                                    onboardingOverlay.classList.add('hidden-section');
+                                    premiumContent.classList.remove('hidden-section');
+                                    initUserChat(user.uid);
+                                    updateUserScheduleUI(data.assignedSchedule || 'none');
+                                } else {
+                                    onboardingOverlay.classList.remove('hidden-section');
+                                    premiumContent.classList.add('hidden-section');
+                                }
                             } else {
                                 premiumContent.classList.add('hidden-section');
+                                onboardingOverlay.classList.add('hidden-section');
                                 activationOverlay.classList.remove('hidden-section');
                             }
                         }
@@ -343,15 +390,54 @@
                 const codeRef = doc(db, 'activation_codes', codeInput);
                 const codeSnap = await getDoc(codeRef);
                 if (codeSnap.exists() && codeSnap.data().active === true) {
-                    await setDoc(doc(db, 'users', currentUser.uid), { isActivated: true, codeUsed: codeInput }, { merge: true });
+                    await setDoc(doc(db, 'users', currentUser.uid), { isActivated: true, codeUsed: codeInput, onboardingCompleted: false }, { merge: true });
                     await updateDoc(codeRef, { active: false, usedBy: currentUser.email });
-                    msg.innerText = "تم التفعيل بنجاح!";
-                    msg.classList.remove('hidden-section', 'text-red-400'); msg.classList.add('text-green-400');
                 } else {
                     msg.innerText = "الكود غير صحيح.";
                     msg.classList.remove('hidden-section', 'text-green-400'); msg.classList.add('text-red-400');
                 }
             } catch(e) {}
+        });
+
+        // --- استبيان التعارف (Onboarding) وإرسال الرسالة التلقائية ---
+        document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const goal = document.getElementById('obGoal').value;
+            const level = document.getElementById('obLevel').value;
+            const days = document.getElementById('obDays').value;
+            const btn = document.getElementById('submitOnboardingBtn');
+
+            btn.disabled = true;
+            btn.innerText = "جاري الحفظ وتجهيز الباقة...";
+
+            try {
+                // 1. تحديث ملف المتدربة
+                await setDoc(doc(db, 'users', currentUser.uid), { 
+                    onboardingCompleted: true,
+                    goals: goal,
+                    level: level,
+                    daysAvailable: days
+                }, { merge: true });
+
+                // 2. إرسال رسالة تلقائية في الشات للكوتش
+                const autoMessage = `أهلاً كوتش! توني فعلت اشتراكي وهذي بياناتي عشان تحددين لي الجدول:
+🎯 هدفي: ${goal}
+💪 مستواي: ${level}
+📅 وقتي: أقدر أتمرن ${days} في الأسبوع.
+أنتظر توجيهاتك! 🔥`;
+
+                await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { 
+                    text: autoMessage, 
+                    sender: 'user', 
+                    timestamp: serverTimestamp() 
+                });
+
+                // الواجهة ستتحدث تلقائياً بفضل onSnapshot
+            } catch(error) {
+                alert("حدث خطأ أثناء حفظ الإجابات.");
+                btn.disabled = false;
+                btn.innerText = "إرسال وبدء التحول 🚀";
+            }
         });
 
         // --- عرض الجدول للمتدربة ---
@@ -368,7 +454,7 @@
             }
         }
 
-        // --- لوحة الأدمن ---
+        // --- لوحة الأدمن (بدون تغييرات جوهرية، تعمل بشكل ممتاز) ---
         function initAdminDashboard() {
             loadActivationCodes();
             loadChatUsers();
@@ -427,7 +513,6 @@
             await updateDoc(doc(db, 'users', uid), { isActivated: val });
         };
 
-        // --- إدارة المتدربة (نافذة المدير) ---
         window.openTraineeManager = (uid, name, email, schedule) => {
             currentManageTraineeId = uid;
             document.getElementById('mtName').innerText = name;
@@ -435,14 +520,12 @@
             document.getElementById('mtScheduleSelect').value = schedule;
             document.getElementById('mtSaveMsg').classList.add('hidden-section');
             
-            // جلب تقدم الماء الخاص بها
             const waterData = JSON.parse(localStorage.getItem(`waterData_${uid}`)) || Array(12).fill(false);
             let waterHtml = '';
             waterData.forEach(d => {
                 waterHtml += `<div class="w-6 h-6 rounded-full border ${d ? 'bg-accent border-accent' : 'border-white/20'}"></div>`;
             });
             document.getElementById('mtWaterProgress').innerHTML = waterHtml;
-
             document.getElementById('manageTraineeModal').classList.remove('hidden-section');
         };
 
@@ -494,13 +577,17 @@
 
         // --- الشات للمتدربة ---
         function initUserChat(uid) {
-            onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
+            if(unsubscribeUserChat) unsubscribeUserChat();
+            const q = query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc'));
+            unsubscribeUserChat = onSnapshot(q, (snap) => {
                 let html = '';
                 snap.forEach(doc => {
                     const m = doc.data();
                     html += `<div class="msg-bubble ${m.sender === 'user' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`;
                 });
-                document.getElementById('userChatBox').innerHTML = html;
+                const box = document.getElementById('userChatBox');
+                box.innerHTML = html || '<div class="text-center text-xs text-gray-500 my-2">بدء المحادثة مع الكوتش...</div>';
+                box.scrollTop = box.scrollHeight;
             });
         }
 

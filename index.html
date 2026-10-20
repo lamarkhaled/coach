@@ -305,6 +305,7 @@
         let currentManageTraineeId = null;
         let unsubscribeUserChat = null;
         let unsubscribeAdminChat = null;
+        let unsubscribeUserDoc = null;
 
         const schedulesDict = {
             'none': 'لم يتم تعيين جدول بعد. سيتم مراجعة إجاباتك وتحديد جدولك قريباً.',
@@ -323,16 +324,25 @@
                 document.getElementById('navLoginBtn').classList.add('hidden-section');
                 document.getElementById('navLogoutBtn').classList.remove('hidden-section');
 
-                if (user.email === ADMIN_EMAIL) {
+                // التحقق الدقيق من إيميل المدير (يمنع أي تداخل)
+                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     userDashboard.classList.add('hidden-section');
                     adminDashboard.classList.remove('hidden-section');
                     initAdminDashboard();
                 } else {
+                    // أي إيميل آخر يعتبر (متدربة)
                     adminDashboard.classList.add('hidden-section');
                     userDashboard.classList.remove('hidden-section');
                     document.getElementById('dashName').innerText = user.displayName || 'بطلة';
                     
-                    onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+                    // إخفاء كل النوافذ احتياطياً قبل الجلب
+                    activationOverlay.classList.add('hidden-section');
+                    onboardingOverlay.classList.add('hidden-section');
+                    premiumContent.classList.add('hidden-section');
+
+                    if(unsubscribeUserDoc) unsubscribeUserDoc();
+                    
+                    unsubscribeUserDoc = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
                         if (docSnap.exists()) {
                             const data = docSnap.data();
                             if (data.isActivated) {
@@ -351,6 +361,9 @@
                                 onboardingOverlay.classList.add('hidden-section');
                                 activationOverlay.classList.remove('hidden-section');
                             }
+                        } else {
+                            // في حال لم يتم إنشاء الملف سابقاً
+                            activationOverlay.classList.remove('hidden-section');
                         }
                     });
                     initWaterTracker(user.uid);
@@ -364,7 +377,10 @@
             }
         });
 
-        document.getElementById('navLogoutBtn').addEventListener('click', () => signOut(auth));
+        document.getElementById('navLogoutBtn').addEventListener('click', () => {
+            if(unsubscribeUserDoc) unsubscribeUserDoc();
+            signOut(auth);
+        });
 
         document.getElementById('activateAccBtn').addEventListener('click', async () => {
             const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
@@ -429,7 +445,9 @@
                 let html = '';
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    if(u.email === ADMIN_EMAIL) return;
+                    // تخطي عرض حساب الأدمن في جدول المتدربات
+                    if(u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
+                    
                     const status = u.isActivated ? '<span class="text-green-400">مفعل</span>' : '<span class="text-yellow-400">غير مفعل</span>';
                     const manageBtn = `<button onclick="window.openTraineeManager('${docSnap.id}', '${u.name}', '${u.email}', '${u.assignedSchedule || 'none'}')" class="bg-white/10 px-3 py-1 rounded-lg text-xs font-bold">إدارة</button>`;
                     html += `<tr class="border-b border-white/5"><td class="px-4 py-3">${u.name || 'بدون اسم'}</td><td class="px-4 py-3">${u.email}</td><td class="px-4 py-3">${status}</td><td class="px-4 py-3 flex gap-2 justify-center">${manageBtn}</td></tr>`;
@@ -441,7 +459,9 @@
                 let html = '';
                 snap.forEach(doc => {
                     const u = doc.data();
-                    if(u.email !== ADMIN_EMAIL) html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${u.name}')"><div class="font-bold text-sm text-white">${u.name}</div></div>`;
+                    if(u.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                        html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${u.name}')"><div class="font-bold text-sm text-white">${u.name}</div></div>`;
+                    }
                 });
                 document.getElementById('adminUsersList').innerHTML = html;
             });
@@ -518,16 +538,43 @@
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('emailInput').value.trim(); const password = document.getElementById('passwordInput').value; const name = document.getElementById('nameInput').value.trim();
-            const btn = document.getElementById('submitAuthBtn'); btn.disabled = true;
+            const email = document.getElementById('emailInput').value.trim().toLowerCase(); 
+            const password = document.getElementById('passwordInput').value; 
+            const name = document.getElementById('nameInput').value.trim();
+            const btn = document.getElementById('submitAuthBtn'); 
+            const msgBox = document.getElementById('authMessage');
+            btn.disabled = true;
+            btn.innerText = "جاري الدخول...";
+            
             try {
-                if(isLoginMode) await signInWithEmailAndPassword(auth, email, password);
-                else {
+                if(isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: name });
-                    await setDoc(doc(db, 'users', cred.user.uid), { email, name, isActivated: false });
+                    
+                    // تحديد نوع الحساب بشكل صارم في قاعدة البيانات
+                    const userRole = (email === ADMIN_EMAIL.toLowerCase()) ? 'admin' : 'trainee';
+                    
+                    await setDoc(doc(db, 'users', cred.user.uid), { 
+                        email: email, 
+                        name: name, 
+                        isActivated: false,
+                        role: userRole,
+                        onboardingCompleted: false
+                    });
                 }
-            } catch (e) { alert('تأكدي من صحة البيانات.'); } finally { btn.disabled = false; }
+                document.getElementById('authModal').classList.add('hidden-section');
+            } catch (e) { 
+                let errorMsg = 'تأكدي من صحة البيانات.';
+                if(e.code === 'auth/email-already-in-use') errorMsg = 'الإيميل مسجل مسبقاً.';
+                if(e.code === 'auth/weak-password') errorMsg = 'كلمة المرور ضعيفة.';
+                msgBox.innerText = errorMsg;
+                msgBox.classList.remove('hidden-section');
+            } finally { 
+                btn.disabled = false; 
+                btn.innerText = "دخول";
+            }
         });
 
         document.getElementById('calcBtn').addEventListener('click', () => {

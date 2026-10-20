@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,23 +7,31 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         :root {
-            --apple-bg: #000000;
-            --apple-card: #141416;
-            --apple-input: #1C1C1E;
-            --apple-border: #2C2C2E;
+            --bg-color: #000000;
+            --card-color: #141416;
+            --input-color: #1C1C1E;
+            --border-color: #2C2C2E;
+            --text-color: #FFFFFF;
             --coach-green: #9DFF13;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: var(--apple-bg); color: #FFF; -webkit-font-smoothing: antialiased; }
-        .ios-glass { background: rgba(20, 20, 22, 0.9); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--apple-border); }
-        .ios-glass-top { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--apple-border); }
+        html.light {
+            --bg-color: #F5F5F7;
+            --card-color: #FFFFFF;
+            --input-color: #E5E5EA;
+            --border-color: #D1D1D6;
+            --text-color: #000000;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: var(--bg-color); color: var(--text-color); -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; }
+        .ios-glass { background: var(--card-color); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--border-color); }
+        .ios-glass-top { background: var(--bg-color); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--border-color); }
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--apple-border); border-radius: 10px; }
-        input, textarea, select { background-color: var(--apple-input); border: 1px solid var(--apple-border); color: #FFF; outline: none; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        input, textarea, select { background-color: var(--input-color); border: 1px solid var(--border-color); color: var(--text-color); outline: none; }
         input:focus, textarea:focus { border-color: var(--coach-green); }
         
-        .bg-card { background-color: var(--apple-card); }
-        .border-card { border-color: var(--apple-border); }
+        .bg-card { background-color: var(--card-color); }
+        .border-card { border-color: var(--border-color); }
         .text-coach { color: var(--coach-green); }
         .bg-coach { background-color: var(--coach-green); color: #000; }
         
@@ -34,11 +42,11 @@
         .chat-container { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
         .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
         .msg-me { background: var(--coach-green); color: #000; align-self: flex-start; border-bottom-right-radius: 4px; font-weight: 500; }
-        .msg-other { background: var(--apple-input); color: #FFF; border: 1px solid var(--apple-border); align-self: flex-end; border-bottom-left-radius: 4px; }
+        .msg-other { background: var(--input-color); color: var(--text-color); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
         .chat-img { border-radius: 12px; max-width: 100%; margin-top: 6px; }
 
         /* Course Set Buttons */
-        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid var(--apple-border); background: var(--apple-input); color: #FFF; transition: all 0.2s; cursor: pointer; }
+        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid var(--border-color); background: var(--input-color); color: var(--text-color); transition: all 0.2s; cursor: pointer; }
         .set-pill.done { border-color: var(--coach-green); background: var(--coach-green); color: #000; }
         
         .nav-btn.active { color: var(--coach-green); }
@@ -49,9 +57,14 @@
     <!-- Top Header -->
     <nav class="ios-glass-top sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
+            <!-- الشعار المدمج المباشر لضمان ظهوره 100% -->
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-coach flex items-center justify-center font-black text-black text-lg">ص</div>
+                <span class="font-black text-lg tracking-wider text-white bg-black px-2 py-0.5 rounded border border-coach">كوتش <span class="text-coach">صحة</span></span>
+            </div>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-card border border-border-color px-3 py-1.5 rounded-full font-bold text-coach">☀️ فاتح</button>
             <span id="userEmailDisplay" class="text-xs font-medium text-gray-400 hidden md:block"></span>
             <button id="logoutBtn" class="hidden text-xs bg-red-500/10 text-red-400 px-3.5 py-1.5 rounded-full font-bold border border-red-500/20">خروج</button>
         </div>
@@ -64,12 +77,15 @@
         
         <!-- ================= AUTH ================= -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-8">
-            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-64 mb-8 object-contain drop-shadow-2xl">
-            <h1 class="text-3xl font-extrabold mb-3 text-white tracking-tight">منصة كوتش صحة</h1>
-            <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">تدريب شخصي وبرامج تفاعلية متكاملة لإنجاز أهدافك.</p>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-coach flex items-center justify-center font-black text-black text-3xl shadow-lg">ص</div>
+                <h2 class="text-3xl font-black text-white tracking-wider">كوتش <span class="text-coach">صحة</span></h2>
+            </div>
+            <h1 class="text-2xl font-extrabold mb-3 text-white tracking-tight">منصة التدريب الشخصي</h1>
+            <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">برامج غذائية وتمارين تفاعلية مصممة خصيصاً لرحلتك.</p>
             <div class="w-full max-w-xs space-y-3.5">
-                <button id="showLoginBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md shadow-lg">تسجيل الدخول</button>
-                <button id="showRegisterBtn" class="w-full bg-card border border-apple-border text-white font-bold py-4 rounded-ios text-md">حساب جديد</button>
+                <button id="showLoginBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md shadow-lg text-black">تسجيل الدخول</button>
+                <button id="showRegisterBtn" class="w-full bg-card border border-border-color text-white font-bold py-4 rounded-ios text-md">حساب جديد</button>
             </div>
         </div>
 
@@ -80,7 +96,7 @@
             <div class="space-y-4">
                 <input type="email" id="emailInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="كلمة المرور">
-                <button id="mainAuthBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
+                <button id="mainAuthBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
             </div>
         </div>
 
@@ -89,7 +105,7 @@
             <p class="text-gray-400 text-xs mb-6">أدخلي كود الاشتراك الخاص بك لفتح المنصة.</p>
             <div class="space-y-4">
                 <input type="text" id="activationCodeInput" class="w-full px-4 py-4 rounded-ios text-xl text-center font-bold tracking-widest text-coach uppercase" placeholder="الكود هنا">
-                <button id="activateSubscriptionBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
+                <button id="activateSubscriptionBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
             </div>
         </div>
 
@@ -103,7 +119,7 @@
                     <input type="number" id="qHeight" class="w-1/2 px-4 py-3.5 rounded-ios text-xs" placeholder="الطول (سم)">
                 </div>
                 <textarea id="qNotes" rows="2" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="إصابات أو أمراض؟ (اختياري)"></textarea>
-                <button id="saveOnboardingBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
+                <button id="saveOnboardingBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
             </div>
         </div>
 
@@ -118,7 +134,7 @@
                         <span class="text-sm font-bold text-gray-300">الاشتراك النشط</span>
                         <span id="daysRemainingText" class="font-bold text-xs bg-coach text-black px-3 py-1 rounded-full">--</span>
                     </div>
-                    <div class="w-full bg-apple-input rounded-full h-2.5">
+                    <div class="w-full bg-input rounded-full h-2.5">
                         <div id="timelineBar" class="bg-coach h-2.5 rounded-full transition-all duration-1000" style="width: 0%;"></div>
                     </div>
                 </div>
@@ -127,7 +143,7 @@
                     <h2 class="text-sm font-bold text-white mb-3">تحديث الوزن</h2>
                     <div class="flex gap-3">
                         <input type="number" id="userCurrentWeight" class="w-2/3 px-4 py-3.5 rounded-ios text-xs" placeholder="الوزن الحالي (كج)">
-                        <button id="updateProgressBtn" class="w-1/3 bg-apple-input border border-apple-border text-coach font-bold rounded-ios text-xs">تحديث</button>
+                        <button id="updateProgressBtn" class="w-1/3 bg-card border border-border-color text-coach font-bold rounded-ios text-xs">تحديث</button>
                     </div>
                 </div>
             </div>
@@ -138,7 +154,7 @@
                 
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="switchPlanSubTab('nutrition')" id="btnSubNut" class="bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md">🍎 التغذية</button>
-                    <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="bg-card border border-apple-border text-white font-extrabold py-3 rounded-ios text-sm">🏋️‍♀️ التمارين</button>
+                    <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm">🏋️‍♀️ التمارين</button>
                 </div>
 
                 <!-- التغذية -->
@@ -150,29 +166,29 @@
                         </div>
                         
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                            <div class="bg-input p-3 rounded-xl border border-border-color">
                                 <span class="text-[10px] text-gray-400 block mb-1">السعرات</span>
                                 <span id="macroCalVal" class="text-base font-extrabold text-white">0</span>
                                 <span class="text-[10px] text-gray-500 block">من <span id="targetCalVal">2000</span></span>
                             </div>
-                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                            <div class="bg-input p-3 rounded-xl border border-border-color">
                                 <span class="text-[10px] text-gray-400 block mb-1">بروتين</span>
                                 <span id="macroProVal" class="text-base font-extrabold text-coach">0g</span>
                                 <span class="text-[10px] text-gray-500 block">من <span id="targetProVal">150g</span></span>
                             </div>
-                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                            <div class="bg-input p-3 rounded-xl border border-border-color">
                                 <span class="text-[10px] text-gray-400 block mb-1">كارب</span>
                                 <span id="macroCarbVal" class="text-base font-extrabold text-blue-400">0g</span>
                                 <span class="text-[10px] text-gray-500 block">من <span id="targetCarbVal">200g</span></span>
                             </div>
-                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                            <div class="bg-input p-3 rounded-xl border border-border-color">
                                 <span class="text-[10px] text-gray-400 block mb-1">دهون</span>
                                 <span id="macroFatVal" class="text-base font-extrabold text-yellow-400">0g</span>
                                 <span class="text-[10px] text-gray-500 block">من <span id="targetFatVal">60g</span></span>
                             </div>
                         </div>
 
-                        <button onclick="openSwapModal()" class="w-full bg-apple-input border border-apple-border text-coach font-bold text-xs py-3 rounded-ios hover:bg-apple-border transition-colors">
+                        <button onclick="openSwapModal()" class="w-full bg-input border border-border-color text-coach font-bold text-xs py-3 rounded-ios hover:border-coach transition-colors">
                             🔄 استبدلت وجبة بوجبة خارجية؟ (أدخل الماكروز البديل)
                         </button>
                     </div>
@@ -187,18 +203,21 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي (المصلح تماماً) -->
+            <!-- مشغل التمارين التفاعلي (مع تايمر وفيديو مباشر) -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-md mx-auto w-full">
-                    <button onclick="closeCoursePlayer()" class="text-gray-400 text-xs font-bold bg-apple-input px-4 py-2 rounded-full border border-apple-border">✕ خروج وحفظ التقدم</button>
-                    <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
+                    <button onclick="closeCoursePlayer()" class="text-gray-400 text-xs font-bold bg-card px-4 py-2 rounded-full border border-border-color">✕ خروج وحفظ التقدم</button>
+                    <div class="flex items-center gap-3">
+                        <span id="workoutTimer" class="text-xs font-black text-coach bg-card px-3 py-1.5 rounded-lg border border-border-color">⏱️ 00:00</span>
+                        <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
+                    </div>
                 </div>
                 <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full text-center pb-10"></div>
             </div>
 
             <!-- تفاصيل الوجبة -->
             <div id="mealDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
-                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-apple-border my-auto space-y-4">
+                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-border-color my-auto space-y-4">
                     <div class="flex justify-between items-center">
                         <h3 id="modalMealTitle" class="text-lg font-extrabold text-white">تفاصيل الوجبة</h3>
                         <button onclick="document.getElementById('mealDetailModal').classList.add('hidden')" class="text-gray-400 font-bold text-lg">✕</button>
@@ -209,7 +228,7 @@
 
             <!-- استبدال الوجبة -->
             <div id="mealSwapModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
-                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-apple-border my-auto space-y-4 text-xs">
+                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-border-color my-auto space-y-4 text-xs">
                     <div class="flex justify-between items-center">
                         <h3 class="text-md font-extrabold text-white">تسجيل وجبة بديلة</h3>
                         <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="text-gray-400 font-bold">✕</button>
@@ -228,17 +247,17 @@
 
             <!-- الشات -->
             <div id="tabChat" class="user-tab hidden w-full h-[65vh] flex flex-col bg-card rounded-ios-lg overflow-hidden border border-card shadow-xl">
-                <div class="bg-apple-input px-5 py-4 border-b border-apple-border flex items-center gap-3">
-                    <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" class="w-9 h-9 object-contain bg-black rounded-full p-1 border border-gray-800">
+                <div class="bg-input px-5 py-4 border-b border-border-color flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-coach flex items-center justify-center font-black text-black text-xs">ص</div>
                     <div><h3 class="font-extrabold text-xs text-white">كوتش صحة</h3><p class="text-[10px] text-coach">متاح للرد</p></div>
                 </div>
                 <div id="userChatArea" class="chat-container flex-grow overflow-y-auto"></div>
-                <div class="p-3 border-t border-apple-border bg-card flex gap-2 items-center">
+                <div class="p-3 border-t border-border-color bg-card flex gap-2 items-center">
                     <label class="cursor-pointer text-gray-400 hover:text-coach p-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                         <input type="file" id="userChatFile" accept="image/*" class="hidden">
                     </label>
-                    <input type="text" id="userChatInput" class="flex-grow bg-apple-input border border-apple-border px-4 py-3 rounded-full text-xs text-white" placeholder="اكتبي رسالتك...">
+                    <input type="text" id="userChatInput" class="flex-grow bg-input border border-border-color px-4 py-3 rounded-full text-xs text-white" placeholder="اكتبي رسالتك...">
                     <button id="userSendChatBtn" class="bg-coach text-black px-4 py-2.5 rounded-full text-xs font-bold">إرسال</button>
                 </div>
             </div>
@@ -277,23 +296,23 @@
                     </div>
 
                     <div class="bg-card rounded-ios-lg overflow-hidden border border-card flex flex-col h-[500px] shadow-xl">
-                        <div class="flex justify-between items-center p-4 border-b border-apple-border">
+                        <div class="flex justify-between items-center p-4 border-b border-border-color">
                             <h3 class="text-sm font-bold text-white">المتدربات</h3>
-                            <button id="refreshUsersBtn" class="text-xs bg-apple-input px-3.5 py-1.5 rounded-full text-coach font-bold">تحديث</button>
+                            <button id="refreshUsersBtn" class="text-xs bg-input px-3.5 py-1.5 rounded-full text-coach font-bold">تحديث</button>
                         </div>
-                        <div id="usersList" class="divide-y divide-apple-border overflow-y-auto flex-grow"></div>
+                        <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow"></div>
                     </div>
                 </div>
             </div>
 
             <!-- ملف المتدربة المفصل للأدمن -->
             <div id="adminUserDetailView" class="hidden flex flex-col gap-4">
-                <button id="backToAdminMainBtn" class="text-gray-400 text-xs font-bold self-start bg-apple-input px-4 py-2.5 rounded-full border border-apple-border">❮ رجوع للقائمة</button>
+                <button id="backToAdminMainBtn" class="text-gray-400 text-xs font-bold self-start bg-input px-4 py-2.5 rounded-full border border-border-color">❮ رجوع للقائمة</button>
                 
                 <div class="bg-card rounded-ios-lg p-6 border border-card shadow-xl">
                     <h2 class="text-lg font-extrabold text-white mb-4" id="detailUserEmail">user@mail.com</h2>
                     
-                    <div class="bg-apple-input p-4 rounded-xl border border-apple-border mb-4">
+                    <div class="bg-input p-4 rounded-xl border border-border-color mb-4">
                         <span class="text-coach text-xs font-bold block mb-2">تحديد أهداف الماكروز للمتدربة:</span>
                         <div class="grid grid-cols-4 gap-2 text-xs">
                             <div><label class="text-[9px] text-gray-400 block mb-1">السعرات</label><input type="number" id="targetCalInput" class="w-full p-2 text-center rounded text-white" value="2000"></div>
@@ -306,7 +325,7 @@
                     <p class="text-xs text-gray-300 whitespace-pre-wrap" id="detailUserAnswers">البيانات...</p>
                 </div>
 
-                <div class="flex bg-apple-input rounded-ios p-1.5 border border-card shadow-lg">
+                <div class="flex bg-input rounded-ios p-1.5 border border-card shadow-lg">
                     <button onclick="switchAdminTab('adminTabPlan')" class="flex-1 py-3 text-xs font-bold rounded-xl bg-card text-white shadow-sm">إدارة البرنامج</button>
                     <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">المحادثة</button>
                 </div>
@@ -333,12 +352,12 @@
 
                 <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-card h-[60vh] flex flex-col overflow-hidden shadow-xl">
                     <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto"></div>
-                    <div class="p-3.5 border-t border-apple-border bg-apple-input flex gap-3 items-center">
+                    <div class="p-3.5 border-t border-border-color bg-input flex gap-3 items-center">
                         <label class="cursor-pointer text-gray-400 hover:text-coach p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                             <input type="file" id="adminChatFile" accept="image/*" class="hidden">
                         </label>
-                        <input type="text" id="adminChatInput" class="flex-grow bg-card border border-apple-border px-4 py-3 rounded-full text-xs text-white" placeholder="رسالتك...">
+                        <input type="text" id="adminChatInput" class="flex-grow bg-card border border-border-color px-4 py-3 rounded-full text-xs text-white" placeholder="رسالتك...">
                         <button id="adminSendChatBtn" class="bg-coach text-black px-4 py-2.5 rounded-full text-xs font-bold">إرسال</button>
                     </div>
                 </div>
@@ -372,6 +391,22 @@
         let currentAdminMeals = [];
         let activeUserData = null;
         let playerActiveIndex = 0;
+        let workoutTimerInterval = null;
+        let workoutSeconds = 0;
+
+        window.toggleThemeMode = () => {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggleBtn');
+            if(html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                btn.innerText = '🌙 ليلي';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                btn.innerText = '☀️ فاتح';
+            }
+        };
 
         window.showSection = (sectionId) => {
             ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -403,8 +438,8 @@
         window.switchPlanSubTab = (sub) => {
             document.querySelectorAll('.plan-sub-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById('subTab' + (sub === 'nutrition' ? 'Nutrition' : 'Workouts')).classList.remove('hidden');
-            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md' : 'bg-card border border-apple-border text-white font-extrabold py-3 rounded-ios text-sm';
-            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md' : 'bg-card border border-apple-border text-white font-extrabold py-3 rounded-ios text-sm';
+            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md' : 'bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm';
+            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md' : 'bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm';
         };
 
         function getTodayStr() { return new Date().toISOString().split('T')[0]; }
@@ -517,16 +552,21 @@
             showMsg("تم تحديث الوزن بنجاح", false);
         };
 
-        function buildMediaHTML(url) {
+        // دالة إنشاء مشغل الفيديو المباشر للتمارين والوجبات
+        function buildNativeVideoPlayer(url) {
             if(!url) return '';
             const lower = url.toLowerCase();
-            if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) return `<img src="${url}" class="w-full rounded-xl mt-2 border border-apple-border">`;
-            if(lower.match(/\.(mp4|webm|mov)$/)) return `<video src="${url}" controls class="w-full rounded-xl mt-2 border border-apple-border"></video>`;
+            if(lower.match(/\.(mp4|webm|mov)$/)) {
+                return `<video src="${url}" controls playsinline class="w-full rounded-xl mt-3 border border-border-color shadow-lg"></video>`;
+            }
             if(lower.includes('youtube.com/watch?v=') || lower.includes('youtu.be/')) {
                 let vidId = lower.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1].split('&')[0];
-                return `<iframe src="https://www.youtube.com/embed/${vidId}" class="w-full rounded-xl mt-2 h-44 border border-apple-border" allowfullscreen></iframe>`;
+                return `<iframe src="https://www.youtube.com/embed/${vidId}" class="w-full rounded-xl mt-3 h-52 border border-border-color shadow-lg" allowfullscreen></iframe>`;
             }
-            return `<a href="${url}" target="_blank" class="block w-full bg-apple-input text-coach text-center py-2.5 rounded-lg text-xs font-bold mt-2 border border-apple-border">فتح المرفق 📎</a>`;
+            if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
+                return `<img src="${url}" class="w-full rounded-xl mt-3 border border-border-color shadow-lg">`;
+            }
+            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3 rounded-xl text-xs font-bold mt-3 border border-border-color">فتح الرابط المرفق 📎</a>`;
         }
 
         // ================= USER NUTRITION & WORKOUT COURSE ENGINE =================
@@ -592,31 +632,31 @@
                     const isDone = doneMeals[idx];
                     let ingredientsHtml = '';
                     if(m.ingredients && m.ingredients.length > 0) {
-                        ingredientsHtml = `<div class="mt-2 space-y-1 text-[11px] text-gray-300 bg-black/30 p-3 rounded-xl border border-apple-border">
+                        ingredientsHtml = `<div class="mt-2 space-y-1 text-[11px] opacity-90 bg-black/20 p-3 rounded-xl border border-border-color">
                             <strong class="text-coach block mb-1">المكونات:</strong>
-                            ${m.ingredients.map(ing => `<div class="flex justify-between"><span>• ${ing.name}</span> <span class="text-gray-400">${ing.amount}</span></div>`).join('')}
+                            ${m.ingredients.map(ing => `<div class="flex justify-between"><span>• ${ing.name}</span> <span class="opacity-75">${ing.amount}</span></div>`).join('')}
                         </div>`;
                     }
 
                     html += `
-                        <div class="bg-apple-input p-5 rounded-ios border border-apple-border space-y-3 shadow-md">
+                        <div class="bg-card p-5 rounded-ios border border-border-color space-y-3 shadow-md">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <span class="text-[10px] text-coach font-bold block mb-0.5">وجبة ${idx+1}</span>
-                                    <h3 class="text-white font-bold text-sm">${m.title}</h3>
+                                    <h3 class="font-bold text-sm">${m.title}</h3>
                                 </div>
-                                <button onclick="window.toggleMealDone(${idx})" class="px-4 py-2 rounded-xl text-xs font-bold ${isDone ? 'bg-coach text-black shadow-md' : 'bg-card border border-apple-border text-white'}">
+                                <button onclick="window.toggleMealDone(${idx})" class="px-4 py-2 rounded-xl text-xs font-bold ${isDone ? 'bg-coach text-black shadow-md' : 'bg-input border border-border-color'}">
                                     ${isDone ? 'تم تناولها ✔️' : 'تناولتها'}
                                 </button>
                             </div>
                             ${ingredientsHtml}
-                            <div class="grid grid-cols-4 gap-1 text-[10px] text-gray-400 bg-card p-2.5 rounded-xl border border-apple-border text-center">
-                                <div><strong class="text-white block">${m.cal || 0}</strong> سعرة</div>
+                            <div class="grid grid-cols-4 gap-1 text-[10px] opacity-80 bg-input p-2.5 rounded-xl border border-border-color text-center">
+                                <div><strong class="block">${m.cal || 0}</strong> سعرة</div>
                                 <div><strong class="text-coach block">${m.pro || 0}g</strong> بروتين</div>
                                 <div><strong class="text-blue-400 block">${m.carb || 0}g</strong> كارب</div>
                                 <div><strong class="text-yellow-400 block">${m.fat || 0}g</strong> دهون</div>
                             </div>
-                            <button onclick="window.openMealDetail(${idx})" class="w-full bg-card hover:bg-apple-border text-white text-xs font-bold py-2.5 rounded-xl border border-apple-border transition-colors">
+                            <button onclick="window.openMealDetail(${idx})" class="w-full bg-input hover:border-coach text-xs font-bold py-2.5 rounded-xl border border-border-color transition-colors">
                                 📖 طريقة التحضير والوصف
                             </button>
                         </div>
@@ -627,11 +667,11 @@
             }
 
             if(todaySwaps.length > 0) {
-                html += `<div class="mt-4 border-t border-apple-border pt-4"><strong class="text-xs text-coach block mb-2">وجبات بديلة أكلتيها اليوم:</strong>`;
+                html += `<div class="mt-4 border-t border-border-color pt-4"><strong class="text-xs text-coach block mb-2">وجبات بديلة أكلتيها اليوم:</strong>`;
                 todaySwaps.forEach((sw, sIdx) => {
                     html += `
-                        <div class="bg-apple-input p-3 rounded-xl border border-apple-border text-xs flex justify-between items-center mb-2">
-                            <div><strong>${sw.name}</strong> <span class="text-gray-400">(${sw.cal} سعرة | P:${sw.pro}g)</span></div>
+                        <div class="bg-input p-3 rounded-xl border border-border-color text-xs flex justify-between items-center mb-2">
+                            <div><strong>${sw.name}</strong> <span class="opacity-75">(${sw.cal} سعرة | P:${sw.pro}g)</span></div>
                             <button onclick="window.removeSwapMeal(${sIdx})" class="text-red-400 font-bold">حذف</button>
                         </div>
                     `;
@@ -658,12 +698,12 @@
             const m = activeUserData.plan?.meals[idx];
             document.getElementById('modalMealTitle').innerText = m.title;
             document.getElementById('modalMealBody').innerHTML = `
-                ${m.image ? `<img src="${m.image}" class="w-full rounded-xl mb-3 border border-apple-border">` : ''}
+                ${m.image ? `<img src="${m.image}" class="w-full rounded-xl mb-3 border border-border-color">` : ''}
                 <div>
                     <strong class="text-coach block mb-1">طريقة التحضير والوصف:</strong>
-                    <p class="text-gray-300 leading-relaxed">${m.recipe || 'لا توجد تفاصيل مضافة.'}</p>
+                    <p class="opacity-90 leading-relaxed">${m.recipe || 'لا توجد تفاصيل مضافة.'}</p>
                 </div>
-                ${buildMediaHTML(m.media)}
+                ${buildNativeVideoPlayer(m.media)}
             `;
             document.getElementById('mealDetailModal').classList.remove('hidden');
         };
@@ -706,8 +746,8 @@
             area.innerHTML = `
                 <div class="text-center py-6">
                     <div class="w-16 h-16 bg-coach text-black rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">🏋️‍♀️</div>
-                    <h3 class="text-white font-bold text-md mb-2">جلسة تمارين اليوم جاهزة</h3>
-                    <p class="text-xs text-gray-400 mb-6">تتضمن الجلسة ${exercises.length} تمارين متكاملة مع تتبع للجولات.</p>
+                    <h3 class="font-bold text-md mb-2">جلسة تمارين اليوم جاهزة</h3>
+                    <p class="text-xs opacity-75 mb-6">تتضمن الجلسة ${exercises.length} تمارين متكاملة مع التايمر وتتبع الجولات.</p>
                     <button onclick="startCoursePlayer()" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-sm shadow-lg">بدء التمرين الآن 🚀</button>
                 </div>
             `;
@@ -724,11 +764,26 @@
                     break;
                 }
             }
+            
+            // تشغيل التايمر
+            workoutSeconds = 0;
+            if(workoutTimerInterval) clearInterval(workoutTimerInterval);
+            workoutTimerInterval = setInterval(() => {
+                workoutSeconds++;
+                const mins = String(Math.floor(workoutSeconds / 60)).padStart(2, '0');
+                const secs = String(workoutSeconds % 60).padStart(2, '0');
+                const tEl = document.getElementById('workoutTimer');
+                if(tEl) tEl.innerText = `⏱️ ${mins}:${secs}`;
+            }, 1000);
+
             document.getElementById('coursePlayerView').classList.remove('hidden');
             renderPlayerStep();
         };
 
-        window.closeCoursePlayer = () => { document.getElementById('coursePlayerView').classList.add('hidden'); };
+        window.closeCoursePlayer = () => {
+            if(workoutTimerInterval) clearInterval(workoutTimerInterval);
+            document.getElementById('coursePlayerView').classList.add('hidden');
+        };
 
         window.playerPrevStep = () => {
             if(playerActiveIndex > 0) {
@@ -744,6 +799,7 @@
                 renderPlayerStep();
             } else {
                 closeCoursePlayer();
+                showMsg("أتممت جلسة التمارين بنجاح بطلة! 🎉", false);
             }
         };
 
@@ -751,13 +807,7 @@
             const area = document.getElementById('playerContentArea');
             const exercises = activeUserData.plan?.exercises || [];
             const ex = exercises[playerActiveIndex];
-            if(!ex) {
-                area.innerHTML = `
-                    <h2 class="text-2xl font-bold text-coach mb-3">أهلاً بكِ! أتممتِ تمارين اليوم بامتياز 🎉</h2>
-                    <button onclick="closeCoursePlayer()" class="mt-4 bg-coach text-black font-bold py-3.5 px-6 rounded-ios text-sm shadow-lg">العودة للرئيسية</button>
-                `;
-                return;
-            }
+            if(!ex) return;
 
             document.getElementById('playerProgressTitle').innerText = `التمرين ${playerActiveIndex + 1} من ${exercises.length}`;
             const today = getTodayStr();
@@ -770,12 +820,12 @@
             }
 
             area.innerHTML = `
-                <h2 class="text-xl font-bold text-white mb-3">${ex.title}</h2>
-                <div class="max-h-56 overflow-y-auto mb-4">${buildMediaHTML(ex.media)}</div>
-                <p class="text-xs text-gray-400 mb-4 font-bold">اضغطي على الجولة عند إتمامها:</p>
+                <h2 class="text-xl font-bold mb-3">${ex.title}</h2>
+                <div class="mb-4">${buildNativeVideoPlayer(ex.media)}</div>
+                <p class="text-xs opacity-75 mb-4 font-bold">اضغطي على رقم الجولة عند إتمامها:</p>
                 <div class="flex gap-3 justify-center mb-8 flex-wrap">${setsHtml}</div>
                 <div class="flex gap-3 w-full">
-                    <button onclick="window.playerPrevStep()" class="flex-1 bg-apple-input border border-apple-border text-white py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}">السابق</button>
+                    <button onclick="window.playerPrevStep()" class="flex-1 bg-input border border-border-color py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-40 cursor-not-allowed' : ''}">السابق</button>
                     <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
                 </div>
             `;
@@ -815,9 +865,9 @@
             snap.forEach(cSnap => {
                 const c = cSnap.val();
                 list.innerHTML += `
-                    <div class="bg-apple-input p-3 rounded-xl border border-apple-border flex justify-between items-center text-xs">
-                        <div><strong class="text-coach">${c.code}</strong> <span class="text-gray-400">(${c.days}ي)</span></div>
-                        <span class="${c.used ? 'text-red-400' : 'text-white'} font-bold">${c.used ? 'مستخدم' : 'متاح'}</span>
+                    <div class="bg-input p-3 rounded-xl border border-border-color flex justify-between items-center text-xs">
+                        <div><strong class="text-coach">${c.code}</strong> <span class="opacity-75">(${c.days}ي)</span></div>
+                        <span class="${c.used ? 'text-red-400' : 'text-coach'} font-bold">${c.used ? 'مستخدم' : 'متاح'}</span>
                     </div>`;
             });
         }
@@ -831,9 +881,9 @@
                 const uid = uSnap.key;
                 const d = uSnap.val();
                 list.innerHTML += `
-                    <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-apple-input transition text-xs border-b border-apple-border last:border-none" onclick="window.openUserDetail('${uid}')">
-                        <div><p class="font-bold text-white text-sm">${d.email}</p><span class="text-gray-400">${d.usedCode || 'بدون كود'}</span></div>
-                        <span class="text-gray-500 text-lg">›</span>
+                    <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-input transition text-xs border-b border-border-color last:border-none" onclick="window.openUserDetail('${uid}')">
+                        <div><p class="font-bold text-sm">${d.email}</p><span class="opacity-75">${d.usedCode || 'بدون كود'}</span></div>
+                        <span class="text-lg">›</span>
                     </div>`;
             });
         }
@@ -875,11 +925,11 @@
             list.innerHTML = '';
             currentAdminExercises.forEach((ex, idx) => {
                 list.innerHTML += `
-                    <div class="bg-apple-input p-4 rounded-xl border border-apple-border relative text-xs space-y-2">
+                    <div class="bg-input p-4 rounded-xl border border-border-color relative text-xs space-y-2">
                         <button onclick="window.remEx(${idx})" class="absolute top-2 left-2 text-red-400 font-bold px-2 py-1">✕</button>
-                        <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card p-2.5 rounded-lg text-white font-bold" placeholder="اسم التمرين">
-                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين">
-                        <div class="flex items-center gap-2"><span class="text-gray-400">الجولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets}" class="w-14 bg-card p-1.5 text-center rounded-lg text-white" min="1" max="10"></div>
+                        <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card p-2.5 rounded-lg font-bold" placeholder="اسم التمرين">
+                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين المباشر">
+                        <div class="flex items-center gap-2"><span class="opacity-75">الجولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets}" class="w-14 bg-card p-1.5 text-center rounded-lg" min="1" max="10"></div>
                     </div>`;
             });
         }
@@ -891,32 +941,32 @@
             currentAdminMeals.forEach((m, idx) => {
                 let ingredientsHtml = (m.ingredients || []).map((ing, iIdx) => `
                     <div class="flex gap-2 mb-1.5">
-                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="w-2/3 bg-card p-2 rounded-lg text-white text-xs" placeholder="المكون (دجاج، أرز)">
-                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-1/3 bg-card p-2 rounded-lg text-white text-xs" placeholder="المقدار (150جم)">
+                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="w-2/3 bg-card p-2 rounded-lg text-xs" placeholder="المكون (دجاج، أرز)">
+                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-1/3 bg-card p-2 rounded-lg text-xs" placeholder="المقدار (150جم)">
                         <button onclick="window.remIng(${idx}, ${iIdx})" class="text-red-400 font-bold px-2">x</button>
                     </div>
                 `).join('');
 
                 list.innerHTML += `
-                    <div class="bg-apple-input p-4 rounded-ios border border-apple-border relative text-xs space-y-3">
+                    <div class="bg-input p-4 rounded-ios border border-border-color relative text-xs space-y-3">
                         <button onclick="window.remMeal(${idx})" class="absolute top-2 left-2 text-red-400 font-bold p-1">✕</button>
-                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card p-2.5 rounded-lg text-white font-bold" placeholder="اسم الوجبة (مثال: وجبة الإفطار)">
+                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card p-2.5 rounded-lg font-bold" placeholder="اسم الوجبة (مثال: وجبة الإفطار)">
                         
                         <div class="grid grid-cols-4 gap-2">
-                            <div><label class="text-[9px] text-gray-400 block mb-1">السعرات</label><input type="number" onchange="currentAdminMeals[idx].cal=this.value" value="${m.cal||0}" class="w-full bg-card p-2 text-center rounded-lg text-white font-bold"></div>
-                            <div><label class="text-[9px] text-gray-400 block mb-1">بروتين</label><input type="number" onchange="currentAdminMeals[idx].pro=this.value" value="${m.pro||0}" class="w-full bg-card p-2 text-center rounded-lg text-coach font-bold"></div>
-                            <div><label class="text-[9px] text-gray-400 block mb-1">كارب</label><input type="number" onchange="currentAdminMeals[idx].carb=this.value" value="${m.carb||0}" class="w-full bg-card p-2 text-center rounded-lg text-blue-400 font-bold"></div>
-                            <div><label class="text-[9px] text-gray-400 block mb-1">دهون</label><input type="number" onchange="currentAdminMeals[idx].fat=this.value" value="${m.fat||0}" class="w-full bg-card p-2 text-center rounded-lg text-yellow-400 font-bold"></div>
+                            <div><label class="text-[9px] opacity-75 block mb-1">السعرات</label><input type="number" onchange="currentAdminMeals[idx].cal=this.value" value="${m.cal||0}" class="w-full bg-card p-2 text-center rounded-lg font-bold"></div>
+                            <div><label class="text-[9px] opacity-75 block mb-1">بروتين</label><input type="number" onchange="currentAdminMeals[idx].pro=this.value" value="${m.pro||0}" class="w-full bg-card p-2 text-center rounded-lg text-coach font-bold"></div>
+                            <div><label class="text-[9px] opacity-75 block mb-1">كارب</label><input type="number" onchange="currentAdminMeals[idx].carb=this.value" value="${m.carb||0}" class="w-full bg-card p-2 text-center rounded-lg text-blue-400 font-bold"></div>
+                            <div><label class="text-[9px] opacity-75 block mb-1">دهون</label><input type="number" onchange="currentAdminMeals[idx].fat=this.value" value="${m.fat||0}" class="w-full bg-card p-2 text-center rounded-lg text-yellow-400 font-bold"></div>
                         </div>
 
-                        <div class="border-t border-apple-border pt-3">
+                        <div class="border-t border-border-color pt-3">
                             <span class="text-xs text-coach font-bold block mb-2">المكونات (مكون مكون مع مقداره):</span>
                             ${ingredientsHtml}
-                            <button onclick="window.addIng(${idx})" class="text-xs bg-card text-coach border border-apple-border px-3 py-1.5 rounded-lg mt-1 font-bold">+ إضافة مكون</button>
+                            <button onclick="window.addIng(${idx})" class="text-xs bg-card text-coach border border-border-color px-3 py-1.5 rounded-lg mt-1 font-bold">+ إضافة مكون</button>
                         </div>
 
                         <input type="text" onchange="currentAdminMeals[idx].image=this.value" value="${m.image||''}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط صورة الوجبة">
-                        <textarea onchange="currentAdminMeals[idx].recipe=this.value" rows="2" class="w-full bg-card p-2.5 rounded-lg text-gray-300" placeholder="طريقة التحضير ووصف الوصفة...">${m.recipe||''}</textarea>
+                        <textarea onchange="currentAdminMeals[idx].recipe=this.value" rows="2" class="w-full bg-card p-2.5 rounded-lg opacity-90" placeholder="طريقة التحضير ووصف الوصفة...">${m.recipe||''}</textarea>
                         <input type="text" onchange="currentAdminMeals[idx].media=this.value" value="${m.media||''}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو يوتيوب أو شرح التحضير">
                     </div>`;
             });

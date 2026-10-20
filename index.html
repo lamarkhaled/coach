@@ -205,7 +205,7 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي (مع التايمر المستقل وزر حفظ والتشغيل التلقائي) -->
+            <!-- مشغل التمارين التفاعلي (مع التايمر المستقل ومشغل الفيديو المتطور) -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-md mx-auto w-full">
                     <button onclick="saveAndExitCoursePlayer()" class="text-black text-xs font-bold bg-coach px-4 py-2 rounded-full shadow-md">💾 حفظ ومتابعة لاحقاً</button>
@@ -394,7 +394,6 @@
         let activeUserData = null;
         let playerActiveIndex = 0;
         
-        // متغيرات التايمر المستقل للتمرين
         let exerciseTimerInterval = null;
         let exerciseRemainingSeconds = 0;
         let isTimerRunning = false;
@@ -557,21 +556,21 @@
             showMsg("تم تحديث الوزن بنجاح", false);
         };
 
-        // مشغل الفيديو التلقائي المباشر (Autoplay Video Player)
-        function buildAutoplayVideoPlayer(url) {
+        // مشغل الفيديو التفاعلي المباشر (Native Video Player Engine)
+        function buildNativeVideoPlayer(url) {
             if(!url) return '';
             const lower = url.toLowerCase();
             if(lower.match(/\.(mp4|webm|mov)$/)) {
-                return `<video src="${url}" autoplay muted controls playsinline class="w-full rounded-2xl my-3 border border-border-color shadow-lg max-h-64 object-cover"></video>`;
+                return `<video src="${url}" controls playsinline class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover bg-black"></video>`;
             }
             if(lower.includes('youtube.com/watch?v=') || lower.includes('youtu.be/')) {
                 let vidId = lower.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1].split('&')[0];
-                return `<iframe src="https://www.youtube.com/embed/${vidId}?autoplay=1&mute=1" class="w-full rounded-2xl my-3 h-52 border border-border-color shadow-lg" allow="autoplay" allowfullscreen></iframe>`;
+                return `<iframe src="https://www.youtube.com/embed/${vidId}?autoplay=0&rel=0" class="w-full rounded-2xl my-3 h-56 border border-border-color shadow-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             }
             if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
-                return `<img src="${url}" class="w-full rounded-2xl my-3 border border-border-color shadow-lg max-h-64 object-cover">`;
+                return `<img src="${url}" class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover">`;
             }
-            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3 rounded-xl text-xs font-bold my-3 border border-border-color">فتح الرابط المرفق 📎</a>`;
+            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3.5 rounded-xl text-xs font-bold my-3 border border-border-color hover:border-coach">فتح الرابط المرفق 📎</a>`;
         }
 
         // ================= USER NUTRITION & WORKOUT COURSE ENGINE =================
@@ -583,8 +582,6 @@
             
             renderUserNutritionCourse(data.plan?.meals, data.progress?.meals, data.progress?.swaps, data.targets);
             renderUserWorkoutSummary(data.plan?.exercises, data.progress?.workouts);
-            
-            // فحص هل أنجزت تمارين اليوم لعرض بنر التذكير
             checkWorkoutReminder(data.plan?.exercises, data.progress?.workouts);
         }
 
@@ -712,7 +709,7 @@
                     <strong class="text-coach block mb-1">طريقة التحضير والوصف:</strong>
                     <p class="opacity-90 leading-relaxed">${m.recipe || 'لا توجد تفاصيل مضافة.'}</p>
                 </div>
-                ${buildAutoplayVideoPlayer(m.media)}
+                ${buildNativeVideoPlayer(m.media)}
             `;
             document.getElementById('mealDetailModal').classList.remove('hidden');
         };
@@ -809,17 +806,15 @@
             const todayProg = activeUserData.progress?.workouts?.[today] || {};
 
             if(ex.type === 'timer') {
-                // تمرين مؤقت بالدقائق
                 let totalSecs = (ex.timerMins || 1) * 60;
                 exerciseRemainingSeconds = todayProg[playerActiveIndex]?.secondsLeft !== undefined ? todayProg[playerActiveIndex].secondsLeft : totalSecs;
-                const isCompleted = todayProg[playerActiveIndex]?.completed || false;
 
                 area.innerHTML = `
                     <h2 class="text-xl font-bold mb-2">${ex.title}</h2>
                     <p class="text-xs text-coach font-bold mb-2">نوع التمرين: مؤقت (كرر الحركة طوال المدة)</p>
-                    <div class="mb-4">${buildAutoplayVideoPlayer(ex.media)}</div>
+                    <div class="mb-4">${buildNativeVideoPlayer(ex.media)}</div>
                     
-                    <div class="bg-input p-6 rounded-ios border border-border-color my-4">
+                    <div class="bg-input p-6 rounded-ios border border-border-color my-4 shadow-md">
                         <div id="exerciseCountdown" class="text-4xl font-black text-coach mb-4 tracking-widest">--:--</div>
                         <div class="flex gap-3 justify-center">
                             <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md">بدء المؤقت ⏱️</button>
@@ -834,7 +829,6 @@
                 `;
                 updateTimerDisplay();
             } else {
-                // تمرين بالجولات والعدات
                 const doneSets = todayProg[playerActiveIndex] || 0;
                 let setsHtml = '';
                 for(let i=1; i<=ex.sets; i++) {
@@ -844,7 +838,7 @@
 
                 area.innerHTML = `
                     <h2 class="text-xl font-bold mb-3">${ex.title}</h2>
-                    <div class="mb-4">${buildAutoplayVideoPlayer(ex.media)}</div>
+                    <div class="mb-4">${buildNativeVideoPlayer(ex.media)}</div>
                     <p class="text-xs opacity-75 mb-4 font-bold">اضغطي على رقم الجولة عند إتمامها:</p>
                     <div class="flex gap-3 justify-center mb-8 flex-wrap">${setsHtml}</div>
                     <div class="flex gap-3 w-full">
@@ -872,12 +866,11 @@
             } else {
                 isTimerRunning = true;
                 btn.innerText = 'إيقاف مؤقت ⏸️';
-                btn.className = 'bg-red-500 text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md';
+                btn.className = 'bg-red-600 text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md';
                 exerciseTimerInterval = setInterval(async () => {
                     if(exerciseRemainingSeconds > 0) {
                         exerciseRemainingSeconds--;
                         updateTimerDisplay();
-                        // حفظ التلقائي للوقت
                         saveTimerProgress(false);
                     } else {
                         clearInterval(exerciseTimerInterval);
@@ -1011,7 +1004,7 @@
                     <div class="bg-input p-4 rounded-xl border border-border-color relative text-xs space-y-2.5">
                         <button onclick="window.remEx(${idx})" class="absolute top-2 left-2 text-red-400 font-bold px-2 py-1">✕</button>
                         <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card p-2.5 rounded-lg font-bold" placeholder="اسم التمرين">
-                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين">
+                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين المباشر">
                         
                         <div class="flex items-center gap-3">
                             <span class="opacity-75">نوع التمرين:</span>

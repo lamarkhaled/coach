@@ -39,7 +39,6 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* كلاسات مساعدة لضمان الألوان الصحيحة */
         .bg-main-solid { background-color: var(--bg-main) !important; }
         .text-primary { color: var(--txt-main) !important; }
         .text-muted { color: var(--txt-muted) !important; }
@@ -68,20 +67,25 @@
         .rounded-ios { border-radius: 16px; }
         .rounded-ios-lg { border-radius: 20px; }
 
-        /* Chat Styles المحدثة مع الوقت وإشارات القراءة */
+        /* Timeline Styles */
+        .timeline-container { position: relative; padding-right: 20px; border-right: 2px dashed var(--border-color); margin-right: 10px; }
+        .timeline-step { position: relative; margin-bottom: 20px; }
+        .timeline-step:last-child { margin-bottom: 0; }
+        .timeline-dot { position: absolute; right: -27px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--border-color); }
+        .timeline-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+        /* Chat Styles */
         .chat-container { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
         .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; font-weight: 500; word-wrap: break-word; min-width: 100px; display: flex; flex-direction: column; }
         .msg-me { background: var(--accent); color: var(--accent-text); align-self: flex-start; border-bottom-right-radius: 4px; }
         .msg-other { background: var(--bg-input); color: var(--txt-main); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
         .chat-img { border-radius: 12px; max-width: 100%; margin-top: 4px; border: 1px solid var(--border-color); margin-bottom: 4px; }
-        
         .chat-meta { display: flex; justify-content: flex-end; align-items: center; gap: 4px; font-size: 10px; margin-top: 4px; opacity: 0.8; }
-        .chat-ticks { color: #34B7F1; font-weight: 900; letter-spacing: -2px; font-size: 11px; } /* لون أزرق مثل الواتساب */
-        html.light .msg-me .chat-meta { color: #E0F2FE; } /* تباين أفضل للوقت في الوضع الفاتح */
+        .chat-ticks { color: #34B7F1; font-weight: 900; letter-spacing: -2px; font-size: 11px; } 
+        html.light .msg-me .chat-meta { color: #E0F2FE; } 
         html.dark .msg-me .chat-meta { color: #4B5563; }
-        html.light .msg-me .chat-ticks { color: #FFFFFF; } /* علامة صح بيضاء في الفاتح بسبب الخلفية الخضراء */
+        html.light .msg-me .chat-ticks { color: #FFFFFF; } 
 
-        /* أزرار جولات التمارين */
         .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; border: 2px solid var(--border-color); background: var(--bg-input); color: var(--txt-main); cursor: pointer; transition: all 0.2s; }
         .set-pill.done { border-color: var(--accent); background: var(--accent); color: var(--accent-text); }
         
@@ -166,27 +170,35 @@
             
             <!-- الخلاصة -->
             <div id="tabHome" class="user-tab block w-full space-y-5">
-                <h1 class="text-2xl font-black px-1 text-primary">الخلاصة</h1>
+                <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
-                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-5 border border-theme space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-bold text-primary">🎯 تقدم الهدف</span>
-                        <span id="goalStatusBadge" class="text-[11px] bg-accent px-2 py-1 rounded-md font-bold text-primary">نشط</span>
+                <!-- مسار الهدف (التايم لاين المطور) -->
+                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-5 border border-theme space-y-4">
+                    <div class="flex justify-between items-center border-b border-theme pb-3">
+                        <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
+                        <span id="goalStatusBadge" class="text-[10px] bg-accent px-2 py-1 rounded-md font-bold text-primary">نشط</span>
                     </div>
-                    <p id="goalDescriptionText" class="text-xs text-muted font-medium">لا يوجد هدف محدد حالياً.</p>
-                    <div class="w-full bg-input rounded-full h-2.5 border border-theme">
-                        <div id="goalTimelineBar" class="bg-accent h-full rounded-full" style="width: 0%;"></div>
+                    
+                    <div class="timeline-container mt-4" id="timelineContainerArea">
+                        <!-- سيتم حقن التايم لاين هنا بواسطة الجافاسكربت -->
+                    </div>
+                </div>
+
+                <!-- الأوسمة والإنجازات -->
+                <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-5 border border-theme">
+                    <h2 class="text-sm font-bold text-primary flex items-center gap-2 mb-4">🌟 أوسمة الإنجاز</h2>
+                    <div id="userBadgesContainer" class="flex flex-wrap gap-3">
+                        <!-- سيتم حقن الأوسمة هنا -->
                     </div>
                 </div>
 
                 <div class="bg-card rounded-ios-lg p-5 border border-theme space-y-4">
-                    <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> القياسات وسجل الوزن</h2>
+                    <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> تحديث القياسات</h2>
                     
                     <div id="weightRoastBanner" class="hidden bg-red-500 text-white p-3 rounded-lg text-xs font-bold">
                         ⚠️ وزنك زاد عن القياس السابق! شدي حيلك ورجعي للمسار.
                     </div>
 
-                    <!-- تمت إعادة الأيقونة التفاعلية للجسم -->
                     <div class="bg-input p-4 rounded-lg border border-theme flex flex-col items-center justify-center text-center">
                         <div id="bodyVisualAvatar" class="w-20 h-20 rounded-full bg-card border-2 border-accent flex items-center justify-center text-4xl mb-2 transition-all duration-500">🧍‍♀️</div>
                         <span id="bodyVisualStatus" class="text-xs font-bold text-accent">أدخلي طولك ووزنك للتحليل البصري</span>
@@ -204,7 +216,7 @@
                     </div>
                     
                     <div class="flex gap-2 pt-1">
-                        <button id="updateProgressBtn" class="flex-grow bg-accent font-bold py-3.5 rounded-lg text-xs">تسجيل قياس جديد</button>
+                        <button id="updateProgressBtn" class="flex-grow bg-accent font-bold py-3.5 rounded-lg text-xs">حفظ التحديث</button>
                         <button onclick="openWeightHistoryModal()" class="bg-card border border-theme text-primary font-bold px-4 py-3.5 rounded-lg text-xs">سجل الأوزان</button>
                     </div>
 
@@ -228,16 +240,6 @@
                 <div id="workoutReminderBanner" class="hidden bg-accent text-black p-4 rounded-lg text-xs font-bold flex justify-between items-center">
                     <span>🔥 لديك تمارين لم تنجزيها اليوم!</span>
                     <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-black text-white px-3 py-1.5 rounded-md">الذهاب للتمرين</button>
-                </div>
-
-                <div class="bg-card rounded-ios-lg p-5 border border-theme">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-muted">حالة الاشتراك</span>
-                        <span id="daysRemainingText" class="font-bold text-xs bg-input text-primary border border-theme px-3 py-1 rounded-md">--</span>
-                    </div>
-                    <div class="w-full bg-input rounded-full h-2">
-                        <div id="timelineBar" class="bg-accent h-full rounded-full" style="width: 0%;"></div>
-                    </div>
                 </div>
             </div>
 
@@ -302,7 +304,7 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي (تم إصلاح الشفافية بجعله Solid) -->
+            <!-- مشغل التمارين التفاعلي -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-[100] bg-main-solid flex flex-col p-5 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-sm mx-auto w-full pt-2">
                     <button onclick="saveAndExitCoursePlayer()" class="text-primary text-xs font-bold bg-input px-4 py-2 rounded-lg border border-theme">💾 حفظ وخروج</button>
@@ -419,18 +421,21 @@
                 <div class="bg-card p-4 rounded-ios-lg border border-theme flex justify-between items-center sticky top-16 z-30 shadow-md">
                     <div>
                         <h4 class="font-bold text-sm text-primary">تفعيل التعديلات</h4>
-                        <p class="text-[11px] text-muted">اضغطي حفظ بعد إنهاء أي تعديل تحت.</p>
+                        <p class="text-[11px] text-muted">اضغطي حفظ لنشر التعديلات.</p>
                     </div>
                     <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-3 rounded-lg text-sm">حفظ ونشر الكل ✔️</button>
                 </div>
 
-                <div class="flex bg-input rounded-lg p-1 border border-theme">
-                    <button onclick="switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 py-3 text-xs font-bold rounded-md bg-card text-primary shadow-sm border border-theme">1. الماكروز</button>
-                    <button onclick="switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent">2. الوجبات</button>
-                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent">3. التمارين</button>
-                    <button onclick="switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent">4. الشات</button>
+                <!-- إضافة تبويب الأوسمة في الإدارة -->
+                <div class="flex flex-wrap sm:flex-nowrap bg-input rounded-lg p-1 border border-theme gap-1">
+                    <button onclick="switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 py-3 text-[11px] font-bold rounded-md bg-card text-primary shadow-sm border border-theme">1. الماكروز</button>
+                    <button onclick="switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">2. الوجبات</button>
+                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">3. التمارين</button>
+                    <button onclick="switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">4. الشات</button>
+                    <button onclick="switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">5. الأوسمة</button>
                 </div>
 
+                <!-- تبويبات الإدارة -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-theme space-y-4">
                     <h3 class="text-sm font-bold text-primary mb-2">أهداف السعرات اليومية</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -471,6 +476,17 @@
                         <button id="adminSendChatBtn" class="bg-accent px-5 py-3 rounded-lg text-sm font-bold">إرسال</button>
                     </div>
                 </div>
+
+                <!-- تبويب إدارة الأوسمة -->
+                <div id="adminTabBadges" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-bold text-primary">🌟 إدارة أوسمة المتدربة</label>
+                        <button id="addBadgeBtn" class="text-xs bg-accent text-accent-text font-bold px-4 py-2 rounded-lg">+ منح وسام جديد</button>
+                    </div>
+                    <p class="text-xs text-muted mb-4">امنحي المتدربة أوسمة تقديرية تظهر في صفحتها لزيادة الحماس.</p>
+                    <div id="adminBadgesList" class="space-y-3"></div>
+                </div>
+
             </div>
         </div>
 
@@ -499,6 +515,7 @@
         
         let currentAdminExercises = [];
         let currentAdminMeals = [];
+        let currentAdminBadges = []; // مصفوفة الأوسمة الخاصة بالإدارة
         let activeUserData = null;
         let playerActiveIndex = 0;
         
@@ -549,14 +566,14 @@
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
             
-            ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabChat'].forEach(id => {
+            ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabChat', 'btnAdmTabBadges'].forEach(id => {
                 const btn = document.getElementById(id);
-                if(btn) btn.className = 'flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent';
+                if(btn) btn.className = 'flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent';
             });
             
-            const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabChat': 'btnAdmTabChat' };
+            const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabChat': 'btnAdmTabChat', 'adminTabBadges': 'btnAdmTabBadges' };
             if(activeMap[tabId]) {
-                document.getElementById(activeMap[tabId]).className = 'flex-1 py-3 text-xs font-bold rounded-md bg-card text-primary shadow-sm border border-theme';
+                document.getElementById(activeMap[tabId]).className = 'flex-1 py-3 text-[11px] font-bold rounded-md bg-card text-primary shadow-sm border border-theme';
             }
         };
         
@@ -806,7 +823,10 @@
                 }
             }
 
-            renderGoalTimeline(data.goalPlan, data.progress?.currentWeight);
+            // رسم مسار الهدف التفصيلي والأوسمة
+            renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight);
+            renderUserBadges(data.badges || []);
+
             loadLeaderboard();
 
             const mealsList = data.plan?.meals || data.meals || [];
@@ -817,8 +837,10 @@
             checkWorkoutReminder(exercisesList, data.progress?.workouts);
         }
 
-        function renderGoalTimeline(goalPlan, currentWeight) {
+        // مسار الهدف المفصل (Timeline)
+        function renderDetailedGoalTimeline(goalPlan, currentWeight) {
             const card = document.getElementById('goalTimelineCard');
+            const container = document.getElementById('timelineContainerArea');
             if(!goalPlan) { card.classList.add('hidden'); return; }
             card.classList.remove('hidden');
 
@@ -826,25 +848,71 @@
             const targetW = goalPlan.targetWeight;
             const curW = currentWeight || startW;
             const targetDate = new Date(goalPlan.targetDate);
+            
+            const isGaining = targetW > startW;
+            let remaining = Math.abs(curW - targetW).toFixed(1);
+            let reached = Math.abs(startW - curW).toFixed(1);
 
-            let totalDiff = Math.abs(startW - targetW);
-            let currentProgress = Math.abs(startW - curW);
-            let percent = totalDiff > 0 ? (currentProgress / totalDiff) * 100 : 0;
-            percent = Math.max(0, Math.min(percent, 100));
+            let isGoalReached = false;
+            if((!isGaining && curW <= targetW) || (isGaining && curW >= targetW)) {
+                isGoalReached = true;
+                remaining = 0;
+            }
 
             const badge = document.getElementById('goalStatusBadge');
-            const desc = document.getElementById('goalDescriptionText');
-            const bar = document.getElementById('goalTimelineBar');
-
-            if(curW <= targetW && startW > targetW) {
-                badge.innerText = 'الهدف مكتمل ✔️';
-                desc.innerText = `تم تحقيق الهدف (${curW} كج)!`;
-                percent = 100;
+            if(isGoalReached) {
+                badge.innerText = 'أتممت الهدف 👑';
+                badge.className = 'text-[10px] bg-accent px-2 py-1 rounded-md font-bold text-accent-text';
             } else {
-                badge.innerText = 'نشط';
-                desc.innerText = `الهدف: ${targetW} كج بحلول ${targetDate.toLocaleDateString('en-GB')}. الحالي: ${curW} كج.`;
+                badge.innerText = 'مستمر 🔥';
+                badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-2 py-1 rounded-md font-bold';
             }
-            setTimeout(() => bar.style.width = percent + '%', 100);
+
+            // توليد خطوات التايم لاين
+            container.innerHTML = `
+                <div class="timeline-step">
+                    <div class="timeline-dot ${curW !== startW ? 'active' : ''}"></div>
+                    <p class="text-[10px] text-muted font-bold mb-1">نقطة الانطلاق</p>
+                    <div class="bg-input border border-theme p-3 rounded-lg">
+                        <span class="text-sm font-black text-primary">${startW} كج</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="timeline-dot active"></div>
+                    <p class="text-[10px] text-muted font-bold mb-1">الوضع الحالي</p>
+                    <div class="bg-input border border-theme p-3 rounded-lg flex justify-between items-center">
+                        <span class="text-sm font-black text-accent">${curW} كج</span>
+                        <span class="text-[10px] text-primary bg-card border border-theme px-2 py-1 rounded-md">قطعتِ: ${reached} كج</span>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="timeline-dot ${isGoalReached ? 'active' : ''}"></div>
+                    <p class="text-[10px] text-muted font-bold mb-1">الهدف النهائي</p>
+                    <div class="bg-input border border-theme p-3 rounded-lg flex justify-between items-center">
+                        <div>
+                            <span class="text-sm font-black text-primary block">${targetW} كج</span>
+                            <span class="text-[10px] text-muted mt-1 block">تاريخ الوصول: ${targetDate.toLocaleDateString('ar-SA')}</span>
+                        </div>
+                        <span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-2 py-1 rounded-md font-bold">المتبقي: ${remaining} كج</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderUserBadges(badges) {
+            const container = document.getElementById('userBadgesContainer');
+            if(!badges || badges.length === 0) {
+                container.innerHTML = '<p class="text-xs text-muted w-full text-center py-2">لم تحصلي على أوسمة بعد، استمري بالإنجاز! 💪</p>';
+                return;
+            }
+            container.innerHTML = badges.map(b => `
+                <div class="flex flex-col items-center justify-center bg-input border border-theme p-3 rounded-xl w-20 text-center shadow-sm">
+                    <span class="text-2xl mb-1">${b.icon || '🏅'}</span>
+                    <span class="text-[9px] font-bold text-primary leading-tight">${b.title}</span>
+                </div>
+            `).join('');
         }
 
         async function loadLeaderboard() {
@@ -860,6 +928,9 @@
                 const wDone = val.progress?.workouts?.[today] || {};
                 const mDone = val.progress?.meals?.[today] || {};
                 score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
+                // إعطاء نقاط بناءً على الأوسمة
+                if(val.badges) score += val.badges.length * 50; 
+
                 usersArr.push({ email: val.email.split('@')[0], score });
             });
 
@@ -1112,7 +1183,7 @@
                         <div class="bg-card p-6 rounded-ios-lg border border-theme mb-6 mt-4">
                             <div id="exerciseCountdown" class="text-5xl font-black text-accent mb-6">--:--</div>
                             <div class="flex gap-3 justify-center">
-                                <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm">بدء التايمر</button>
+                                <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="flex-grow bg-accent text-accent-text font-bold px-4 py-3 rounded-lg text-sm">بدء التايمر</button>
                                 <button onclick="window.resetExerciseTimer(${totalSecs})" class="bg-input border border-theme text-primary px-4 py-3 rounded-lg text-sm font-bold">إعادة</button>
                             </div>
                         </div>
@@ -1165,7 +1236,7 @@
                 clearInterval(exerciseTimerInterval);
                 isTimerRunning = false;
                 btn.innerText = 'استئناف التايمر';
-                btn.className = 'flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm';
+                btn.className = 'flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm text-accent-text';
             } else {
                 isTimerRunning = true;
                 btn.innerText = 'إيقاف مؤقت';
@@ -1192,7 +1263,7 @@
             exerciseRemainingSeconds = defaultSecs;
             updateTimerDisplay();
             const btn = document.getElementById('timerToggleBtn');
-            if(btn) { btn.innerText = 'بدء التايمر'; btn.className = 'flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm'; }
+            if(btn) { btn.innerText = 'بدء التايمر'; btn.className = 'flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm text-accent-text'; }
             saveTimerProgress(false);
         };
 
@@ -1286,8 +1357,11 @@
 
             currentAdminExercises = d.plan?.exercises || d.exercises || [];
             currentAdminMeals = d.plan?.meals || d.meals || [];
+            currentAdminBadges = d.badges || [];
+            
             renderAdminExercises();
             renderAdminMeals();
+            renderAdminBadges();
             switchAdminTab('adminTabMacros');
             loadChat(uid, 'adminChatArea');
         };
@@ -1300,6 +1374,39 @@
 
         document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5}); renderAdminExercises(); };
         document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
+        
+        // إدارة الأوسمة من الإدارة
+        document.getElementById('addBadgeBtn').onclick = () => { 
+            currentAdminBadges.push({icon:'🏆', title:'إنجاز جديد'}); 
+            renderAdminBadges(); 
+        };
+
+        function renderAdminBadges() {
+            const list = document.getElementById('adminBadgesList');
+            list.innerHTML = '';
+            if(currentAdminBadges.length === 0) {
+                list.innerHTML = '<p class="text-xs text-muted">لا يوجد أوسمة ممنوحة حالياً.</p>';
+            }
+            currentAdminBadges.forEach((b, idx) => {
+                list.innerHTML += `
+                    <div class="flex items-center gap-2 bg-input p-3 rounded-lg border border-theme relative">
+                        <button onclick="window.remBadge(${idx})" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-red-500 font-bold px-2">✕</button>
+                        <select onchange="currentAdminBadges[idx].icon=this.value" class="bg-card px-2 py-2 rounded-md text-lg border border-theme">
+                            <option value="🏆" ${b.icon==='🏆'?'selected':''}>🏆</option>
+                            <option value="🌟" ${b.icon==='🌟'?'selected':''}>🌟</option>
+                            <option value="🔥" ${b.icon==='🔥'?'selected':''}>🔥</option>
+                            <option value="👑" ${b.icon==='👑'?'selected':''}>👑</option>
+                            <option value="🎯" ${b.icon==='🎯'?'selected':''}>🎯</option>
+                            <option value="💪" ${b.icon==='💪'?'selected':''}>💪</option>
+                            <option value="🏅" ${b.icon==='🏅'?'selected':''}>🏅</option>
+                            <option value="💯" ${b.icon==='💯'?'selected':''}>💯</option>
+                        </select>
+                        <input type="text" onchange="currentAdminBadges[idx].title=this.value" value="${b.title}" class="flex-grow bg-card px-3 py-2 rounded-md text-sm text-primary" placeholder="اسم الوسام (مثال: بطلة الأسبوع)">
+                    </div>
+                `;
+            });
+        }
+        window.remBadge = (idx) => { currentAdminBadges.splice(idx, 1); renderAdminBadges(); };
 
         function renderAdminExercises() {
             const list = document.getElementById('adminExercisesList');
@@ -1383,26 +1490,25 @@
             await update(ref(db, `users/${currentAdminViewUid}`), { 
                 targets: targets,
                 'plan/exercises': currentAdminExercises, 
-                'plan/meals': currentAdminMeals 
+                'plan/meals': currentAdminMeals,
+                badges: currentAdminBadges
             });
             showMsg("تم الحفظ والنشر بنجاح!", false);
             btn.innerText = 'حفظ ونشر الكل ✔️';
         };
 
-        // ================= CHAT SYSTEM (مع التحديثات) =================
+        // ================= CHAT SYSTEM =================
         function formatChatMsg(m, isAdminContext) {
             const isMe = isAdminContext ? (m.sender === 'admin') : (m.sender === 'user');
             const css = isMe ? 'msg-me' : 'msg-other';
             let content = m.type === 'image' ? `<img src="${m.text}" class="chat-img">` : m.text;
             
-            // تنسيق الوقت
             let timeStr = "";
             if (m.time) {
                 const d = new Date(m.time);
                 timeStr = d.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
             }
 
-            // إشارات القراءة الزرقاء إذا كانت الرسالة مرسلة مني
             let ticks = isMe ? `<span class="chat-ticks">✔✔</span>` : '';
 
             return `
@@ -1424,7 +1530,6 @@
                     snap.forEach(c => {
                         area.innerHTML += formatChatMsg(c.val(), isAdminContext);
                     });
-                    // نزول شريط التمرير تلقائياً للأسفل
                     area.scrollTop = area.scrollHeight;
                 }
             });

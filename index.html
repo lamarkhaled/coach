@@ -125,7 +125,6 @@
             <div id="tabHome" class="user-tab block w-full space-y-5">
                 <h1 class="text-2xl font-extrabold px-1 text-white">الخلاصة</h1>
                 
-                <!-- إشعار تذكير التمارين لو لم تكملها -->
                 <div id="workoutReminderBanner" class="hidden bg-coach/20 border border-coach p-4 rounded-ios text-xs text-coach font-bold flex items-center justify-between">
                     <span>🔥 تنبيه: باقي لك تمارين اليوم لم تنهها بعد، استمرِ في إنجازك!</span>
                     <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-coach text-black px-3 py-1.5 rounded-lg text-[11px]">أكملي الآن</button>
@@ -205,7 +204,7 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي (مع التايمر المستقل ومشغل الفيديو المتطور) -->
+            <!-- مشغل التمارين التفاعلي -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-md mx-auto w-full">
                     <button onclick="saveAndExitCoursePlayer()" class="text-black text-xs font-bold bg-coach px-4 py-2 rounded-full shadow-md">💾 حفظ ومتابعة لاحقاً</button>
@@ -311,47 +310,46 @@
             <div id="adminUserDetailView" class="hidden flex flex-col gap-4">
                 <button id="backToAdminMainBtn" class="text-gray-400 text-xs font-bold self-start bg-input px-4 py-2.5 rounded-full border border-border-color">❮ رجوع للقائمة</button>
                 
-                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-xl">
-                    <h2 class="text-lg font-extrabold text-white mb-4" id="detailUserEmail">user@mail.com</h2>
-                    
-                    <div class="bg-input p-4 rounded-xl border border-border-color mb-4">
-                        <span class="text-coach text-xs font-bold block mb-2">تحديد أهداف الماكروز للمتدربة:</span>
-                        <div class="grid grid-cols-4 gap-2 text-xs">
-                            <div><label class="text-[9px] text-gray-400 block mb-1">السعرات</label><input type="number" id="targetCalInput" class="w-full p-2 text-center rounded text-white" value="2000"></div>
-                            <div><label class="text-[9px] text-gray-400 block mb-1">بروتين</label><input type="number" id="targetProInput" class="w-full p-2 text-center rounded text-coach" value="150"></div>
-                            <div><label class="text-[9px] text-gray-400 block mb-1">كارب</label><input type="number" id="targetCarbInput" class="w-full p-2 text-center rounded text-blue-400" value="200"></div>
-                            <div><label class="text-[9px] text-gray-400 block mb-1">دهون</label><input type="number" id="targetFatInput" class="w-full p-2 text-center rounded text-yellow-400" value="60"></div>
-                        </div>
-                    </div>
-
-                    <p class="text-xs text-gray-300 whitespace-pre-wrap" id="detailUserAnswers">البيانات...</p>
-                </div>
-
                 <div class="flex bg-input rounded-ios p-1.5 border border-card shadow-lg">
-                    <button onclick="switchAdminTab('adminTabPlan')" class="flex-1 py-3 text-xs font-bold rounded-xl bg-card text-white shadow-sm">إدارة البرنامج</button>
-                    <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">المحادثة</button>
+                    <button onclick="switchAdminTab('adminTabMacros')" class="flex-1 py-3 text-xs font-bold rounded-xl bg-card text-white shadow-sm">1. أهداف الماكروز</button>
+                    <button onclick="switchAdminTab('adminTabMeals')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">2. وجبات التغذية</button>
+                    <button onclick="switchAdminTab('adminTabWorkouts')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">3. التمارين</button>
+                    <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">4. المحادثة</button>
                 </div>
 
-                <div id="adminTabPlan" class="admin-tab block space-y-4">
-                    <div class="bg-card p-6 rounded-ios-lg border border-card shadow-xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <label class="text-xs font-bold text-white">🍎 وجبات التغذية والمكونات والماكروز</label>
-                            <button id="addMealBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ وجبة جديدة</button>
-                        </div>
-                        <div id="adminMealsList" class="space-y-4"></div>
+                <!-- 1. تبويب أهداف الماكروز (مستقل) -->
+                <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold text-white">تحديد أهداف الماكروز اليومي للمتدربة</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div><label class="text-[10px] text-gray-400 block mb-1">السعرات (كالوري)</label><input type="number" id="targetCalInput" class="w-full p-2.5 text-center rounded text-white font-bold" value="2000"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">بروتين (غرام)</label><input type="number" id="targetProInput" class="w-full p-2.5 text-center rounded text-coach font-bold" value="150"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">كارب (غرام)</label><input type="number" id="targetCarbInput" class="w-full p-2.5 text-center rounded text-blue-400 font-bold" value="200"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">دهون (غرام)</label><input type="number" id="targetFatInput" class="w-full p-2.5 text-center rounded text-yellow-400 font-bold" value="60"></div>
                     </div>
-
-                    <div class="bg-card p-6 rounded-ios-lg border border-card shadow-xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <label class="text-xs font-bold text-white">🏋️‍♀️ تمارين اليوم</label>
-                            <button id="addExerciseBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ تمرين</button>
-                        </div>
-                        <div id="adminExercisesList" class="space-y-3"></div>
-                    </div>
-
-                    <button id="adminSavePlanBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md shadow-lg">حفظ ونشر البرنامج للمتدربة</button>
+                    <button id="saveMacrosBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ أهداف الماكروز وحدها</button>
                 </div>
 
+                <!-- 2. تبويب الوجبات والتغذية (مستقل) -->
+                <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-white">🍎 وجبات التغذية والمكونات</label>
+                        <button id="addMealBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ وجبة جديدة</button>
+                    </div>
+                    <div id="adminMealsList" class="space-y-4"></div>
+                    <button id="saveMealsBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ وجبات التغذية وحدها</button>
+                </div>
+
+                <!-- 3. تبويب التمارين (مستقل) -->
+                <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-white">🏋️‍♀️ جدول تمارين اليوم</label>
+                        <button id="addExerciseBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ تمرين</button>
+                    </div>
+                    <div id="adminExercisesList" class="space-y-3"></div>
+                    <button id="saveWorkoutsBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ جدول التمارين وحده</button>
+                </div>
+
+                <!-- 4. تبويب المحادثة -->
                 <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-card h-[60vh] flex flex-col overflow-hidden shadow-xl">
                     <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto"></div>
                     <div class="p-3.5 border-t border-border-color bg-input flex gap-3 items-center">
@@ -556,7 +554,6 @@
             showMsg("تم تحديث الوزن بنجاح", false);
         };
 
-        // مشغل الفيديو التفاعلي المباشر (Native Video Player Engine)
         function buildNativeVideoPlayer(url) {
             if(!url) return '';
             const lower = url.toLowerCase();
@@ -573,7 +570,7 @@
             return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3.5 rounded-xl text-xs font-bold my-3 border border-border-color hover:border-coach">فتح الرابط المرفق 📎</a>`;
         }
 
-        // ================= USER NUTRITION & WORKOUT COURSE ENGINE =================
+        // ================= USER DASHBOARD =================
         function renderUserDashboard(data) {
             activeUserData = data;
             const end = new Date(data.endDate);
@@ -982,7 +979,7 @@
             currentAdminMeals = d.plan?.meals || [];
             renderAdminExercises();
             renderAdminMeals();
-            switchAdminTab('adminTabPlan');
+            switchAdminTab('adminTabMacros');
             loadChat(uid, 'adminChatArea');
         };
 
@@ -1004,7 +1001,7 @@
                     <div class="bg-input p-4 rounded-xl border border-border-color relative text-xs space-y-2.5">
                         <button onclick="window.remEx(${idx})" class="absolute top-2 left-2 text-red-400 font-bold px-2 py-1">✕</button>
                         <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card p-2.5 rounded-lg font-bold" placeholder="اسم التمرين">
-                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين المباشر">
+                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين">
                         
                         <div class="flex items-center gap-3">
                             <span class="opacity-75">نوع التمرين:</span>
@@ -1065,19 +1062,26 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        document.getElementById('adminSavePlanBtn').onclick = async () => {
+        // أزرار الحفظ المستقلة تماماً لكل تبويب في لوحة الإدارة
+        document.getElementById('saveMacrosBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,
                 pro: parseInt(document.getElementById('targetProInput').value) || 150,
                 carb: parseInt(document.getElementById('targetCarbInput').value) || 200,
                 fat: parseInt(document.getElementById('targetFatInput').value) || 60
             };
-            await update(ref(db, `users/${currentAdminViewUid}`), { 
-                targets: targets,
-                'plan/exercises': currentAdminExercises, 
-                'plan/meals': currentAdminMeals 
-            });
-            showMsg("تم حفظ النشر والماكروز للمتدربة بنجاح!", false);
+            await update(ref(db, `users/${currentAdminViewUid}`), { targets: targets });
+            showMsg("تم حفظ أهداف الماكروز للمتدربة وحدها بنجاح!", false);
+        };
+
+        document.getElementById('saveMealsBtn').onclick = async () => {
+            await update(ref(db, `users/${currentAdminViewUid}/plan`), { meals: currentAdminMeals });
+            showMsg("تم حفظ وجبات التغذية وحدها بنجاح!", false);
+        };
+
+        document.getElementById('saveWorkoutsBtn').onclick = async () => {
+            await update(ref(db, `users/${currentAdminViewUid}/plan`), { exercises: currentAdminExercises });
+            showMsg("تم حفظ جدول التمارين وحده بنجاح!", false);
         };
 
         // ================= CHAT SYSTEM =================

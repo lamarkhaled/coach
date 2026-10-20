@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>كوتش صحة</title>
+    <title>كوتش صحة - لوحة الإدارة</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         :root {
@@ -85,7 +85,7 @@
             <div class="space-y-4">
                 <input type="email" id="emailInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="كلمة المرور">
-                <button id="mainAuthBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
+                <button id="mainAuthBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <p class="text-gray-400 text-xs mb-6">أدخلي كود الاشتراك الخاص بك لفتح المنصة.</p>
             <div class="space-y-4">
                 <input type="text" id="activationCodeInput" class="w-full px-4 py-4 rounded-ios text-xl text-center font-bold tracking-widest text-coach uppercase" placeholder="الكود هنا">
-                <button id="activateSubscriptionBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
+                <button id="activateSubscriptionBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <textarea id="qNotes" rows="2" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="إصابات أو أمراض؟ (اختياري)"></textarea>
-                <button id="saveOnboardingBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
+                <button id="saveOnboardingBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
             </div>
         </div>
 
@@ -297,80 +297,91 @@
             </div>
         </div>
 
-        <!-- ================= ADMIN DASHBOARD ================= -->
+        <!-- ================= ADMIN DASHBOARD (New Professional UI) ================= -->
         <div id="adminDashboard" class="hidden w-full max-w-4xl pb-12">
             <div id="adminMainView">
-                <h1 class="text-2xl font-extrabold mb-6 text-white">لوحة الإدارة</h1>
+                <h1 class="text-2xl font-extrabold mb-6 text-white tracking-tight">لوحة الإدارة المركزية</h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="bg-card rounded-ios-lg p-5 border border-card shadow-xl h-fit">
-                        <h3 class="text-sm font-bold text-white mb-4">إنشاء أكواد الاشتراك</h3>
+                    <div class="bg-card rounded-ios-lg p-6 border border-card shadow-2xl h-fit">
+                        <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2"><span class="text-coach">🔑</span> إنشاء أكواد الاشتراك</h3>
                         <div class="space-y-3">
                             <input type="text" id="adminNewCode" class="w-full px-4 py-3 rounded-ios text-xs uppercase text-coach font-bold" placeholder="كود (LAMAR26)">
                             <div class="grid grid-cols-3 gap-2">
-                                <div><label class="text-[10px] text-gray-500 mb-1 block">أيام</label><input type="number" id="codeDays" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="30"></div>
-                                <div><label class="text-[10px] text-gray-500 mb-1 block">ساعات</label><input type="number" id="codeHours" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="0"></div>
-                                <div><label class="text-[10px] text-gray-500 mb-1 block">دقائق</label><input type="number" id="codeMins" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="0"></div>
+                                <div><label class="text-[10px] text-gray-400 mb-1 block">أيام</label><input type="number" id="codeDays" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="30"></div>
+                                <div><label class="text-[10px] text-gray-400 mb-1 block">ساعات</label><input type="number" id="codeHours" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="0"></div>
+                                <div><label class="text-[10px] text-gray-400 mb-1 block">دقائق</label><input type="number" id="codeMins" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="0"></div>
                             </div>
-                            <button id="generateCodeBtn" class="w-full bg-coach text-black font-bold py-3.5 rounded-ios text-xs mt-2">إضافة الكود</button>
+                            <button id="generateCodeBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-xs mt-2 shadow-md">إضافة الكود وتوليده</button>
                         </div>
                         <div id="adminCodesList" class="space-y-2 mt-5 max-h-48 overflow-y-auto"></div>
                     </div>
 
-                    <div class="bg-card rounded-ios-lg overflow-hidden border border-card flex flex-col h-[500px] shadow-xl">
-                        <div class="flex justify-between items-center p-4 border-b border-border-color">
-                            <h3 class="text-sm font-bold text-white">المتدربات</h3>
-                            <button id="refreshUsersBtn" class="text-xs bg-input px-3.5 py-1.5 rounded-full text-coach font-bold">تحديث</button>
+                    <div class="bg-card rounded-ios-lg overflow-hidden border border-card flex flex-col h-[520px] shadow-2xl">
+                        <div class="flex justify-between items-center p-5 border-b border-border-color bg-input">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-coach">👥</span> قائمة المتدربات المشتركات</h3>
+                            <button id="refreshUsersBtn" class="text-xs bg-card px-3.5 py-1.5 rounded-full text-coach font-bold border border-border-color">تحديث</button>
                         </div>
-                        <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow"></div>
+                        <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow p-2"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- ملف المتدربة المفصل للأدمن (مع زر حفظ موحد شامل يضمن الحفظ الفوري) -->
-            <div id="adminUserDetailView" class="hidden flex flex-col gap-4">
-                <button id="backToAdminMainBtn" class="text-gray-400 text-xs font-bold self-start bg-input px-4 py-2.5 rounded-full border border-border-color">❮ رجوع للقائمة</button>
-                
-                <div class="bg-card p-5 rounded-ios-lg border border-card shadow-lg flex justify-between items-center">
-                    <div>
-                        <h2 class="text-lg font-extrabold text-white" id="detailUserEmail">user@mail.com</h2>
-                        <p class="text-xs text-gray-400 mt-1">عدلي البيانات واضغطي زر حفظ الكل لنشرها للمتدربة فوراً.</p>
+            <!-- ملف المتدربة المفصل للأدمن (بروفشنال ومطور) -->
+            <div id="adminUserDetailView" class="hidden flex flex-col gap-5">
+                <div class="flex justify-between items-center bg-card p-5 rounded-ios-lg border border-card shadow-xl">
+                    <button id="backToAdminMainBtn" class="text-gray-300 text-xs font-bold bg-input px-4 py-2.5 rounded-full border border-border-color hover:border-coach">❮ رجوع للقائمة</button>
+                    <div class="text-left">
+                        <h2 class="text-sm font-extrabold text-white" id="detailUserEmail">user@mail.com</h2>
+                        <span class="text-[10px] text-coach font-bold">إدارة خطة المتدربة والتحكم الكامل</span>
                     </div>
-                    <button id="adminSaveAllBtn" class="bg-coach text-black font-extrabold px-6 py-3.5 rounded-ios text-sm shadow-lg">حفظ ونشر الكل ✔️</button>
+                </div>
+
+                <!-- شريط الحفظ الشامل البارز -->
+                <div class="bg-coach text-black p-4 rounded-ios-lg shadow-2xl flex justify-between items-center sticky top-20 z-30">
+                    <div>
+                        <h4 class="font-black text-sm">لوحة النشر الفوري</h4>
+                        <p class="text-[11px] opacity-90">أي تعديل تجرينه أدناه سيتم حفظه ونشره فوراً على شاشة المتدربة.</p>
+                    </div>
+                    <button id="adminSaveAllBtn" class="bg-black text-white font-extrabold px-6 py-3 rounded-ios text-xs shadow-lg hover:scale-105 transition-transform">حفظ ونشر الكل ✔️</button>
                 </div>
 
                 <div class="flex bg-input rounded-ios p-1.5 border border-card shadow-lg">
                     <button onclick="switchAdminTab('adminTabMacros')" class="flex-1 py-3 text-xs font-bold rounded-xl bg-card text-white shadow-sm">1. أهداف الماكروز</button>
                     <button onclick="switchAdminTab('adminTabMeals')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">2. وجبات التغذية</button>
                     <button onclick="switchAdminTab('adminTabWorkouts')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">3. التمارين</button>
-                    <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">4. المحادثة</button>
+                    <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">4. الشات المباشر</button>
                 </div>
 
+                <!-- 1. أهداف الماكروز -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
-                    <h3 class="text-sm font-bold text-white">تحديد أهداف الماكروز اليومي للمتدربة</h3>
+                    <h3 class="text-sm font-bold text-white mb-2">تحديد أهداف الماكروز اليومي للمتدربة</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                        <div><label class="text-[10px] text-gray-400 block mb-1">السعرات (كالوري)</label><input type="number" id="targetCalInput" class="w-full p-2.5 text-center rounded text-white font-bold" value="2000"></div>
-                        <div><label class="text-[10px] text-gray-400 block mb-1">بروتين (غرام)</label><input type="number" id="targetProInput" class="w-full p-2.5 text-center rounded text-coach font-bold" value="150"></div>
-                        <div><label class="text-[10px] text-gray-400 block mb-1">كارب (غرام)</label><input type="number" id="targetCarbInput" class="w-full p-2.5 text-center rounded text-blue-400 font-bold" value="200"></div>
-                        <div><label class="text-[10px] text-gray-400 block mb-1">دهون (غرام)</label><input type="number" id="targetFatInput" class="w-full p-2.5 text-center rounded text-yellow-400 font-bold" value="60"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">السعرات (كالوري)</label><input type="number" id="targetCalInput" class="w-full p-3 text-center rounded-xl text-white font-bold text-sm" value="2000"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">بروتين (غرام)</label><input type="number" id="targetProInput" class="w-full p-3 text-center rounded-xl text-coach font-bold text-sm" value="150"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">كارب (غرام)</label><input type="number" id="targetCarbInput" class="w-full p-3 text-center rounded-xl text-blue-400 font-bold text-sm" value="200"></div>
+                        <div><label class="text-[10px] text-gray-400 block mb-1">دهون (غرام)</label><input type="number" id="targetFatInput" class="w-full p-3 text-center rounded-xl text-yellow-400 font-bold text-sm" value="60"></div>
                     </div>
                 </div>
 
+                <!-- 2. وجبات التغذية -->
                 <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🍎 وجبات التغذية والمكونات</label>
-                        <button id="addMealBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ وجبة جديدة</button>
+                        <button id="addMealBtn" class="text-xs bg-coach text-black font-bold px-3.5 py-2 rounded-xl shadow-md">+ وجبة جديدة</button>
                     </div>
                     <div id="adminMealsList" class="space-y-4"></div>
                 </div>
 
+                <!-- 3. التمارين -->
                 <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🏋️‍♀️ جدول تمارين اليوم</label>
-                        <button id="addExerciseBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ تمرين</button>
+                        <button id="addExerciseBtn" class="text-xs bg-coach text-black font-bold px-3.5 py-2 rounded-xl shadow-md">+ تمرين</button>
                     </div>
                     <div id="adminExercisesList" class="space-y-3"></div>
                 </div>
 
+                <!-- 4. الشات المباشر -->
                 <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-card h-[60vh] flex flex-col overflow-hidden shadow-xl">
                     <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto"></div>
                     <div class="p-3.5 border-t border-border-color bg-input flex gap-3 items-center">
@@ -1197,7 +1208,7 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        // زر الحفظ الشامل الموحد والآمن تماماً
+        // زر الحفظ الموحد الشامل (المضمون 100% والذي يحفظ كل التعديلات: الماكروز والوجبات والتمارين دفعة واحدة بضغطة زر)
         document.getElementById('adminSaveAllBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,

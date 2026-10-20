@@ -14,8 +14,8 @@
             --coach-green: #9DFF13;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: var(--apple-bg); color: #FFF; -webkit-font-smoothing: antialiased; }
-        .ios-glass { background: rgba(20, 20, 22, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--apple-border); }
-        .ios-glass-top { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--apple-border); }
+        .ios-glass { background: rgba(20, 20, 22, 0.9); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--apple-border); }
+        .ios-glass-top { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--apple-border); }
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--apple-border); border-radius: 10px; }
@@ -38,10 +38,9 @@
         .chat-img { border-radius: 12px; max-width: 100%; margin-top: 6px; }
 
         /* Course Set Buttons */
-        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid var(--apple-border); background: var(--apple-input); color: #FFF; transition: all 0.2s; }
+        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid var(--apple-border); background: var(--apple-input); color: #FFF; transition: all 0.2s; cursor: pointer; }
         .set-pill.done { border-color: var(--coach-green); background: var(--coach-green); color: #000; }
         
-        /* Tab Active State */
         .nav-btn.active { color: var(--coach-green); }
     </style>
 </head>
@@ -50,7 +49,7 @@
     <!-- Top Header -->
     <nav class="ios-glass-top sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-            <img src="https://files.catbox.moe/v4smnw.png" alt="كوتش صحة" class="h-8 w-auto object-contain">
+            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
         </div>
         <div class="flex items-center gap-4">
             <span id="userEmailDisplay" class="text-xs font-medium text-gray-400 hidden md:block"></span>
@@ -65,7 +64,7 @@
         
         <!-- ================= AUTH ================= -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-8">
-            <img src="https://files.catbox.moe/v4smnw.png" alt="كوتش صحة" class="w-64 mb-8 object-contain drop-shadow-2xl">
+            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-64 mb-8 object-contain drop-shadow-2xl">
             <h1 class="text-3xl font-extrabold mb-3 text-white tracking-tight">منصة كوتش صحة</h1>
             <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">تدريب شخصي وبرامج تفاعلية متكاملة لإنجاز أهدافك.</p>
             <div class="w-full max-w-xs space-y-3.5">
@@ -188,13 +187,13 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي -->
-            <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6">
-                <div class="flex justify-between items-center mb-6">
+            <!-- مشغل التمارين التفاعلي (المصلح تماماً) -->
+            <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6 max-w-md mx-auto w-full">
                     <button onclick="closeCoursePlayer()" class="text-gray-400 text-xs font-bold bg-apple-input px-4 py-2 rounded-full border border-apple-border">✕ خروج وحفظ التقدم</button>
                     <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
                 </div>
-                <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full text-center"></div>
+                <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full text-center pb-10"></div>
             </div>
 
             <!-- تفاصيل الوجبة -->
@@ -230,7 +229,7 @@
             <!-- الشات -->
             <div id="tabChat" class="user-tab hidden w-full h-[65vh] flex flex-col bg-card rounded-ios-lg overflow-hidden border border-card shadow-xl">
                 <div class="bg-apple-input px-5 py-4 border-b border-apple-border flex items-center gap-3">
-                    <img src="https://files.catbox.moe/v4smnw.png" class="w-9 h-9 object-contain bg-black rounded-full p-1 border border-gray-800">
+                    <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" class="w-9 h-9 object-contain bg-black rounded-full p-1 border border-gray-800">
                     <div><h3 class="font-extrabold text-xs text-white">كوتش صحة</h3><p class="text-[10px] text-coach">متاح للرد</p></div>
                 </div>
                 <div id="userChatArea" class="chat-container flex-grow overflow-y-auto"></div>
@@ -244,7 +243,7 @@
                 </div>
             </div>
 
-            <!-- Bottom Navigation Bar (Fixed & Clean) -->
+            <!-- Bottom Navigation Bar -->
             <div class="ios-glass fixed bottom-0 left-0 right-0 flex justify-around py-3 px-2 z-40">
                 <button onclick="switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1 text-gray-400 py-1 px-4 rounded-xl transition-colors">
                     <span class="text-lg">📊</span><span class="text-[10px] font-bold">الخلاصة</span>
@@ -389,7 +388,6 @@
             document.querySelectorAll('.user-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
             
-            // تفعيل أزرار الناف بار السفلي بتصميم أنيق
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(tabId === 'tabHome') document.getElementById('navBtnHome').classList.add('active');
             if(tabId === 'tabPlan') document.getElementById('navBtnPlan').classList.add('active');
@@ -531,7 +529,7 @@
             return `<a href="${url}" target="_blank" class="block w-full bg-apple-input text-coach text-center py-2.5 rounded-lg text-xs font-bold mt-2 border border-apple-border">فتح المرفق 📎</a>`;
         }
 
-        // ================= USER NUTRITION & MACROS WHEEL ENGINE =================
+        // ================= USER NUTRITION & WORKOUT COURSE ENGINE =================
         function renderUserDashboard(data) {
             activeUserData = data;
             const end = new Date(data.endDate);
@@ -710,12 +708,12 @@
                     <div class="w-16 h-16 bg-coach text-black rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">🏋️‍♀️</div>
                     <h3 class="text-white font-bold text-md mb-2">جلسة تمارين اليوم جاهزة</h3>
                     <p class="text-xs text-gray-400 mb-6">تتضمن الجلسة ${exercises.length} تمارين متكاملة مع تتبع للجولات.</p>
-                    <button onclick="startCoursePlayer('workout')" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-sm shadow-lg">بدء التمرين الآن 🚀</button>
+                    <button onclick="startCoursePlayer()" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-sm shadow-lg">بدء التمرين الآن 🚀</button>
                 </div>
             `;
         }
 
-        window.startCoursePlayer = (type) => {
+        window.startCoursePlayer = () => {
             playerActiveIndex = 0;
             const today = getTodayStr();
             const progress = activeUserData.progress?.workouts?.[today] || {};
@@ -731,6 +729,23 @@
         };
 
         window.closeCoursePlayer = () => { document.getElementById('coursePlayerView').classList.add('hidden'); };
+
+        window.playerPrevStep = () => {
+            if(playerActiveIndex > 0) {
+                playerActiveIndex--;
+                renderPlayerStep();
+            }
+        };
+
+        window.playerNextStep = () => {
+            const exercises = activeUserData.plan?.exercises || [];
+            if(playerActiveIndex < exercises.length - 1) {
+                playerActiveIndex++;
+                renderPlayerStep();
+            } else {
+                closeCoursePlayer();
+            }
+        };
 
         function renderPlayerStep() {
             const area = document.getElementById('playerContentArea');
@@ -759,9 +774,9 @@
                 <div class="max-h-56 overflow-y-auto mb-4">${buildMediaHTML(ex.media)}</div>
                 <p class="text-xs text-gray-400 mb-4 font-bold">اضغطي على الجولة عند إتمامها:</p>
                 <div class="flex gap-3 justify-center mb-8 flex-wrap">${setsHtml}</div>
-                <div class="flex gap-3">
-                    ${playerActiveIndex > 0 ? `<button onclick="playerActiveIndex--; renderPlayerStep();" class="flex-1 bg-apple-input border border-apple-border text-white py-3.5 rounded-ios text-xs font-bold">السابق</button>` : ''}
-                    ${playerActiveIndex < exercises.length - 1 ? `<button onclick="playerActiveIndex++; renderPlayerStep();" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">التالي ➔</button>` : `<button onclick="closeCoursePlayer()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">إنهاء الجلسة ✔️</button>`}
+                <div class="flex gap-3 w-full">
+                    <button onclick="window.playerPrevStep()" class="flex-1 bg-apple-input border border-apple-border text-white py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}">السابق</button>
+                    <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
                 </div>
             `;
         }

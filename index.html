@@ -133,9 +133,12 @@
         <h2 class="text-3xl font-bold mb-8 text-accent">👑 لوحة تحكم الكوتش</h2>
         
         <div class="grid md:grid-cols-3 gap-6">
+            <!-- قسم الأكواد مع تحديد المدة -->
             <div class="minimal-card p-6 md:col-span-1">
                 <h3 class="text-lg font-bold mb-4">🔑 إنشاء أكواد التفعيل</h3>
                 <input type="text" id="newCodeInput" placeholder="اكتبي الكود (مثال: VIP90)" class="input-field uppercase">
+                <label class="block text-xs text-gray-400 mb-1">مدة الكود بالأيام (أقصى حد 90):</label>
+                <input type="number" id="newCodeDuration" value="90" min="1" max="90" class="input-field">
                 <button id="generateCodeBtn" class="w-full bg-white text-black font-bold py-2 rounded-lg mb-6 hover:bg-gray-200 transition">إنشاء الكود</button>
                 <div id="codesList" class="space-y-2 text-xs overflow-y-auto max-h-40 pr-2"></div>
             </div>
@@ -163,7 +166,7 @@
                             <tr>
                                 <th class="px-4 py-3">الاسم</th>
                                 <th class="px-4 py-3">الإيميل</th>
-                                <th class="px-4 py-3">الحالة</th>
+                                <th class="px-4 py-3">الحالة / الصلاحية</th>
                                 <th class="px-4 py-3 text-center">الإجراءات</th>
                             </tr>
                         </thead>
@@ -180,16 +183,18 @@
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
 
+        <!-- نافذة التفعيل -->
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
-            <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
+            <h3 class="text-2xl font-bold mb-2 text-white" id="activationTitle">حسابك غير مفعل بعد</h3>
             <div class="max-w-xs mx-auto flex gap-2 mt-6">
                 <input type="text" id="userActivationInput" placeholder="كود التفعيل" class="input-field !mb-0 text-center uppercase">
                 <button id="activateAccBtn" class="bg-accent text-black font-bold px-6 rounded-xl hover:bg-accent/80 transition">تفعيل</button>
             </div>
-            <p id="activationMsg" class="text-xs mt-3 hidden-section"></p>
+            <p id="activationMsg" class="text-xs mt-3 font-bold hidden-section"></p>
         </div>
 
+        <!-- الاستبيان -->
         <div id="onboardingOverlay" class="hidden-section bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 mb-8">
             <div class="text-center mb-8">
                 <h3 class="text-3xl font-bold mb-2 text-accent">تهانينا! تم تفعيل حسابك 🎉</h3>
@@ -231,9 +236,12 @@
 
         <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
             <div class="minimal-card p-6 md:col-span-2 bg-accent/5 border border-accent/30">
-                <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
-                    <span>📅 جدولك المخصص</span>
-                    <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">من الكوتش</span>
+                <h3 class="text-xl font-bold mb-2 text-white flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span>📅 جدولك المخصص</span>
+                        <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">من الكوتش</span>
+                    </div>
+                    <span id="subRemaining" class="text-xs text-gray-400"></span>
                 </h3>
                 <div id="userActiveScheduleBox" class="bg-black rounded-xl p-6 text-center border border-white/5">
                     <div class="animate-pulse text-gray-500 text-sm">جاري جلب الجدول...</div>
@@ -299,6 +307,7 @@
         const premiumContent = document.getElementById('premiumContent');
         const activationOverlay = document.getElementById('activationOverlay');
         const onboardingOverlay = document.getElementById('onboardingOverlay');
+        const actMsg = document.getElementById('activationMsg');
 
         let currentUser = null;
         let activeAdminChatUserId = null;
@@ -324,28 +333,41 @@
                 document.getElementById('navLoginBtn').classList.add('hidden-section');
                 document.getElementById('navLogoutBtn').classList.remove('hidden-section');
 
-                // التحقق الدقيق من إيميل المدير (يمنع أي تداخل)
                 if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     userDashboard.classList.add('hidden-section');
                     adminDashboard.classList.remove('hidden-section');
                     initAdminDashboard();
                 } else {
-                    // أي إيميل آخر يعتبر (متدربة)
                     adminDashboard.classList.add('hidden-section');
                     userDashboard.classList.remove('hidden-section');
                     document.getElementById('dashName').innerText = user.displayName || 'بطلة';
                     
-                    // إخفاء كل النوافذ احتياطياً قبل الجلب
                     activationOverlay.classList.add('hidden-section');
                     onboardingOverlay.classList.add('hidden-section');
                     premiumContent.classList.add('hidden-section');
 
                     if(unsubscribeUserDoc) unsubscribeUserDoc();
                     
-                    unsubscribeUserDoc = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+                    unsubscribeUserDoc = onSnapshot(doc(db, 'users', user.uid), async (docSnap) => {
                         if (docSnap.exists()) {
                             const data = docSnap.data();
-                            if (data.isActivated) {
+                            
+                            // 1. التحقق من مدة الاشتراك وإقفاله إذا انتهى
+                            let isExpired = false;
+                            if (data.isActivated && data.subscriptionEnd) {
+                                const now = new Date().getTime();
+                                if (now > data.subscriptionEnd) {
+                                    isExpired = true;
+                                    await updateDoc(doc(db, 'users', user.uid), { isActivated: false }); // إقفال الحساب
+                                }
+                            }
+
+                            if (data.isActivated && !isExpired) {
+                                // حساب الأيام المتبقية
+                                const remainingMs = data.subscriptionEnd - new Date().getTime();
+                                const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+                                document.getElementById('subRemaining').innerText = `المتبقي: ${remainingDays} يوم`;
+
                                 activationOverlay.classList.add('hidden-section');
                                 if(data.onboardingCompleted) {
                                     onboardingOverlay.classList.add('hidden-section');
@@ -360,9 +382,17 @@
                                 premiumContent.classList.add('hidden-section');
                                 onboardingOverlay.classList.add('hidden-section');
                                 activationOverlay.classList.remove('hidden-section');
+                                
+                                if(isExpired) {
+                                    document.getElementById('activationTitle').innerText = "انتهت فترة اشتراكك ⌛";
+                                    actMsg.innerText = "لقد انتهت الأيام المخصصة لكودك. الرجاء إدخال كود تجديد.";
+                                    actMsg.classList.remove('hidden-section', 'text-green-400');
+                                    actMsg.classList.add('text-red-400');
+                                } else {
+                                    document.getElementById('activationTitle').innerText = "حسابك غير مفعل بعد";
+                                }
                             }
                         } else {
-                            // في حال لم يتم إنشاء الملف سابقاً
                             activationOverlay.classList.remove('hidden-section');
                         }
                     });
@@ -382,24 +412,50 @@
             signOut(auth);
         });
 
+        // --- التفعيل الدقيق والأمان ---
         document.getElementById('activateAccBtn').addEventListener('click', async () => {
             const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
-            const msg = document.getElementById('activationMsg');
-            if(!codeInput) return;
+            actMsg.classList.remove('hidden-section', 'text-green-400', 'text-red-400');
+            
+            if(!codeInput) {
+                actMsg.innerText = "الرجاء كتابة الكود."; actMsg.classList.add('text-red-400'); return;
+            }
 
             try {
                 const codeRef = doc(db, 'activation_codes', codeInput);
                 const codeSnap = await getDoc(codeRef);
+                
                 if (codeSnap.exists() && codeSnap.data().active === true) {
-                    await setDoc(doc(db, 'users', currentUser.uid), { isActivated: true, codeUsed: codeInput, onboardingCompleted: false }, { merge: true });
+                    const durationDays = parseInt(codeSnap.data().duration) || 90;
+                    
+                    // حساب تاريخ الانتهاء
+                    const expirationDate = new Date();
+                    expirationDate.setDate(expirationDate.getDate() + durationDays);
+
+                    await setDoc(doc(db, 'users', currentUser.uid), { 
+                        isActivated: true, 
+                        codeUsed: codeInput, 
+                        onboardingCompleted: false,
+                        subscriptionEnd: expirationDate.getTime() // حفظ التاريخ في الحساب
+                    }, { merge: true });
+
+                    // إحراق الكود لكي لا يُستخدم مرة أخرى
                     await updateDoc(codeRef, { active: false, usedBy: currentUser.email });
+                    
+                    actMsg.innerText = `تم التفعيل بنجاح لمدة ${durationDays} يوم!`;
+                    actMsg.classList.add('text-green-400');
+                    document.getElementById('userActivationInput').value = '';
                 } else {
-                    msg.innerText = "الكود غير صحيح.";
-                    msg.classList.remove('hidden-section', 'text-green-400'); msg.classList.add('text-red-400');
+                    actMsg.innerText = "الكود غير صحيح أو مستخدم مسبقاً.";
+                    actMsg.classList.add('text-red-400');
                 }
-            } catch(e) {}
+            } catch(e) {
+                actMsg.innerText = "حدث خطأ، تأكدي من اتصالك بالإنترنت.";
+                actMsg.classList.add('text-red-400');
+            }
         });
 
+        // --- الاستبيان التلقائي ---
         document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const goal = document.getElementById('obGoal').value;
@@ -431,12 +487,17 @@
             }
         }
 
+        // --- أدوات الأدمن ---
         function initAdminDashboard() {
             onSnapshot(query(collection(db, 'activation_codes')), (snap) => {
                 let html = '';
                 snap.forEach(doc => {
                     const d = doc.data();
-                    html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1"><strong>${doc.id}</strong> <span>${d.active ? '<span class="text-green-400">متاح</span>' : '<span class="text-red-400">مستخدم</span>'}</span></div>`;
+                    const status = d.active ? '<span class="text-green-400">متاح</span>' : '<span class="text-red-400">مستخدم</span>';
+                    html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1">
+                                <div><strong>${doc.id}</strong> <span class="text-[10px] text-gray-500 ml-2">(${d.duration || 90} يوم)</span></div> 
+                                <span>${status}</span>
+                             </div>`;
                 });
                 document.getElementById('codesList').innerHTML = html;
             });
@@ -445,12 +506,19 @@
                 let html = '';
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    // تخطي عرض حساب الأدمن في جدول المتدربات
                     if(u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
                     
-                    const status = u.isActivated ? '<span class="text-green-400">مفعل</span>' : '<span class="text-yellow-400">غير مفعل</span>';
-                    const manageBtn = `<button onclick="window.openTraineeManager('${docSnap.id}', '${u.name}', '${u.email}', '${u.assignedSchedule || 'none'}')" class="bg-white/10 px-3 py-1 rounded-lg text-xs font-bold">إدارة</button>`;
-                    html += `<tr class="border-b border-white/5"><td class="px-4 py-3">${u.name || 'بدون اسم'}</td><td class="px-4 py-3">${u.email}</td><td class="px-4 py-3">${status}</td><td class="px-4 py-3 flex gap-2 justify-center">${manageBtn}</td></tr>`;
+                    let subStatus = '<span class="text-yellow-400">غير مفعل</span>';
+                    if (u.isActivated) {
+                        if (u.subscriptionEnd && new Date().getTime() > u.subscriptionEnd) {
+                            subStatus = '<span class="text-red-400">منتهي الصلاحية</span>';
+                        } else {
+                            subStatus = '<span class="text-green-400">مفعل</span>';
+                        }
+                    }
+
+                    const manageBtn = `<button onclick="window.openTraineeManager('${docSnap.id}', '${u.name}', '${u.email}', '${u.assignedSchedule || 'none'}')" class="bg-white/10 px-3 py-1 rounded-lg text-xs font-bold hover:bg-white/20">إدارة</button>`;
+                    html += `<tr class="border-b border-white/5"><td class="px-4 py-3">${u.name || 'بدون اسم'}</td><td class="px-4 py-3">${u.email}</td><td class="px-4 py-3">${subStatus}</td><td class="px-4 py-3 flex gap-2 justify-center">${manageBtn}</td></tr>`;
                 });
                 document.getElementById('adminAllUsersList').innerHTML = html;
             });
@@ -467,9 +535,21 @@
             });
         }
 
+        // إنشاء كود مع التوقيت
         document.getElementById('generateCodeBtn').addEventListener('click', async () => {
             const code = document.getElementById('newCodeInput').value.trim().toUpperCase();
-            if(code) { await setDoc(doc(db, 'activation_codes', code), { active: true, createdAt: serverTimestamp() }); document.getElementById('newCodeInput').value = ''; }
+            let duration = parseInt(document.getElementById('newCodeDuration').value) || 90;
+            // ضمان عدم تجاوز 90 يوم
+            duration = Math.min(Math.max(duration, 1), 90);
+
+            if(code) { 
+                await setDoc(doc(db, 'activation_codes', code), { 
+                    active: true, 
+                    duration: duration,
+                    createdAt: serverTimestamp() 
+                }); 
+                document.getElementById('newCodeInput').value = ''; 
+            }
         });
 
         window.openTraineeManager = (uid, name, email, schedule) => {
@@ -523,6 +603,7 @@
             if(input.value.trim() && currentUser) { await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: input.value.trim(), sender: 'user', timestamp: serverTimestamp() }); input.value = ''; }
         });
 
+        // --- النماذج ---
         document.getElementById('navLoginBtn').addEventListener('click', () => document.getElementById('authModal').classList.remove('hidden-section'));
         document.getElementById('heroJoinBtn').addEventListener('click', () => { isLoginMode = false; updateAuthUI(); document.getElementById('authModal').classList.remove('hidden-section'); });
         document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('authModal').classList.add('hidden-section'));
@@ -553,15 +634,9 @@
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: name });
                     
-                    // تحديد نوع الحساب بشكل صارم في قاعدة البيانات
                     const userRole = (email === ADMIN_EMAIL.toLowerCase()) ? 'admin' : 'trainee';
-                    
                     await setDoc(doc(db, 'users', cred.user.uid), { 
-                        email: email, 
-                        name: name, 
-                        isActivated: false,
-                        role: userRole,
-                        onboardingCompleted: false
+                        email: email, name: name, isActivated: false, role: userRole, onboardingCompleted: false
                     });
                 }
                 document.getElementById('authModal').classList.add('hidden-section');
@@ -572,8 +647,7 @@
                 msgBox.innerText = errorMsg;
                 msgBox.classList.remove('hidden-section');
             } finally { 
-                btn.disabled = false; 
-                btn.innerText = "دخول";
+                btn.disabled = false; btn.innerText = "دخول";
             }
         });
 

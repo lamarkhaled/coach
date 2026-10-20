@@ -370,14 +370,14 @@
                     <button id="saveMealsBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ وجبات التغذية وحدها</button>
                 </div>
 
-                <!-- 3. تبويب التمارين (حفظ مستقل تماماً) -->
+                <!-- 3. تبويب التمارين (حفظ مستقل تماماً ونشر مباشر) -->
                 <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🏋️‍♀️ جدول تمارين اليوم</label>
                         <button id="addExerciseBtn" class="text-xs bg-coach text-black font-bold px-3 py-1.5 rounded-lg">+ تمرين</button>
                     </div>
                     <div id="adminExercisesList" class="space-y-3"></div>
-                    <button id="saveWorkoutsBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ جدول التمارين وحده</button>
+                    <button id="saveWorkoutsBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ ونشر جدول التمارين للمتدربة</button>
                 </div>
 
                 <!-- 4. تبويب المحادثة -->
@@ -525,21 +525,24 @@
                 loadAdminUsers();
                 return;
             }
-            const snap = await get(child(ref(db), `users/${user.uid}`));
-            if (snap.exists()) {
-                const data = snap.val();
-                if (new Date() > new Date(data.endDate)) {
-                    showSection('activationSection');
-                } else if (!data.onboardingCompleted) {
-                    showSection('onboardingSection');
-                } else {
-                    showSection('userDashboard');
+            
+            // الاستماع الفوري لتحديثات البيانات الخاصة بالمتدربة (النشر الفوري)
+            onValue(ref(db, `users/${user.uid}`), (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
                     activeUserData = data;
-                    renderUserDashboard(data);
+                    if (new Date() > new Date(data.endDate)) {
+                        showSection('activationSection');
+                    } else if (!data.onboardingCompleted) {
+                        showSection('onboardingSection');
+                    } else {
+                        if(document.getElementById('userDashboard').classList.contains('hidden')) {
+                            showSection('userDashboard');
+                        }
+                        renderUserDashboard(data);
+                    }
                 }
-            } else {
-                showSection('activationSection');
-            }
+            });
         });
 
         document.getElementById('activateSubscriptionBtn').onclick = async () => {
@@ -1210,7 +1213,7 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        // أزرار الحفظ المستقلة لكل قسم
+        // أزرار الحفظ المستقلة تماماً والنشر الفوري للمتدربة
         document.getElementById('saveMacrosBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,
@@ -1219,17 +1222,17 @@
                 fat: parseInt(document.getElementById('targetFatInput').value) || 60
             };
             await update(ref(db, `users/${currentAdminViewUid}`), { targets: targets });
-            showMsg("تم حفظ أهداف الماكروز للمتدربة وحدها بنجاح!", false);
+            showMsg("تم حفظ ونشر أهداف الماكروز للمتدربة بنجاح!", false);
         };
 
         document.getElementById('saveMealsBtn').onclick = async () => {
             await update(ref(db, `users/${currentAdminViewUid}/plan`), { meals: currentAdminMeals });
-            showMsg("تم حفظ وجبات التغذية وحدها بنجاح!", false);
+            showMsg("تم حفظ ونشر وجبات التغذية للمتدربة بنجاح!", false);
         };
 
         document.getElementById('saveWorkoutsBtn').onclick = async () => {
             await update(ref(db, `users/${currentAdminViewUid}/plan`), { exercises: currentAdminExercises });
-            showMsg("تم حفظ جدول التمارين وحده بنجاح!", false);
+            showMsg("تم حفظ ونشر جدول التمارين للمتدربة بنجاح!", false);
         };
 
         // ================= CHAT SYSTEM =================

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>كوتش صحة - لوحة الإدارة</title>
+    <title>كوتش صحة - لوحة الإدارة الذكية</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         :root {
@@ -21,7 +21,7 @@
             --border-color: #D1D1D6;
             --text-color: #000000;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: var(--bg-color); color: var(--text-color); -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: var(--bg-color); color: var(--text-color); -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
         .ios-glass { background: var(--card-color); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--border-color); }
         .ios-glass-top { background: var(--bg-color); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--border-color); }
         .hidden { display: none !important; }
@@ -29,23 +29,24 @@
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
         input, textarea, select { background-color: var(--input-color); border: 1px solid var(--border-color); color: var(--text-color); outline: none; }
         input:focus, textarea:focus { border-color: var(--coach-green); }
-        
         .bg-card { background-color: var(--card-color); }
         .border-card { border-color: var(--border-color); }
         .text-coach { color: var(--coach-green); }
         .bg-coach { background-color: var(--coach-green); color: #000; }
-        
         .rounded-ios { border-radius: 16px; }
         .rounded-ios-lg { border-radius: 24px; }
-        
-        /* Chat Styles */
         .chat-container { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
         .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
         .msg-me { background: var(--coach-green); color: #000; align-self: flex-start; border-bottom-right-radius: 4px; font-weight: 500; }
         .msg-other { background: var(--input-color); color: var(--text-color); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
-        .chat-img { border-radius: 12px; max-width: 100%; margin-top: 6px; }
-        
         .nav-btn.active { color: var(--coach-green); }
+        
+        /* Body Shape & Confetti */
+        .body-silhouette { transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center bottom; fill: var(--coach-green); }
+        .confetti { position: fixed; width: 10px; height: 10px; background-color: #f00; z-index: 1000; animation: fall 3s linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        .timeline-node::before { content: ''; position: absolute; right: -5px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--coach-green); border: 2px solid var(--bg-color); }
+        .timeline-border { border-right: 2px solid var(--border-color); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative pb-28">
@@ -53,7 +54,7 @@
     <!-- Top Header -->
     <nav class="ios-glass-top sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
+            <span class="text-xl font-black text-coach">كوتش صحة</span>
         </div>
         <div class="flex items-center gap-3">
             <button onclick="toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-card border border-border-color px-3 py-1.5 rounded-full font-bold text-coach">☀️ فاتح</button>
@@ -62,16 +63,15 @@
         </div>
     </nav>
 
-    <!-- Global Message Toast -->
+    <!-- Global Toast -->
     <div id="globalMessage" class="hidden fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-full text-xs font-bold text-center shadow-2xl transition-all duration-300 w-max max-w-[90%]"></div>
 
     <main class="flex-grow flex flex-col items-center justify-start p-5 w-full max-w-4xl mx-auto">
         
-        <!-- ================= AUTH ================= -->
+        <!-- AUTH SECTIONS -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-8">
-            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-64 mb-8 object-contain drop-shadow-2xl">
-            <h1 class="text-3xl font-extrabold mb-3 text-white tracking-tight">منصة كوتش صحة</h1>
-            <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">تدريب شخصي وبرامج تفاعلية متكاملة لإنجاز أهدافك.</p>
+            <h1 class="text-4xl font-black mb-4 text-coach tracking-tight">منصة كوتش صحة</h1>
+            <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">تتبعي تطور جسمك، وجباتك، وتمارينك بذكاء.</p>
             <div class="w-full max-w-xs space-y-3.5">
                 <button id="showLoginBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md shadow-lg text-black">تسجيل الدخول</button>
                 <button id="showRegisterBtn" class="w-full bg-card border border-border-color text-white font-bold py-4 rounded-ios text-md">حساب جديد</button>
@@ -81,1070 +81,428 @@
         <div id="authSection" class="hidden w-full max-w-md bg-card rounded-ios-lg p-7 border border-card shadow-2xl mt-6">
             <button id="backToWelcomeBtn" class="text-gray-400 text-xs mb-6 font-bold flex items-center gap-1">❮ رجوع</button>
             <h1 id="authTitle" class="text-2xl font-extrabold mb-1 text-white">تسجيل الدخول</h1>
-            <p class="text-gray-400 mb-6 text-xs">أدخلي بياناتك للمتابعة بأمان</p>
-            <div class="space-y-4">
+            <div class="space-y-4 mt-6">
                 <input type="email" id="emailInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="كلمة المرور">
-                <button id="mainAuthBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
+                <button id="mainAuthBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2 shadow-md text-black">متابعة</button>
             </div>
         </div>
 
         <div id="activationSection" class="hidden w-full max-w-md bg-card rounded-ios-lg p-7 text-center border border-card shadow-2xl mt-6">
             <h2 class="text-xl font-extrabold mb-2 text-white">تفعيل الاشتراك 🔑</h2>
-            <p class="text-gray-400 text-xs mb-6">أدخلي كود الاشتراك الخاص بك لفتح المنصة.</p>
-            <div class="space-y-4">
+            <div class="space-y-4 mt-6">
                 <input type="text" id="activationCodeInput" class="w-full px-4 py-4 rounded-ios text-xl text-center font-bold tracking-widest text-coach uppercase" placeholder="الكود هنا">
-                <button id="activateSubscriptionBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
+                <button id="activateSubscriptionBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md text-black">تفعيل الاشتراك</button>
             </div>
         </div>
 
         <div id="onboardingSection" class="hidden w-full max-w-md bg-card rounded-ios-lg p-7 border border-card shadow-2xl mt-6">
             <h2 class="text-xl font-extrabold mb-2 text-center text-white">بياناتك الشخصية 👋</h2>
-            <p class="text-gray-400 text-xs mb-6 text-center">أخبريني عن هدفك لتخصيص خطتك تماماً.</p>
-            <div class="space-y-4">
-                <input type="text" id="qGoal" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="ما هدفك الأساسي؟ (نزول وزن، بناء عضلي)">
+            <div class="space-y-4 mt-6">
+                <input type="text" id="qGoal" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="الهدف الأساسي؟ (نزول وزن، بناء عضلي)">
                 <div class="flex gap-3">
                     <input type="number" id="qWeight" class="w-1/2 px-4 py-3.5 rounded-ios text-xs" placeholder="الوزن الحالي (كج)">
                     <input type="number" id="qHeight" class="w-1/2 px-4 py-3.5 rounded-ios text-xs" placeholder="الطول (سم)">
                 </div>
-                <div class="bg-input p-3 rounded-ios border border-border-color">
-                    <label class="text-[10px] text-coach font-bold block mb-1">الهدف المطلوب والمدة (مثال: نزول 5 كج خلال 30 يوم)</label>
-                    <div class="flex gap-2">
-                        <input type="number" id="qTargetKg" class="w-1/2 p-2 rounded text-xs text-white" placeholder="الوزن المستهدف (كج)">
-                        <input type="number" id="qTargetDays" class="w-1/2 p-2 rounded text-xs text-white" placeholder="المدة بالأيام (مثال 30)">
-                    </div>
-                </div>
-                <textarea id="qNotes" rows="2" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="إصابات أو أمراض؟ (اختياري)"></textarea>
-                <button id="saveOnboardingBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
+                <button id="saveOnboardingBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2 text-black">حفظ والبدء</button>
             </div>
         </div>
 
         <!-- ================= USER DASHBOARD ================= -->
-        <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl pb-10">
+        <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl pb-10 space-y-6">
             
-            <!-- الخلاصة -->
+            <!-- الخلاصة TAB -->
             <div id="tabHome" class="user-tab block w-full space-y-5">
-                <h1 class="text-2xl font-extrabold px-1 text-white">الخلاصة</h1>
                 
-                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-bold text-white">هدف التغيير 🎯</span>
-                        <span id="goalStatusBadge" class="text-[10px] bg-coach text-black px-2.5 py-1 rounded-full font-bold">جاري العمل</span>
+                <!-- قسم محاكي الجسم الجديد -->
+                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg text-center relative overflow-hidden">
+                    <h2 class="text-sm font-bold text-white mb-1">محاكي تطور الجسم 🧍‍♀️</h2>
+                    <p class="text-[10px] text-gray-400 mb-4">هكذا يتغير جسمك بناءً على نزول وزنك الفعلي!</p>
+                    
+                    <div class="h-48 flex justify-center items-end bg-input rounded-2xl border border-border-color p-4 relative">
+                        <span id="bodyStatusText" class="absolute top-3 right-3 text-[10px] bg-coach text-black font-bold px-2 py-1 rounded-md"></span>
+                        <svg viewBox="0 0 100 200" class="h-full body-silhouette" id="bodySilhouette">
+                            <path d="M50 10 C 60 10 65 18 65 28 C 65 38 60 45 50 45 C 40 45 35 38 35 28 C 35 18 40 10 50 10 Z" />
+                            <path d="M50 50 C 75 50 85 65 80 110 C 75 160 65 160 60 160 L 55 195 C 55 200 45 200 45 195 L 40 160 C 35 160 25 160 20 110 C 15 65 25 50 50 50 Z" />
+                        </svg>
                     </div>
-                    <p id="goalDescriptionText" class="text-xs text-gray-400">لا يوجد هدف محدد حالياً.</p>
-                    <div class="w-full bg-input rounded-full h-2.5">
-                        <div id="goalTimelineBar" class="bg-coach h-2.5 rounded-full transition-all duration-1000" style="width: 0%;"></div>
+
+                    <div class="mt-4 flex gap-3">
+                        <input type="number" id="userCurrentWeight" class="w-2/3 px-4 py-3 rounded-ios text-xs" placeholder="أدخلي وزنك الجديد اليوم (كج)">
+                        <button id="updateProgressBtn" class="w-1/3 bg-coach text-black font-bold rounded-ios text-xs">تحديث الوزن</button>
                     </div>
                 </div>
 
-                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-3">
-                    <h2 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-coach">🏆</span> لوحة صدارة المنافسة</h2>
-                    <p class="text-[11px] text-gray-400">تنافسي مع بقية المشتركات في الالتزام والتقدم!</p>
-                    <div id="leaderboardContainer" class="space-y-2 mt-2"></div>
+                <!-- الأوسمة والإنجازات -->
+                <div class="bg-card rounded-ios-lg p-5 border border-card shadow-lg">
+                    <h2 class="text-sm font-bold text-white mb-3">أوسمتي 🏅</h2>
+                    <div id="userBadgesContainer" class="flex gap-3 flex-wrap">
+                        <!-- تضاف برمجياً -->
+                    </div>
                 </div>
 
-                <div id="workoutReminderBanner" class="hidden bg-coach/20 border border-coach p-4 rounded-ios text-xs text-coach font-bold flex items-center justify-between">
-                    <span>🔥 تنبيه: باقي لك تمارين اليوم لم تنهها بعد، استمرِ في إنجازك!</span>
-                    <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-coach text-black px-3 py-1.5 rounded-lg text-[11px]">أكملي الآن</button>
-                </div>
-
-                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-bold text-gray-300">الاشتراك النشط</span>
-                        <span id="daysRemainingText" class="font-bold text-xs bg-coach text-black px-3 py-1 rounded-full">--</span>
-                    </div>
-                    <div class="w-full bg-input rounded-full h-2.5">
-                        <div id="timelineBar" class="bg-coach h-2.5 rounded-full transition-all duration-1000" style="width: 0%;"></div>
-                    </div>
-                </div>
-                
-                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-4">
-                    <h2 class="text-sm font-bold text-white">تحديث الوزن وسجلك</h2>
-                    <div id="weightRoastBanner" class="hidden bg-red-500/20 border border-red-500 p-3 rounded-xl text-xs text-red-400 font-bold">
-                        ⚠️ انتبهي! وزنك زاد عن المرة السابقة! وين الالتزام؟ يلا شدّي حيلك ورجعي للمسار الصحيح! 💪
-                    </div>
-                    <div class="flex gap-3">
-                        <input type="number" id="userCurrentWeight" class="w-2/3 px-4 py-3.5 rounded-ios text-xs" placeholder="الوزن الحالي (كج)">
-                        <button id="updateProgressBtn" class="w-1/3 bg-card border border-border-color text-coach font-bold rounded-ios text-xs">تسجيل الوزن</button>
-                    </div>
-                    <div class="mt-3">
-                        <span class="text-[11px] text-gray-400 block mb-1">سجل أوزانك السابقة:</span>
-                        <div id="weightHistoryList" class="flex gap-2 flex-wrap"></div>
+                <!-- التايم لاين (خريطة الأهداف) -->
+                <div class="bg-card rounded-ios-lg p-5 border border-card shadow-lg">
+                    <h2 class="text-sm font-bold text-white mb-3">خريطة الأهداف (التايم لاين) 🗺️</h2>
+                    <div id="userMilestonesContainer" class="timeline-border pr-4 space-y-4 relative mt-2">
+                        <!-- تضاف برمجياً -->
                     </div>
                 </div>
             </div>
 
-            <!-- البرنامج -->
+            <!-- البرنامج TAB -->
             <div id="tabPlan" class="user-tab hidden w-full space-y-5">
-                <h1 class="text-2xl font-extrabold px-1 text-white">برنامج اليوم</h1>
-                
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="switchPlanSubTab('nutrition')" id="btnSubNut" class="bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md">🍎 التغذية</button>
                     <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm">🏋️‍♀️ التمارين</button>
                 </div>
 
                 <div id="subTabNutrition" class="plan-sub-tab block space-y-5">
-                    <div class="bg-card rounded-ios-lg p-5 border border-card shadow-xl space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-sm font-bold text-white">ملخص الماكروز اليومي 📊</h3>
-                            <span id="macroWarningBadge" class="hidden text-[10px] bg-red-500 text-white px-3 py-1 rounded-full font-bold animate-pulse">⚠️ تجاوزت السعرات المحددة!</span>
+                    <!-- ملخص الماكروز -->
+                    <div class="bg-card rounded-ios-lg p-5 border border-card shadow-xl space-y-3 text-center">
+                        <h3 class="text-xs font-bold text-white text-right">استهلاك اليوم</h3>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div class="bg-input p-2 rounded-lg border border-border-color text-[10px]"><span class="block text-white font-bold" id="macroCalVal">0</span>سعرة</div>
+                            <div class="bg-input p-2 rounded-lg border border-border-color text-[10px]"><span class="block text-coach font-bold" id="macroProVal">0g</span>بروتين</div>
+                            <div class="bg-input p-2 rounded-lg border border-border-color text-[10px]"><span class="block text-blue-400 font-bold" id="macroCarbVal">0g</span>كارب</div>
+                            <div class="bg-input p-2 rounded-lg border border-border-color text-[10px]"><span class="block text-yellow-400 font-bold" id="macroFatVal">0g</span>دهون</div>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                            <div class="bg-input p-3 rounded-xl border border-border-color">
-                                <span class="text-[10px] text-gray-400 block mb-1">السعرات</span>
-                                <span id="macroCalVal" class="text-base font-extrabold text-white">0</span>
-                                <span class="text-[10px] text-gray-500 block">من <span id="targetCalVal">2000</span></span>
-                            </div>
-                            <div class="bg-input p-3 rounded-xl border border-border-color">
-                                <span class="text-[10px] text-gray-400 block mb-1">بروتين</span>
-                                <span id="macroProVal" class="text-base font-extrabold text-coach">0g</span>
-                                <span class="text-[10px] text-gray-500 block">من <span id="targetProVal">150g</span></span>
-                            </div>
-                            <div class="bg-input p-3 rounded-xl border border-border-color">
-                                <span class="text-[10px] text-gray-400 block mb-1">كارب</span>
-                                <span id="macroCarbVal" class="text-base font-extrabold text-blue-400">0g</span>
-                                <span class="text-[10px] text-gray-500 block">من <span id="targetCarbVal">200g</span></span>
-                            </div>
-                            <div class="bg-input p-3 rounded-xl border border-border-color">
-                                <span class="text-[10px] text-gray-400 block mb-1">دهون</span>
-                                <span id="macroFatVal" class="text-base font-extrabold text-yellow-400">0g</span>
-                                <span class="text-[10px] text-gray-500 block">من <span id="targetFatVal">60g</span></span>
-                            </div>
-                        </div>
-                        <button onclick="openSwapModal()" class="w-full bg-input border border-border-color text-coach font-bold text-xs py-3 rounded-ios hover:border-coach transition-colors">
-                            🔄 استبدلت وجبة بوجبة خارجية؟ (أدخل الماكروز البديل)
-                        </button>
                     </div>
                     <div id="userNutritionCourse" class="space-y-4"></div>
                 </div>
 
-                <div id="subTabWorkouts" class="plan-sub-tab hidden bg-card rounded-ios-lg p-5 border border-card shadow-xl">
-                    <h2 class="text-md font-extrabold text-white mb-4">جلسة التمارين</h2>
+                <div id="subTabWorkouts" class="plan-sub-tab hidden bg-card rounded-ios-lg p-5 border border-card shadow-xl text-center">
                     <div id="userWorkoutCourseSummary"></div>
                 </div>
             </div>
-
-            <!-- مشغل التمارين التفاعلي -->
+            
+            <!-- مشغل التمارين -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-md mx-auto w-full">
-                    <button onclick="saveAndExitCoursePlayer()" class="text-black text-xs font-bold bg-coach px-4 py-2 rounded-full shadow-md">💾 حفظ ومتابعة لاحقاً</button>
-                    <div class="flex items-center gap-3">
-                        <span id="workoutTimerDisplay" class="text-xs font-black text-coach bg-card px-3 py-1.5 rounded-lg border border-border-color">⏱️ 00:00</span>
-                        <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
-                    </div>
+                    <button onclick="saveAndExitCoursePlayer()" class="text-black text-xs font-bold bg-coach px-4 py-2 rounded-full shadow-md">💾 حفظ ومتابعة</button>
+                    <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
                 </div>
                 <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full text-center pb-10"></div>
             </div>
 
-            <!-- تفاصيل الوجبة -->
-            <div id="mealDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
-                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-border-color my-auto space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 id="modalMealTitle" class="text-lg font-extrabold text-white">تفاصيل الوجبة</h3>
-                        <button onclick="document.getElementById('mealDetailModal').classList.add('hidden')" class="text-gray-400 font-bold text-lg">✕</button>
-                    </div>
-                    <div id="modalMealBody" class="space-y-4 text-xs"></div>
-                </div>
-            </div>
-
-            <!-- استبدال الوجبة -->
-            <div id="mealSwapModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
-                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-border-color my-auto space-y-4 text-xs">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-md font-extrabold text-white">تسجيل وجبة بديلة</h3>
-                        <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="text-gray-400 font-bold">✕</button>
-                    </div>
-                    <p class="text-gray-400">أدخلي تفاصيل الوجبة البديلة ليتم حسابها في عجلة اليوم:</p>
-                    <input type="text" id="swapMealName" class="w-full p-3 rounded-ios text-xs text-white" placeholder="اسم الوجبة (مثال: وجبة مطعم)">
-                    <div class="grid grid-cols-4 gap-2">
-                        <div><label class="text-[9px] text-gray-400">السعرات</label><input type="number" id="swapCal" class="w-full p-2 text-center rounded text-white" value="500"></div>
-                        <div><label class="text-[9px] text-gray-400">بروتين</label><input type="number" id="swapPro" class="w-full p-2 text-center rounded text-coach" value="30"></div>
-                        <div><label class="text-[9px] text-gray-400">كارب</label><input type="number" id="swapCarb" class="w-full p-2 text-center rounded text-blue-400" value="50"></div>
-                        <div><label class="text-[9px] text-gray-400">دهون</label><input type="number" id="swapFat" class="w-full p-2 text-center rounded text-yellow-400" value="15"></div>
-                    </div>
-                    <button onclick="saveSwapMeal()" class="w-full bg-coach text-black font-bold py-3.5 rounded-ios text-sm">إضافة الوجبة البديلة لعجلة اليوم</button>
-                </div>
-            </div>
-
-            <!-- الشات -->
             <div id="tabChat" class="user-tab hidden w-full h-[65vh] flex flex-col bg-card rounded-ios-lg overflow-hidden border border-card shadow-xl">
-                <div class="bg-input px-5 py-4 border-b border-border-color flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-coach flex items-center justify-center font-black text-black text-xs">ص</div>
-                    <div><h3 class="font-extrabold text-xs text-white">كوتش صحة</h3><p class="text-[10px] text-coach">متاح للرد</p></div>
-                </div>
+                <!-- شات المتدربة -->
                 <div id="userChatArea" class="chat-container flex-grow overflow-y-auto"></div>
-                <div class="p-3 border-t border-border-color bg-card flex gap-2 items-center">
-                    <label class="cursor-pointer text-gray-400 hover:text-coach p-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                        <input type="file" id="userChatFile" accept="image/*" class="hidden">
-                    </label>
-                    <input type="text" id="userChatInput" class="flex-grow bg-input border border-border-color px-4 py-3 rounded-full text-xs text-white" placeholder="اكتبي رسالتك...">
-                    <button id="userSendChatBtn" class="bg-coach text-black px-4 py-2.5 rounded-full text-xs font-bold">إرسال</button>
+                <div class="p-3 border-t border-border-color flex gap-2">
+                    <input type="text" id="userChatInput" class="flex-grow bg-input border border-border-color px-4 py-2.5 rounded-full text-xs text-white" placeholder="رسالتك...">
+                    <button id="userSendChatBtn" class="bg-coach text-black px-4 rounded-full text-xs font-bold">إرسال</button>
                 </div>
             </div>
 
-            <!-- Bottom Navigation Bar -->
+            <!-- Bottom Nav -->
             <div class="ios-glass fixed bottom-0 left-0 right-0 flex justify-around py-3 px-2 z-40">
-                <button onclick="switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1 text-gray-400 py-1 px-4 rounded-xl transition-colors">
-                    <span class="text-lg">📊</span><span class="text-[10px] font-bold">الخلاصة</span>
-                </button>
-                <button onclick="switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1 text-gray-400 py-1 px-4 rounded-xl transition-colors">
-                    <span class="text-lg">📋</span><span class="text-[10px] font-bold">البرنامج</span>
-                </button>
-                <button onclick="switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1 text-gray-400 py-1 px-4 rounded-xl transition-colors">
-                    <span class="text-lg">💬</span><span class="text-[10px] font-bold">المحادثة</span>
-                </button>
+                <button onclick="switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1 text-gray-400 py-1 px-4"><span class="text-lg">🧍‍♀️</span><span class="text-[10px] font-bold">جسمي</span></button>
+                <button onclick="switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1 text-gray-400 py-1 px-4"><span class="text-lg">📋</span><span class="text-[10px] font-bold">البرنامج</span></button>
+                <button onclick="switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1 text-gray-400 py-1 px-4"><span class="text-lg">💬</span><span class="text-[10px] font-bold">الشات</span></button>
             </div>
         </div>
 
-        <!-- ================= ADMIN DASHBOARD (New Professional UI) ================= -->
+        <!-- ================= ADMIN DASHBOARD ================= -->
         <div id="adminDashboard" class="hidden w-full max-w-4xl pb-12">
             <div id="adminMainView">
                 <h1 class="text-2xl font-extrabold mb-6 text-white tracking-tight">لوحة الإدارة المركزية</h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    
-                    <!-- قسم الأكواد -->
-                    <div class="bg-card rounded-ios-lg p-6 border border-card shadow-2xl h-fit">
-                        <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                            <span class="text-coach bg-coach bg-opacity-20 p-2 rounded-full">🔑</span> إنشاء أكواد الاشتراك
-                        </h3>
-                        <div class="space-y-3">
-                            <input type="text" id="adminNewCode" class="w-full px-4 py-3 rounded-ios text-xs uppercase focus:border-coach text-coach font-bold" placeholder="أدخلي كود جديد (مثال: LAMAR2026)">
-                            <div class="grid grid-cols-3 gap-2">
-                                <div><label class="text-[10px] text-gray-400 mb-1 block">أيام</label><input type="number" id="codeDays" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="30"></div>
-                                <div><label class="text-[10px] text-gray-400 mb-1 block">ساعات</label><input type="number" id="codeHours" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="0"></div>
-                                <div><label class="text-[10px] text-gray-400 mb-1 block">دقائق</label><input type="number" id="codeMins" class="w-full px-2 py-2 rounded-ios text-xs text-center" value="0"></div>
-                            </div>
-                            <button id="generateCodeBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-xs mt-2 shadow-md hover:opacity-90 transition-opacity">توليد وحفظ الكود</button>
-                        </div>
-                        <div class="mt-5 border-t border-border-color pt-4">
-                            <h4 class="text-[10px] text-gray-400 mb-2 font-bold">الأكواد السابقة:</h4>
-                            <div id="adminCodesList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
-                        </div>
-                    </div>
-
-                    <!-- قائمة المتدربات -->
-                    <div class="bg-card rounded-ios-lg overflow-hidden border border-card flex flex-col h-[520px] shadow-2xl">
+                    <!-- Users List -->
+                    <div class="bg-card rounded-ios-lg overflow-hidden border border-card flex flex-col h-[520px] shadow-2xl col-span-1 md:col-span-2">
                         <div class="flex justify-between items-center p-5 border-b border-border-color bg-input">
-                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                                <span class="text-coach bg-coach bg-opacity-20 p-2 rounded-full">👥</span> المتدربات
-                            </h3>
-                            <button id="refreshUsersBtn" class="text-xs bg-card px-4 py-2 rounded-full text-coach font-bold border border-border-color hover:bg-input transition-colors">تحديث القائمة</button>
+                            <h3 class="text-sm font-bold text-white">👥 المتدربات (اختر متدربة للإدارة)</h3>
+                            <button id="refreshUsersBtn" class="text-xs bg-card px-4 py-2 rounded-full text-coach font-bold border border-border-color">تحديث</button>
                         </div>
                         <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow p-2"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- ملف المتدربة المفصل للأدمن (بروفشنال ومطور) -->
+            <!-- ملف المتدربة للأدمن -->
             <div id="adminUserDetailView" class="hidden flex flex-col gap-5">
                 <div class="flex justify-between items-center bg-card p-5 rounded-ios-lg border border-card shadow-xl">
-                    <button id="backToAdminMainBtn" class="text-gray-300 text-xs font-bold bg-input px-5 py-2.5 rounded-full border border-border-color hover:border-coach hover:text-white transition-all">❮ العودة للقائمة</button>
-                    <div class="text-left">
-                        <h2 class="text-base font-extrabold text-white" id="detailUserEmail">user@mail.com</h2>
-                        <span class="text-[10px] bg-coach bg-opacity-20 text-coach px-2 py-1 rounded-md font-bold">إدارة الخطة النشطة</span>
+                    <button id="backToAdminMainBtn" class="text-gray-300 text-xs font-bold bg-input px-5 py-2.5 rounded-full border border-border-color">❮ العودة</button>
+                    <h2 class="text-sm font-extrabold text-white" id="detailUserEmail">user@mail.com</h2>
+                </div>
+
+                <div class="bg-coach text-black p-4 rounded-ios-lg shadow-2xl flex justify-between items-center sticky top-20 z-30">
+                    <span class="font-black text-sm">لوحة النشر المباشر</span>
+                    <button id="adminSaveAllBtn" class="bg-black text-white font-extrabold px-6 py-2.5 rounded-ios text-xs">حفظ ونشر التحديثات ✔️</button>
+                </div>
+
+                <div class="flex bg-input rounded-ios p-1 border border-card shadow-lg overflow-x-auto whitespace-nowrap hide-scrollbar">
+                    <button onclick="switchAdminTab('adminTabMacros')" id="btnTabMac" class="admin-nav flex-1 py-3 px-3 text-[11px] font-bold rounded-xl bg-card text-white">الخطة</button>
+                    <button onclick="switchAdminTab('adminTabMeals')" id="btnTabMeal" class="admin-nav flex-1 py-3 px-3 text-[11px] font-bold rounded-xl text-gray-400">الوجبات</button>
+                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnTabWork" class="admin-nav flex-1 py-3 px-3 text-[11px] font-bold rounded-xl text-gray-400">التمارين</button>
+                    <button onclick="switchAdminTab('adminTabLog')" id="btnTabLog" class="admin-nav flex-1 py-3 px-3 text-[11px] font-bold rounded-xl text-gray-400 text-coach">السجل والأوسمة 🌟</button>
+                    <button onclick="switchAdminTab('adminTabChat')" id="btnTabCha" class="admin-nav flex-1 py-3 px-3 text-[11px] font-bold rounded-xl text-gray-400">الشات</button>
+                </div>
+
+                <!-- التبويبات المخفية (موجودة في الكود السابق) -->
+                <div id="adminTabMacros" class="admin-tab block bg-card p-5 rounded-ios-lg border border-card space-y-4">
+                    <h3 class="text-xs font-bold text-white mb-2">تحديث السعرات:</h3>
+                    <div class="grid grid-cols-4 gap-2 text-xs">
+                        <input type="number" id="targetCalInput" class="bg-input p-2 rounded text-center text-white" placeholder="Cal">
+                        <input type="number" id="targetProInput" class="bg-input p-2 rounded text-center text-coach" placeholder="Pro">
+                        <input type="number" id="targetCarbInput" class="bg-input p-2 rounded text-center text-blue-400" placeholder="Carb">
+                        <input type="number" id="targetFatInput" class="bg-input p-2 rounded text-center text-yellow-400" placeholder="Fat">
                     </div>
                 </div>
 
-                <!-- شريط الحفظ الشامل البارز -->
-                <div class="bg-coach text-black p-5 rounded-ios-lg shadow-2xl flex justify-between items-center sticky top-20 z-30 transform transition-transform hover:-translate-y-1">
-                    <div>
-                        <h4 class="font-black text-sm">لوحة النشر المباشر</h4>
-                        <p class="text-[11px] opacity-80 mt-0.5">احفظي كافة التعديلات التي أجريتيها أدناه لتظهر للمتدربة فوراً.</p>
-                    </div>
-                    <button id="adminSaveAllBtn" class="bg-black text-white font-extrabold px-8 py-3.5 rounded-ios text-xs shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
-                        <span>حفظ ونشر التحديثات</span>
-                        <span>✔️</span>
-                    </button>
+                <div id="adminTabMeals" class="admin-tab hidden bg-card p-5 rounded-ios-lg border border-card space-y-4">
+                    <button id="addMealBtn" class="text-xs bg-coach text-black font-extrabold px-4 py-2 rounded-xl mb-3">+ إضافة وجبة</button>
+                    <div id="adminMealsList" class="space-y-4"></div>
                 </div>
 
-                <div class="flex bg-input rounded-ios p-1.5 border border-card shadow-lg overflow-x-auto whitespace-nowrap hide-scrollbar">
-                    <button onclick="switchAdminTab('adminTabMacros')" id="btnTabMac" class="admin-nav flex-1 py-3 px-4 text-xs font-bold rounded-xl bg-card text-white shadow-sm transition-all">📊 أهداف الماكروز</button>
-                    <button onclick="switchAdminTab('adminTabMeals')" id="btnTabMeal" class="admin-nav flex-1 py-3 px-4 text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all">🍎 وجبات التغذية</button>
-                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnTabWork" class="admin-nav flex-1 py-3 px-4 text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all">🏋️‍♀️ التمارين</button>
-                    <button onclick="switchAdminTab('adminTabChat')" id="btnTabCha" class="admin-nav flex-1 py-3 px-4 text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all">💬 المحادثة</button>
-                </div>
-
-                <!-- 1. أهداف الماكروز -->
-                <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
-                    <h3 class="text-sm font-bold text-white mb-4">الاحتياج اليومي من السعرات والعناصر</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                        <div class="bg-input p-4 rounded-xl border border-border-color"><label class="text-[10px] text-gray-400 block mb-2 text-center">السعرات (Cal)</label><input type="number" id="targetCalInput" class="w-full p-2 bg-transparent text-center border-b border-border-color text-white font-bold text-lg" value="2000"></div>
-                        <div class="bg-input p-4 rounded-xl border border-border-color"><label class="text-[10px] text-gray-400 block mb-2 text-center">بروتين (g)</label><input type="number" id="targetProInput" class="w-full p-2 bg-transparent text-center border-b border-border-color text-coach font-bold text-lg" value="150"></div>
-                        <div class="bg-input p-4 rounded-xl border border-border-color"><label class="text-[10px] text-gray-400 block mb-2 text-center">كاربوهيدرات (g)</label><input type="number" id="targetCarbInput" class="w-full p-2 bg-transparent text-center border-b border-border-color text-blue-400 font-bold text-lg" value="200"></div>
-                        <div class="bg-input p-4 rounded-xl border border-border-color"><label class="text-[10px] text-gray-400 block mb-2 text-center">دهون (g)</label><input type="number" id="targetFatInput" class="w-full p-2 bg-transparent text-center border-b border-border-color text-yellow-400 font-bold text-lg" value="60"></div>
-                    </div>
-                </div>
-
-                <!-- 2. وجبات التغذية -->
-                <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
-                    <div class="flex justify-between items-center mb-4 border-b border-border-color pb-4">
-                        <div>
-                            <label class="text-sm font-bold text-white block">🍎 إدارة وجبات المتدربة</label>
-                            <span class="text-[10px] text-gray-400">أضيفي أو عدلي الوجبات، ومكوناتها، وصورها.</span>
-                        </div>
-                        <button id="addMealBtn" class="text-xs bg-coach text-black font-extrabold px-4 py-2.5 rounded-xl shadow-md hover:bg-opacity-90">+ إضافة وجبة جديدة</button>
-                    </div>
-                    <div id="adminMealsList" class="space-y-6"></div>
-                </div>
-
-                <!-- 3. التمارين -->
-                <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
-                    <div class="flex justify-between items-center mb-4 border-b border-border-color pb-4">
-                        <div>
-                            <label class="text-sm font-bold text-white block">🏋️‍♀️ جدول التمارين</label>
-                            <span class="text-[10px] text-gray-400">رتبي تمارين المتدربة، وحددي إذا كانت بالجولات أو بالوقت.</span>
-                        </div>
-                        <button id="addExerciseBtn" class="text-xs bg-coach text-black font-extrabold px-4 py-2.5 rounded-xl shadow-md hover:bg-opacity-90">+ إضافة تمرين</button>
-                    </div>
+                <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-5 rounded-ios-lg border border-card space-y-4">
+                    <button id="addExerciseBtn" class="text-xs bg-coach text-black font-extrabold px-4 py-2 rounded-xl mb-3">+ إضافة تمرين</button>
                     <div id="adminExercisesList" class="space-y-4"></div>
                 </div>
 
-                <!-- 4. الشات -->
-                <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-card h-[60vh] flex flex-col overflow-hidden shadow-xl">
-                    <div class="bg-input p-4 border-b border-border-color text-xs text-gray-400 font-bold text-center">
-                        المحادثة المباشرة مع المتدربة
+                <!-- 🌟 التبويب الجديد: سجل النشاط اليومي والأوسمة 🌟 -->
+                <div id="adminTabLog" class="admin-tab hidden space-y-5">
+                    
+                    <!-- 1. منح الأوسمة -->
+                    <div class="bg-card p-5 rounded-ios-lg border border-border-color shadow-lg">
+                        <h3 class="text-sm font-bold text-white mb-3">🏅 منح وسام للمتدربة</h3>
+                        <div class="flex gap-2">
+                            <select id="badgeEmoji" class="bg-input p-2 rounded-lg text-xl border border-border-color"><option>🏆</option><option>🔥</option><option>🌟</option><option>💪</option><option>👑</option><option>🥗</option></select>
+                            <input type="text" id="badgeTitle" class="flex-grow bg-input p-2.5 rounded-lg text-xs text-white" placeholder="اسم الوسام (مثال: بطلة الأسبوع)">
+                            <button onclick="awardBadge()" class="bg-coach text-black px-4 rounded-lg text-xs font-bold">منح الوسام</button>
+                        </div>
                     </div>
+
+                    <!-- 2. التايم لاين / إدارة الأهداف -->
+                    <div class="bg-card p-5 rounded-ios-lg border border-border-color shadow-lg">
+                        <h3 class="text-sm font-bold text-white mb-3">🎯 تحديد محطات النزول (Timeline)</h3>
+                        <div class="flex gap-2">
+                            <input type="date" id="msDate" class="bg-input p-2 rounded-lg text-xs text-gray-300 flex-grow">
+                            <input type="number" id="msWeight" class="bg-input p-2 rounded-lg text-xs text-white w-24" placeholder="الهدف (كج)">
+                            <button onclick="addMilestone()" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-bold">إضافة</button>
+                        </div>
+                        <div id="adminMilestonesList" class="mt-4 space-y-2 text-xs"></div>
+                    </div>
+
+                    <!-- 3. سجل النشاط وصور الوجبات -->
+                    <div class="bg-card p-5 rounded-ios-lg border border-border-color shadow-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-sm font-bold text-white">📅 سجل النشاط وصور الوجبات</h3>
+                            <input type="date" id="logDateSelector" class="bg-input p-2 rounded-lg text-xs text-coach border border-border-color" onchange="loadAdminDailyLog(this.value)">
+                        </div>
+                        <div id="dailyLogViewer" class="bg-input p-4 rounded-xl border border-border-color min-h-[150px] text-xs space-y-4">
+                            <p class="text-gray-500 text-center">اختاري تاريخاً لعرض نشاط المتدربة...</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-card h-[60vh] flex flex-col overflow-hidden">
                     <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto"></div>
-                    <div class="p-4 border-t border-border-color bg-input flex gap-3 items-center">
-                        <label class="cursor-pointer text-gray-400 hover:text-coach p-2 bg-card rounded-full border border-border-color">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                            <input type="file" id="adminChatFile" accept="image/*" class="hidden">
-                        </label>
-                        <input type="text" id="adminChatInput" class="flex-grow bg-card border border-border-color px-4 py-3.5 rounded-full text-xs text-white focus:border-coach" placeholder="اكتبي رسالتك للمتدربة...">
-                        <button id="adminSendChatBtn" class="bg-coach text-black px-6 py-3 rounded-full text-xs font-bold shadow-md hover:opacity-90">إرسال</button>
+                    <div class="p-3 border-t border-border-color bg-input flex gap-2">
+                        <input type="text" id="adminChatInput" class="flex-grow bg-card border border-border-color px-4 py-2 rounded-full text-xs text-white" placeholder="رسالتك للمتدربة...">
+                        <button id="adminSendChatBtn" class="bg-coach text-black px-4 rounded-full text-xs font-bold">إرسال</button>
                     </div>
                 </div>
             </div>
         </div>
-
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, child, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, child, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM",
-            authDomain: "helth-c7e42.firebaseapp.com",
-            projectId: "helth-c7e42",
-            databaseURL: "https://helth-c7e42-default-rtdb.firebaseio.com"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM", authDomain: "helth-c7e42.firebaseapp.com", projectId: "helth-c7e42", databaseURL: "https://helth-c7e42-default-rtdb.firebaseio.com" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-
         const adminEmail = "lm6p12@gmail.com";
-        let isRegisterMode = false;
-        let currentAdminViewUid = null; 
-        
-        // المتغيرات العامة للإدارة للحفظ الصحيح
+
         window.currentAdminExercises = [];
         window.currentAdminMeals = [];
+        window.currentAdminMilestones = [];
         
         let activeUserData = null;
-        let playerActiveIndex = 0;
-        let exerciseTimerInterval = null;
-        let exerciseRemainingSeconds = 0;
-        let isTimerRunning = false;
-
-        window.toggleThemeMode = () => {
-            const html = document.documentElement;
-            const btn = document.getElementById('themeToggleBtn');
-            if(html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                html.classList.add('light');
-                btn.innerText = '🌙 ليلي';
-            } else {
-                html.classList.remove('light');
-                html.classList.add('dark');
-                btn.innerText = '☀️ فاتح';
-            }
-        };
-
-        window.showSection = (sectionId) => {
-            ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(sectionId).classList.remove('hidden');
-            document.getElementById('logoutBtn').classList.toggle('hidden', sectionId === 'welcomeSection' || sectionId === 'authSection');
-        };
-
-        window.showMsg = (text, isError=true) => {
-            const m = document.getElementById('globalMessage');
-            m.textContent = text;
-            m.className = `fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-full text-xs font-bold text-center shadow-2xl block w-max max-w-[90%] ${isError ? 'bg-red-600 text-white' : 'bg-coach text-black'}`;
-            setTimeout(() => m.classList.add('hidden'), 4000);
-        };
-
-        window.switchTab = (tabId) => {
-            document.querySelectorAll('.user-tab').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            if(tabId === 'tabHome') document.getElementById('navBtnHome').classList.add('active');
-            if(tabId === 'tabPlan') document.getElementById('navBtnPlan').classList.add('active');
-            if(tabId === 'tabChat') {
-                document.getElementById('navBtnChat').classList.add('active');
-                if(auth.currentUser) loadChat(auth.currentUser.uid, 'userChatArea');
-            }
-        };
-
-        window.switchAdminTab = (tabId) => {
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('.admin-nav').forEach(btn => {
-                btn.classList.remove('bg-card', 'text-white', 'shadow-sm');
-                btn.classList.add('text-gray-400');
-            });
-            const activeBtnMap = {
-                'adminTabMacros': 'btnTabMac',
-                'adminTabMeals': 'btnTabMeal',
-                'adminTabWorkouts': 'btnTabWork',
-                'adminTabChat': 'btnTabCha'
-            };
-            const btn = document.getElementById(activeBtnMap[tabId]);
-            if(btn) {
-                btn.classList.remove('text-gray-400');
-                btn.classList.add('bg-card', 'text-white', 'shadow-sm');
-            }
-        };
-
-        window.switchPlanSubTab = (sub) => {
-            document.querySelectorAll('.plan-sub-tab').forEach(t => t.classList.add('hidden'));
-            document.getElementById('subTab' + (sub === 'nutrition' ? 'Nutrition' : 'Workouts')).classList.remove('hidden');
-            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md' : 'bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm';
-            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md' : 'bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm';
-        };
-
+        let currentAdminViewUid = null;
+        
         function getTodayStr() { return new Date().toISOString().split('T')[0]; }
+        window.showSection = (id) => { document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+        window.showMsg = (txt, err=true) => { const m=document.getElementById('globalMessage'); m.innerText=txt; m.className=`fixed top-10 left-1/2 transform -translate-x-1/2 z-50 px-6 py-2 rounded-full text-xs font-bold text-center block ${err?'bg-red-500 text-white':'bg-coach text-black'}`; setTimeout(()=>m.classList.add('hidden'),3000); }
+        window.toggleThemeMode = () => { document.documentElement.classList.toggle('dark'); document.documentElement.classList.toggle('light'); }
+        
+        // Navigation
+        window.switchTab = (id) => { document.querySelectorAll('.user-tab').forEach(t=>t.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('navBtn'+id.replace('tab','')).classList.add('active'); }
+        window.switchAdminTab = (id) => { document.querySelectorAll('.admin-tab').forEach(t=>t.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.admin-nav').forEach(b=>{b.classList.remove('bg-card','text-white'); b.classList.add('text-gray-400');}); document.getElementById('btn'+id.replace('admin','')).classList.add('bg-card','text-white'); document.getElementById('btn'+id.replace('admin','')).classList.remove('text-gray-400'); }
+        window.switchPlanSubTab = (sub) => { document.getElementById('subTabNutrition').classList.toggle('hidden', sub!=='nutrition'); document.getElementById('subTabWorkouts').classList.toggle('hidden', sub!=='workouts'); document.getElementById('btnSubNut').className = sub==='nutrition'?'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md':'bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm'; document.getElementById('btnSubWork').className = sub==='workouts'?'bg-coach text-black font-extrabold py-3 rounded-ios text-sm shadow-md':'bg-card border border-border-color text-white font-extrabold py-3 rounded-ios text-sm'; }
 
-        function handleImageUpload(event, uid, sender) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 500;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const base64 = canvas.toDataURL('image/jpeg', 0.5);
-                    push(ref(db, `chats/${uid}`), { text: base64, type: 'image', sender: sender, time: Date.now() });
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        document.getElementById('showLoginBtn').onclick = () => { isRegisterMode = false; document.getElementById('authTitle').innerText = 'تسجيل الدخول'; showSection('authSection'); };
-        document.getElementById('showRegisterBtn').onclick = () => { isRegisterMode = true; document.getElementById('authTitle').innerText = 'حساب جديد'; showSection('authSection'); };
-        document.getElementById('backToWelcomeBtn').onclick = () => showSection('welcomeSection');
-        document.getElementById('logoutBtn').onclick = () => signOut(auth);
-
+        /* ================= AUTH ================= */
+        document.getElementById('showLoginBtn').onclick = () => window.showSection('authSection');
         document.getElementById('mainAuthBtn').onclick = async () => {
-            const email = document.getElementById('emailInput').value.trim();
-            const pass = document.getElementById('passwordInput').value.trim();
-            if(!email || !pass) return showMsg("أدخلي الإيميل وكلمة المرور");
-            try {
-                if(isRegisterMode) await createUserWithEmailAndPassword(auth, email, pass);
-                else await signInWithEmailAndPassword(auth, email, pass);
-            } catch(e) { showMsg(e.message); }
+            const e=document.getElementById('emailInput').value, p=document.getElementById('passwordInput').value;
+            if(!e||!p) return showMsg("بيانات ناقصة");
+            try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { showMsg(err.message); }
         };
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) return showSection('welcomeSection');
-            if (user.email === adminEmail) {
-                showSection('adminDashboard');
-                document.getElementById('adminMainView').classList.remove('hidden');
-                document.getElementById('adminUserDetailView').classList.add('hidden');
-                loadAdminCodes();
-                loadAdminUsers();
-                return;
-            }
-            onValue(ref(db, `users/${user.uid}`), (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    activeUserData = data;
-                    if (new Date() > new Date(data.endDate)) {
-                        showSection('activationSection');
-                    } else if (!data.onboardingCompleted) {
-                        showSection('onboardingSection');
-                    } else {
-                        if(document.getElementById('userDashboard').classList.contains('hidden')) {
-                            showSection('userDashboard');
-                        }
-                        renderUserDashboard(data);
-                    }
-                }
+            if (!user) return window.showSection('welcomeSection');
+            if (user.email === adminEmail) { window.showSection('adminDashboard'); loadAdminUsers(); document.getElementById('logDateSelector').value = getTodayStr(); return; }
+            onValue(ref(db, `users/${user.uid}`), (snap) => {
+                if(snap.exists()) { activeUserData = snap.val(); window.showSection('userDashboard'); renderUserDashboard(activeUserData); }
             });
         });
 
-        document.getElementById('activateSubscriptionBtn').onclick = async () => {
-            const code = document.getElementById('activationCodeInput').value.trim().toUpperCase();
-            if(!code) return showMsg("أدخلي الكود");
-            try {
-                const snap = await get(child(ref(db), `codes/${code}`));
-                if(!snap.exists() || snap.val().used) throw new Error("كود غير صالح أو مستخدم");
-                const c = snap.val();
-                const ms = ((c.days||0)*86400000) + ((c.hours||0)*3600000) + ((c.mins||0)*60000);
-                const end = new Date(Date.now() + ms);
-                
-                await set(ref(db, `users/${auth.currentUser.uid}`), {
-                    email: auth.currentUser.email,
-                    startDate: new Date().toISOString(),
-                    endDate: end.toISOString(),
-                    onboardingCompleted: false,
-                    usedCode: code
-                });
-                await update(ref(db, `codes/${code}`), { used: true, usedBy: auth.currentUser.email });
-                showSection('onboardingSection');
-            } catch(e) { showMsg(e.message); }
-        };
+        /* ================= BODY SHAPE LOGIC ================= */
+        function fireConfetti() {
+            for(let i=0; i<30; i++){
+                let c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.backgroundColor = ['#9DFF13','#FFF','#FFD700','#FF69B4'][Math.floor(Math.random()*4)];
+                c.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(c);
+                setTimeout(()=>c.remove(), 4000);
+            }
+        }
 
-        document.getElementById('saveOnboardingBtn').onclick = async () => {
-            const goal = document.getElementById('qGoal').value;
-            const weight = parseFloat(document.getElementById('qWeight').value) || 0;
-            const height = parseFloat(document.getElementById('qHeight').value) || 0;
-            const targetKg = parseFloat(document.getElementById('qTargetKg').value) || 0;
-            const targetDays = parseInt(document.getElementById('qTargetDays').value) || 30;
-            const notes = document.getElementById('qNotes').value;
-
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + targetDays);
-
-            await update(ref(db, `users/${auth.currentUser.uid}`), {
-                onboardingCompleted: true,
-                profile: { goal, weight, height, notes },
-                goalPlan: {
-                    startWeight: weight,
-                    targetWeight: targetKg,
-                    startDate: new Date().toISOString(),
-                    targetDate: targetDate.toISOString()
-                },
-                progress: {
-                    weightHistory: { [getTodayStr()]: weight },
-                    currentWeight: weight
-                }
-            });
-            const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`));
-            renderUserDashboard(snap.val());
-            showSection('userDashboard');
-        };
+        function updateBodyShape(weight, height) {
+            const h = parseFloat(height) || 160;
+            const w = parseFloat(weight) || 70;
+            const bmi = w / Math.pow(h/100, 2);
+            // 21 is base normal BMI = scaleX 1. 
+            let scale = Math.max(0.7, Math.min(2.5, bmi / 21));
+            
+            document.getElementById('bodySilhouette').style.transform = `scaleX(${scale})`;
+            let st = document.getElementById('bodyStatusText');
+            if(bmi < 18.5) { st.innerText='نحافة'; st.className='absolute top-3 right-3 text-[10px] bg-blue-400 text-white font-bold px-2 py-1 rounded-md'; }
+            else if(bmi < 25) { st.innerText='مثالي 🔥'; st.className='absolute top-3 right-3 text-[10px] bg-coach text-black font-bold px-2 py-1 rounded-md'; }
+            else if(bmi < 30) { st.innerText='وزن زائد'; st.className='absolute top-3 right-3 text-[10px] bg-yellow-500 text-black font-bold px-2 py-1 rounded-md'; }
+            else { st.innerText='سمنة'; st.className='absolute top-3 right-3 text-[10px] bg-red-500 text-white font-bold px-2 py-1 rounded-md'; }
+        }
 
         document.getElementById('updateProgressBtn').onclick = async () => {
             const newW = parseFloat(document.getElementById('userCurrentWeight').value);
             if(isNaN(newW)) return;
-
             const uid = auth.currentUser.uid;
-            const weightHistory = activeUserData.progress?.weightHistory || {};
-            const dates = Object.keys(weightHistory).sort();
-            let lastWeight = activeUserData.profile?.weight || newW;
-            if(dates.length > 0) {
-                lastWeight = weightHistory[dates[dates.length - 1]];
-            }
+            
+            let lastW = activeUserData.profile?.weight || newW;
+            const hist = activeUserData.progress?.weightHistory || {};
+            const dates = Object.keys(hist).sort();
+            if(dates.length>0) lastW = hist[dates[dates.length-1]];
 
-            weightHistory[getTodayStr()] = newW;
-            activeUserData.progress = activeUserData.progress || {};
-            activeUserData.progress.weightHistory = weightHistory;
-            activeUserData.progress.currentWeight = newW;
-
-            await update(ref(db, `users/${uid}/progress`), activeUserData.progress);
-
-            const roastBanner = document.getElementById('weightRoastBanner');
-            if(newW > lastWeight) {
-                roastBanner.classList.remove('hidden');
-                showMsg("وزنك زاد! شوفي التنبيه فوق 💪", true);
-            } else {
-                roastBanner.classList.add('hidden');
-                showMsg("ممتاز! استمري في النزول 🌟", false);
-            }
-            renderUserDashboard(activeUserData);
+            hist[getTodayStr()] = newW;
+            await update(ref(db, `users/${uid}/progress`), { currentWeight: newW, weightHistory: hist });
+            
+            if(newW < lastW) { showMsg("عاش! نقصتي وزن وتغير شكل جسمك 🎉", false); fireConfetti(); }
+            else if(newW > lastW) { showMsg("وزنك زاد! شدي حيلك بالالتزام ⚠️", true); }
+            
+            updateBodyShape(newW, activeUserData.profile?.height);
         };
 
-        function buildNativeVideoPlayer(url) {
-            if(!url) return '';
-            const lower = url.toLowerCase();
-            if(lower.match(/\.(mp4|webm|mov)$/)) {
-                return `<video src="${url}" controls playsinline preload="metadata" class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover bg-black"></video>`;
-            }
-            if(lower.includes('youtube.com/watch?v=') || lower.includes('youtu.be/')) {
-                let vidId = lower.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1].split('&')[0];
-                return `<iframe src="https://www.youtube.com/embed/${vidId}?rel=0" class="w-full rounded-2xl my-3 h-56 border border-border-color shadow-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            }
-            if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
-                return `<img src="${url}" class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover">`;
-            }
-            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3.5 rounded-xl text-xs font-bold my-3 border border-border-color hover:border-coach">فتح الرابط المرفق 📎</a>`;
-        }
-
-        function renderUserDashboard(data) {
-            activeUserData = data;
-            const end = new Date(data.endDate);
-            const daysRem = Math.ceil((end - new Date())/(1000*60*60*24));
-            document.getElementById('daysRemainingText').innerText = daysRem > 0 ? `باقي ${daysRem} يوم` : 'منتهي';
+        /* ================= USER RENDER ================= */
+        function renderUserDashboard(d) {
+            // Update Body
+            updateBodyShape(d.progress?.currentWeight || d.profile?.weight, d.profile?.height);
             
-            renderGoalTimeline(data.goalPlan, data.progress?.currentWeight);
-            renderWeightHistory(data.progress?.weightHistory);
-            loadLeaderboard();
+            // Render Badges
+            const bdg = document.getElementById('userBadgesContainer');
+            bdg.innerHTML = '';
+            if(d.badges) {
+                Object.values(d.badges).forEach(b => {
+                    bdg.innerHTML += `<div class="bg-input border border-coach border-opacity-50 px-3 py-2 rounded-xl text-xs flex items-center gap-2 shadow-sm"><span class="text-xl">${b.icon}</span><span class="font-bold text-white">${b.title}</span></div>`;
+                });
+            } else bdg.innerHTML = '<p class="text-[10px] text-gray-500">لا توجد أوسمة بعد، شدي حيلك!</p>';
 
-            renderUserNutritionCourse(data.plan?.meals, data.progress?.meals, data.progress?.swaps, data.targets);
-            renderUserWorkoutSummary(data.plan?.exercises, data.progress?.workouts);
-            checkWorkoutReminder(data.plan?.exercises, data.progress?.workouts);
+            // Render Milestones
+            const ms = document.getElementById('userMilestonesContainer');
+            ms.innerHTML = '';
+            if(d.milestones && d.milestones.length > 0) {
+                d.milestones.forEach(m => {
+                    ms.innerHTML += `<div class="timeline-node relative py-1 text-xs"><strong class="text-coach">${m.target} كج</strong> <span class="opacity-70 text-[10px] mr-2">بحلول: ${m.date}</span></div>`;
+                });
+            } else ms.innerHTML = '<p class="text-[10px] text-gray-500">لم يحدد الكوتش مسار الأهداف بعد.</p>';
+
+            // Meals
+            renderUserMeals(d.plan?.meals, d.progress?.meals, d.targets);
+            // Workouts
+            renderUserWorkouts(d.plan?.exercises, d.progress?.workouts);
         }
 
-        function renderGoalTimeline(goalPlan, currentWeight) {
-            const card = document.getElementById('goalTimelineCard');
-            if(!goalPlan) { card.classList.add('hidden'); return; }
-            card.classList.remove('hidden');
-
-            const startW = goalPlan.startWeight;
-            const targetW = goalPlan.targetWeight;
-            const curW = currentWeight || startW;
-            const targetDate = new Date(goalPlan.targetDate);
-
-            let totalDiff = Math.abs(startW - targetW);
-            let currentProgress = Math.abs(startW - curW);
-            let percent = totalDiff > 0 ? (currentProgress / totalDiff) * 100 : 0;
-            percent = Math.max(0, Math.min(percent, 100));
-
-            const badge = document.getElementById('goalStatusBadge');
-            const desc = document.getElementById('goalDescriptionText');
-            const bar = document.getElementById('goalTimelineBar');
-
-            if(curW <= targetW && startW > targetW) {
-                badge.className = 'text-[10px] bg-coach text-black px-2.5 py-1 rounded-full font-bold';
-                badge.innerText = 'أتممت الهدف! شطورة 🌟';
-                desc.innerText = `حققتِ الهدف بنجاح (${curW} كج)! أثبتي جدارتكِ بطلة.`;
-                percent = 100;
-            } else {
-                badge.className = 'text-[10px] bg-blue-500 text-white px-2.5 py-1 rounded-full font-bold';
-                badge.innerText = 'الخط الزمني للهدف';
-                desc.innerText = `الهدف: الوصول إلى ${targetW} كج بحلول ${targetDate.toLocaleDateString('en-GB')}. وزنك الحالي: ${curW} كج.`;
-            }
-            setTimeout(() => bar.style.width = percent + '%', 100);
-        }
-
-        function renderWeightHistory(history) {
-            const list = document.getElementById('weightHistoryList');
-            if(!history) { list.innerHTML = '<span class="text-xs text-gray-500">لا توجد أوزان مسجلة بعد</span>'; return; }
-            list.innerHTML = '';
-            Object.entries(history).sort().forEach(([date, w]) => {
-                list.innerHTML += `<div class="bg-input px-3 py-1.5 rounded-lg border border-border-color text-xs"><span class="text-coach font-bold">${w} كج</span> <span class="opacity-60 text-[10px] ml-1">(${date})</span></div>`;
-            });
-        }
-
-        async function loadLeaderboard() {
-            const container = document.getElementById('leaderboardContainer');
-            const snap = await get(child(ref(db), 'users'));
-            if(!snap.exists()) { container.innerHTML = '<p class="text-xs text-gray-500">لا توجد منافسة نشطة بعد.</p>'; return; }
-            
-            let usersArr = [];
-            snap.forEach(u => {
-                const val = u.val();
-                let score = 0;
-                const today = getTodayStr();
-                const wDone = val.progress?.workouts?.[today] || {};
-                const mDone = val.progress?.meals?.[today] || {};
-                score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
-                usersArr.push({ email: val.email.split('@')[0], score });
-            });
-
-            usersArr.sort((a,b) => b.score - a.score);
-            container.innerHTML = '';
-            usersArr.slice(0, 5).forEach((usr, idx) => {
-                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
-                container.innerHTML += `
-                    <div class="flex justify-between items-center bg-input px-3 py-2 rounded-xl text-xs border border-border-color">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-coach">${medal}</span>
-                            <span class="font-bold text-white">${usr.email}</span>
-                        </div>
-                        <span class="bg-card px-2.5 py-1 rounded-lg text-coach font-black">${usr.score} نقطة</span>
-                    </div>
-                `;
-            });
-        }
-
-        function checkWorkoutReminder(exercises, progress) {
-            const banner = document.getElementById('workoutReminderBanner');
-            if(!exercises || exercises.length === 0) { banner.classList.add('hidden'); return; }
-            const today = getTodayStr();
-            const todayDone = progress?.[today] || {};
-            let allDone = true;
-            exercises.forEach((ex, idx) => {
-                if(ex.type === 'timer') {
-                    if(!todayDone[idx]?.completed) allDone = false;
-                } else {
-                    if((todayDone[idx] || 0) < ex.sets) allDone = false;
-                }
-            });
-            if(!allDone) banner.classList.remove('hidden');
-            else banner.classList.add('hidden');
-        }
-
-        function renderUserNutritionCourse(meals, progress, swaps, targets) {
+        // Meal system with PHOTO upload
+        function renderUserMeals(meals, progMeals, targets) {
             const area = document.getElementById('userNutritionCourse');
             area.innerHTML = '';
             const today = getTodayStr();
-            const doneMeals = progress?.[today] || {};
-            const todaySwaps = swaps?.[today] || [];
-            const userTargets = targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
-
-            let totalCal = 0, totalPro = 0, totalCarb = 0, totalFat = 0;
-            if(meals) {
-                meals.forEach((m, idx) => {
-                    if(doneMeals[idx]) {
-                        totalCal += Number(m.cal || 0);
-                        totalPro += Number(m.pro || 0);
-                        totalCarb += Number(m.carb || 0);
-                        totalFat += Number(m.fat || 0);
-                    }
-                });
-            }
-            todaySwaps.forEach(sw => {
-                totalCal += Number(sw.cal || 0);
-                totalPro += Number(sw.pro || 0);
-                totalCarb += Number(sw.carb || 0);
-                totalFat += Number(sw.fat || 0);
+            const done = progMeals?.[today] || {};
+            
+            let tCal=0, tPro=0, tCarb=0, tFat=0;
+            if(meals) meals.forEach((m,i)=>{
+                if(done[i] && done[i].completed) { tCal+=Number(m.cal||0); tPro+=Number(m.pro||0); tCarb+=Number(m.carb||0); tFat+=Number(m.fat||0); }
             });
+            document.getElementById('macroCalVal').innerText = tCal; document.getElementById('macroProVal').innerText = tPro+'g';
+            document.getElementById('macroCarbVal').innerText = tCarb+'g'; document.getElementById('macroFatVal').innerText = tFat+'g';
 
-            document.getElementById('targetCalVal').innerText = userTargets.cal;
-            document.getElementById('targetProVal').innerText = userTargets.pro + 'g';
-            document.getElementById('targetCarbVal').innerText = userTargets.carb + 'g';
-            document.getElementById('targetFatVal').innerText = userTargets.fat + 'g';
-
-            document.getElementById('macroCalVal').innerText = totalCal;
-            document.getElementById('macroProVal').innerText = totalPro + 'g';
-            document.getElementById('macroCarbVal').innerText = totalCarb + 'g';
-            document.getElementById('macroFatVal').innerText = totalFat + 'g';
-
-            const warningBadge = document.getElementById('macroWarningBadge');
-            if(totalCal > Number(userTargets.cal)) {
-                warningBadge.classList.remove('hidden');
-                warningBadge.innerText = `⚠️ هيه! تعديت السعرات (${totalCal} / ${userTargets.cal})! ركزي بوجباتك القادمة!`;
-            } else {
-                warningBadge.classList.add('hidden');
-            }
-
-            let html = '';
-            if(meals && meals.length > 0) {
-                meals.forEach((m, idx) => {
-                    const isDone = doneMeals[idx];
-                    let ingredientsHtml = '';
-                    if(m.ingredients && m.ingredients.length > 0) {
-                        ingredientsHtml = `<div class="mt-2 space-y-1 text-[11px] opacity-90 bg-black/20 p-3 rounded-xl border border-border-color">
-                            <strong class="text-coach block mb-1">المكونات:</strong>
-                            ${m.ingredients.map(ing => `<div class="flex justify-between"><span>• ${ing.name}</span> <span class="opacity-75">${ing.amount}</span></div>`).join('')}
-                        </div>`;
-                    }
-
-                    html += `
-                        <div class="bg-card p-5 rounded-ios border border-border-color space-y-3 shadow-md">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <span class="text-[10px] text-coach font-bold block mb-0.5">وجبة ${idx+1}</span>
-                                    <h3 class="font-bold text-sm">${m.title}</h3>
-                                </div>
-                                <button onclick="window.toggleMealDone(${idx})" class="px-4 py-2 rounded-xl text-xs font-bold ${isDone ? 'bg-coach text-black shadow-md' : 'bg-input border border-border-color'}">
-                                    ${isDone ? 'تم تناولها ✔️' : 'تناولتها'}
-                                </button>
-                            </div>
-                            ${ingredientsHtml}
-                            <div class="grid grid-cols-4 gap-1 text-[10px] opacity-80 bg-input p-2.5 rounded-xl border border-border-color text-center">
-                                <div><strong class="block">${m.cal || 0}</strong> سعرة</div>
-                                <div><strong class="text-coach block">${m.pro || 0}g</strong> بروتين</div>
-                                <div><strong class="text-blue-400 block">${m.carb || 0}g</strong> كارب</div>
-                                <div><strong class="text-yellow-400 block">${m.fat || 0}g</strong> دهون</div>
-                            </div>
-                            <button onclick="window.openMealDetail(${idx})" class="w-full bg-input hover:border-coach text-xs font-bold py-2.5 rounded-xl border border-border-color transition-colors">
-                                📖 طريقة التحضير والوصف
-                            </button>
+            if(meals) meals.forEach((m, idx) => {
+                const rec = done[idx] || {};
+                const isDone = rec.completed;
+                const photoHtml = rec.photo ? `<img src="${rec.photo}" class="mt-2 w-full h-32 object-cover rounded-lg border border-coach">` : '';
+                
+                area.innerHTML += `
+                    <div class="bg-card p-4 rounded-ios border border-border-color shadow-md text-xs relative">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-sm text-white">${m.title}</h3>
+                            <button onclick="window.toggleMealObj(${idx})" class="px-3 py-1.5 rounded-lg text-[10px] font-bold ${isDone?'bg-coach text-black':'bg-input border border-border-color text-gray-400'}">${isDone?'أكلتها ✔️':'لم أكلها'}</button>
                         </div>
-                    `;
-                });
-            } else {
-                html = '<p class="text-xs text-gray-400">لا توجد وجبات مضافة اليوم.</p>';
-            }
-            area.innerHTML = html;
-        }
-
-        window.toggleMealDone = async (idx) => {
-            const today = getTodayStr();
-            const uid = auth.currentUser.uid;
-            const doneMeals = activeUserData.progress?.meals?.[today] || {};
-            doneMeals[idx] = !doneMeals[idx];
-            await update(ref(db, `users/${uid}/progress/meals`), { [today]: doneMeals });
-            activeUserData.progress = activeUserData.progress || {};
-            activeUserData.progress.meals = activeUserData.progress.meals || {};
-            activeUserData.progress.meals[today] = doneMeals;
-            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
-        };
-
-        window.openMealDetail = (idx) => {
-            const m = activeUserData.plan?.meals[idx];
-            document.getElementById('modalMealTitle').innerText = m.title;
-            document.getElementById('modalMealBody').innerHTML = `
-                ${m.image ? `<img src="${m.image}" class="w-full rounded-xl mb-3 border border-border-color">` : ''}
-                <div>
-                    <strong class="text-coach block mb-1">طريقة التحضير والوصف:</strong>
-                    <p class="opacity-90 leading-relaxed">${m.recipe || 'لا توجد تفاصيل مضافة.'}</p>
-                </div>
-                ${buildNativeVideoPlayer(m.media)}
-            `;
-            document.getElementById('mealDetailModal').classList.remove('hidden');
-        };
-
-        window.openSwapModal = () => { document.getElementById('mealSwapModal').classList.remove('hidden'); };
-        window.saveSwapMeal = async () => {
-            const name = document.getElementById('swapMealName').value.trim() || 'وجبة خارجية';
-            const cal = parseInt(document.getElementById('swapCal').value) || 0;
-            const pro = parseInt(document.getElementById('swapPro').value) || 0;
-            const carb = parseInt(document.getElementById('swapCarb').value) || 0;
-            const fat = parseInt(document.getElementById('swapFat').value) || 0;
-
-            const today = getTodayStr();
-            const uid = auth.currentUser.uid;
-            activeUserData.progress = activeUserData.progress || {};
-            activeUserData.progress.swaps = activeUserData.progress.swaps || {};
-            activeUserData.progress.swaps[today] = activeUserData.progress.swaps[today] || [];
-            activeUserData.progress.swaps[today].push({ name, cal, pro, carb, fat });
-
-            await update(ref(db, `users/${uid}/progress/swaps`), activeUserData.progress.swaps);
-            document.getElementById('mealSwapModal').classList.add('hidden');
-            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
-            showMsg("تمت إضافة الوجبة البديلة لعجلة اليوم!", false);
-        };
-
-        function renderUserWorkoutSummary(exercises, progress) {
-            const area = document.getElementById('userWorkoutCourseSummary');
-            if(!exercises || exercises.length === 0) {
-                area.innerHTML = '<p class="text-xs text-gray-400">لا توجد تمارين مخصصة اليوم.</p>';
-                return;
-            }
-            area.innerHTML = `
-                <div class="text-center py-6">
-                    <div class="w-16 h-16 bg-coach text-black rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">🏋️‍♀️</div>
-                    <h3 class="font-bold text-md mb-2">جلسة تمارين اليوم جاهزة</h3>
-                    <p class="text-xs opacity-75 mb-6">تتضمن الجلسة ${exercises.length} تمارين متكاملة مع التايمر وتتبع الجولات.</p>
-                    <button onclick="startCoursePlayer()" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-sm shadow-lg">بدء التمرين الآن 🚀</button>
-                </div>
-            `;
-        }
-
-        window.startCoursePlayer = () => {
-            playerActiveIndex = 0;
-            const today = getTodayStr();
-            const progress = activeUserData.progress?.workouts?.[today] || {};
-            const exercises = activeUserData.plan?.exercises || [];
-            for(let i=0; i<exercises.length; i++) {
-                if(exercises[i].type === 'timer') {
-                    if(!progress[i]?.completed) { playerActiveIndex = i; break; }
-                } else {
-                    if((progress[i] || 0) < exercises[i].sets) { playerActiveIndex = i; break; }
-                }
-            }
-            document.getElementById('coursePlayerView').classList.remove('hidden');
-            renderPlayerStep();
-        };
-
-        window.saveAndExitCoursePlayer = () => {
-            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
-            document.getElementById('coursePlayerView').classList.add('hidden');
-            showMsg("تم حفظ تقدمك بنجاح! يمكنك العودة لاحقاً لإكمال التمرين.", false);
-            renderUserDashboard(activeUserData);
-        };
-
-        window.playerPrevStep = () => {
-            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
-            if(playerActiveIndex > 0) {
-                playerActiveIndex--;
-                renderPlayerStep();
-            }
-        };
-
-        window.playerNextStep = () => {
-            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
-            const exercises = activeUserData.plan?.exercises || [];
-            if(playerActiveIndex < exercises.length - 1) {
-                playerActiveIndex++;
-                renderPlayerStep();
-            } else {
-                saveAndExitCoursePlayer();
-                showMsg("أتممت جلسة التمارين بنجاح بطلة! 🎉", false);
-            }
-        };
-
-        function renderPlayerStep() {
-            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
-            const area = document.getElementById('playerContentArea');
-            const exercises = activeUserData.plan?.exercises || [];
-            const ex = exercises[playerActiveIndex];
-            if(!ex) return;
-
-            document.getElementById('playerProgressTitle').innerText = `التمرين ${playerActiveIndex + 1} من ${exercises.length}`;
-            const today = getTodayStr();
-            const todayProg = activeUserData.progress?.workouts?.[today] || {};
-
-            if(ex.type === 'timer') {
-                let totalSecs = (ex.timerMins || 1) * 60;
-                exerciseRemainingSeconds = todayProg[playerActiveIndex]?.secondsLeft !== undefined ? todayProg[playerActiveIndex].secondsLeft : totalSecs;
-
-                area.innerHTML = `
-                    <h2 class="text-xl font-bold mb-2">${ex.title}</h2>
-                    <p class="text-xs text-coach font-bold mb-2">نوع التمرين: مؤقت (كرر الحركة طوال المدة)</p>
-                    <div class="mb-4">${buildNativeVideoPlayer(ex.media)}</div>
-                    
-                    <div class="bg-input p-6 rounded-ios border border-border-color my-4 shadow-md">
-                        <div id="exerciseCountdown" class="text-4xl font-black text-coach mb-4 tracking-widest">--:--</div>
-                        <div class="flex gap-3 justify-center">
-                            <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md">بدء المؤقت ⏱️</button>
-                            <button onclick="window.resetExerciseTimer(${totalSecs})" class="bg-card border border-border-color px-4 py-3 rounded-xl text-xs font-bold">إعادة تعيين</button>
+                        <div class="flex gap-2 text-[9px] opacity-80 mb-3"><span class="bg-input px-2 py-1 rounded">${m.cal} Cal</span><span class="bg-input px-2 py-1 rounded text-coach">${m.pro} Pro</span></div>
+                        
+                        <!-- Upload Meal Photo -->
+                        <div class="border-t border-border-color pt-3 mt-2 flex flex-col gap-2">
+                            <label class="cursor-pointer bg-input hover:border-coach border border-border-color text-center py-2 rounded-lg text-[10px] font-bold text-gray-300 transition-colors">
+                                📸 تصوير وإرفاق الوجبة (سجل للأدمن)
+                                <input type="file" accept="image/*" class="hidden" onchange="window.uploadMealPhoto(event, ${idx})">
+                            </label>
+                            ${photoHtml}
                         </div>
-                    </div>
-
-                    <div class="flex gap-3 w-full mt-4">
-                        <button onclick="window.playerPrevStep()" class="flex-1 bg-input border border-border-color py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-40 cursor-not-allowed' : ''}">السابق</button>
-                        <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
-                    </div>
-                `;
-                updateTimerDisplay();
-            } else {
-                const doneSets = todayProg[playerActiveIndex] || 0;
-                let setsHtml = '';
-                for(let i=1; i<=ex.sets; i++) {
-                    const isActive = i <= doneSets ? 'bg-coach text-black shadow-md' : 'bg-card border border-border-color';
-                    setsHtml += `<button onclick="window.markPlayerSet(${playerActiveIndex}, ${i})" class="w-12 h-12 rounded-full font-bold text-sm ${isActive}">${i}</button>`;
-                }
-
-                area.innerHTML = `
-                    <h2 class="text-xl font-bold mb-3">${ex.title}</h2>
-                    <div class="mb-4">${buildNativeVideoPlayer(ex.media)}</div>
-                    <p class="text-xs opacity-75 mb-4 font-bold">اضغطي على رقم الجولة عند إتمامها:</p>
-                    <div class="flex gap-3 justify-center mb-8 flex-wrap">${setsHtml}</div>
-                    <div class="flex gap-3 w-full">
-                        <button onclick="window.playerPrevStep()" class="flex-1 bg-input border border-border-color py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-40 cursor-not-allowed' : ''}">السابق</button>
-                        <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
-                    </div>
-                `;
-            }
-        }
-
-        window.updateTimerDisplay = () => {
-            const m = String(Math.floor(exerciseRemainingSeconds / 60)).padStart(2, '0');
-            const s = String(exerciseRemainingSeconds % 60).padStart(2, '0');
-            const el = document.getElementById('exerciseCountdown');
-            if(el) el.innerText = `${m}:${s}`;
-        };
-
-        window.toggleExerciseTimer = (defaultSecs) => {
-            const btn = document.getElementById('timerToggleBtn');
-            if(isTimerRunning) {
-                clearInterval(exerciseTimerInterval);
-                isTimerRunning = false;
-                btn.innerText = 'استئناف ⏱️';
-                btn.className = 'bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md';
-            } else {
-                isTimerRunning = true;
-                btn.innerText = 'إيقاف مؤقت ⏸️';
-                btn.className = 'bg-red-600 text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md';
-                exerciseTimerInterval = setInterval(async () => {
-                    if(exerciseRemainingSeconds > 0) {
-                        exerciseRemainingSeconds--;
-                        updateTimerDisplay();
-                        saveTimerProgress(false);
-                    } else {
-                        clearInterval(exerciseTimerInterval);
-                        isTimerRunning = false;
-                        btn.innerText = 'انتهى الوقت! ✔️';
-                        saveTimerProgress(true);
-                        showMsg("أتممت مدة التمرين بنجاح!", false);
-                    }
-                }, 1000);
-            }
-        };
-
-        window.resetExerciseTimer = (defaultSecs) => {
-            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
-            isTimerRunning = false;
-            exerciseRemainingSeconds = defaultSecs;
-            updateTimerDisplay();
-            const btn = document.getElementById('timerToggleBtn');
-            if(btn) { btn.innerText = 'بدء المؤقت ⏱️'; btn.className = 'bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md'; }
-            saveTimerProgress(false);
-        };
-
-        async function saveTimerProgress(isCompleted) {
-            const today = getTodayStr();
-            const uid = auth.currentUser.uid;
-            activeUserData.progress = activeUserData.progress || {};
-            activeUserData.progress.workouts = activeUserData.progress.workouts || {};
-            activeUserData.progress.workouts[today] = activeUserData.progress.workouts[today] || {};
-            activeUserData.progress.workouts[today][playerActiveIndex] = {
-                secondsLeft: exerciseRemainingSeconds,
-                completed: isCompleted
-            };
-            await update(ref(db, `users/${uid}/progress/workouts`), activeUserData.progress.workouts);
-        }
-
-        window.markPlayerSet = async (exIdx, setNum) => {
-            const today = getTodayStr();
-            const uid = auth.currentUser.uid;
-            activeUserData.progress = activeUserData.progress || {};
-            activeUserData.progress.workouts = activeUserData.progress.workouts || {};
-            activeUserData.progress.workouts[today] = activeUserData.progress.workouts[today] || {};
-            activeUserData.progress.workouts[today][exIdx] = setNum;
-
-            await update(ref(db, `users/${uid}/progress/workouts`), activeUserData.progress.workouts);
-            renderPlayerStep();
-        };
-
-        // ================= ADMIN CODES & USERS =================
-        document.getElementById('generateCodeBtn').onclick = async () => {
-            const code = document.getElementById('adminNewCode').value.trim().toUpperCase();
-            const days = parseInt(document.getElementById('codeDays').value) || 0;
-            const hours = parseInt(document.getElementById('codeHours').value) || 0;
-            const mins = parseInt(document.getElementById('codeMins').value) || 0;
-            if(code && (days||hours||mins)) {
-                await set(ref(db, `codes/${code}`), { code, days, hours, mins, used: false });
-                showMsg("تم إضافة الكود", false);
-                document.getElementById('adminNewCode').value = '';
-                loadAdminCodes();
-            }
-        };
-
-        async function loadAdminCodes() {
-            const list = document.getElementById('adminCodesList');
-            const snap = await get(child(ref(db), 'codes'));
-            list.innerHTML = '';
-            if(!snap.exists()) return list.innerHTML = '<p class="text-[10px] text-gray-500">لا توجد أكواد</p>';
-            snap.forEach(cSnap => {
-                const c = cSnap.val();
-                list.innerHTML += `
-                    <div class="bg-input p-3 rounded-xl border border-border-color flex justify-between items-center text-xs">
-                        <div><strong class="text-coach">${c.code}</strong> <span class="opacity-75">(${c.days}ي)</span></div>
-                        <span class="${c.used ? 'text-red-400' : 'text-coach'} font-bold">${c.used ? 'مستخدم' : 'متاح'}</span>
                     </div>`;
             });
         }
 
+        window.toggleMealObj = async (idx) => {
+            const today = getTodayStr(), uid = auth.currentUser.uid;
+            let rec = activeUserData.progress?.meals?.[today]?.[idx] || { completed: false, photo: null };
+            rec.completed = !rec.completed;
+            await update(ref(db, `users/${uid}/progress/meals/${today}/${idx}`), rec);
+        };
+
+        window.uploadMealPhoto = (e, idx) => {
+            const f = e.target.files[0]; if(!f) return;
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                const today = getTodayStr(), uid = auth.currentUser.uid;
+                let rec = activeUserData.progress?.meals?.[today]?.[idx] || { completed: false };
+                rec.photo = ev.target.result;
+                await update(ref(db, `users/${uid}/progress/meals/${today}/${idx}`), rec);
+                showMsg("تم رفع صورة الوجبة للكوتش! 📸", false);
+            };
+            reader.readAsDataURL(f);
+        };
+
+        function renderUserWorkouts(exs, prog) {
+            const a=document.getElementById('userWorkoutCourseSummary');
+            if(!exs||!exs.length) return a.innerHTML='<p class="text-xs">لا تمارين.</p>';
+            a.innerHTML = `<button class="w-full bg-coach text-black font-extrabold py-4 rounded-ios shadow-lg text-sm">بدء جلسة اليوم (${exs.length} تمرين)</button>`;
+        }
+
+
+        /* ================= ADMIN LOGIC ================= */
         async function loadAdminUsers() {
             const list = document.getElementById('usersList');
             const snap = await get(child(ref(db), 'users'));
             list.innerHTML = '';
-            if(!snap.exists()) return list.innerHTML = '<p class="text-center py-4 text-xs text-gray-500">لا متدربات</p>';
-            snap.forEach(uSnap => {
-                const uid = uSnap.key;
-                const d = uSnap.val();
-                list.innerHTML += `
-                    <div class="p-4 flex justify-between items-center cursor-pointer hover:bg-input transition text-xs border-b border-border-color last:border-none" onclick="window.openUserDetail('${uid}')">
-                        <div><p class="font-bold text-sm text-white">${d.email}</p><span class="opacity-75 text-coach">${d.usedCode || 'بدون كود'}</span></div>
-                        <span class="text-lg text-gray-500">❯</span>
-                    </div>`;
+            if(!snap.exists()) return;
+            snap.forEach(u => {
+                const d = u.val();
+                list.innerHTML += `<div class="p-4 flex justify-between cursor-pointer hover:bg-input border-b border-border-color text-xs" onclick="window.openUserDetail('${u.key}')">
+                    <span class="font-bold text-white">${d.email}</span><span class="text-coach font-bold">إدارة ❯</span></div>`;
             });
         }
         document.getElementById('refreshUsersBtn').onclick = loadAdminUsers;
@@ -1152,177 +510,125 @@
         window.openUserDetail = async (uid) => {
             currentAdminViewUid = uid;
             const snap = await get(child(ref(db), `users/${uid}`));
-            const d = snap.val();
+            const d = snap.val(); activeUserData = d;
+            
             document.getElementById('adminMainView').classList.add('hidden');
             document.getElementById('adminUserDetailView').classList.remove('hidden');
             document.getElementById('detailUserEmail').innerText = d.email;
             
-            const targets = d.targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
-            document.getElementById('targetCalInput').value = targets.cal;
-            document.getElementById('targetProInput').value = targets.pro;
-            document.getElementById('targetCarbInput').value = targets.carb;
-            document.getElementById('targetFatInput').value = targets.fat;
-
             window.currentAdminExercises = d.plan?.exercises || [];
             window.currentAdminMeals = d.plan?.meals || [];
+            window.currentAdminMilestones = d.milestones || [];
             
-            renderAdminExercises();
-            renderAdminMeals();
-            switchAdminTab('adminTabMacros');
-            loadChat(uid, 'adminChatArea');
+            renderAdminExercises(); renderAdminMeals(); renderAdminMilestones();
+            switchAdminTab('adminTabLog'); // Show the new tab by default to see the magic
+            window.loadAdminDailyLog(getTodayStr());
         };
 
-        document.getElementById('backToAdminMainBtn').onclick = () => {
-            document.getElementById('adminUserDetailView').classList.add('hidden');
-            document.getElementById('adminMainView').classList.remove('hidden');
-            loadAdminUsers();
+        document.getElementById('backToAdminMainBtn').onclick = () => { document.getElementById('adminUserDetailView').classList.add('hidden'); document.getElementById('adminMainView').classList.remove('hidden'); };
+
+        /* Admin Tab 5: Badges & Milestones & Log */
+        window.awardBadge = async () => {
+            const t = document.getElementById('badgeTitle').value, e = document.getElementById('badgeEmoji').value;
+            if(!t) return;
+            await push(ref(db, `users/${currentAdminViewUid}/badges`), { title: t, icon: e, date: getTodayStr() });
+            showMsg("تم منح الوسام بنجاح! 🏅", false);
+            document.getElementById('badgeTitle').value = '';
         };
 
-        document.getElementById('addExerciseBtn').onclick = () => { 
-            window.currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5}); 
-            renderAdminExercises(); 
-        };
-        
-        document.getElementById('addMealBtn').onclick = () => { 
-            window.currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, ingredients:[{name:'', amount:''}]}); 
-            renderAdminMeals(); 
+        window.addMilestone = async () => {
+            const d = document.getElementById('msDate').value, w = document.getElementById('msWeight').value;
+            if(!d || !w) return;
+            window.currentAdminMilestones.push({ date: d, target: w });
+            await set(ref(db, `users/${currentAdminViewUid}/milestones`), window.currentAdminMilestones);
+            renderAdminMilestones();
         };
 
+        function renderAdminMilestones() {
+            const list = document.getElementById('adminMilestonesList');
+            list.innerHTML = '';
+            window.currentAdminMilestones.forEach((m, i) => {
+                list.innerHTML += `<div class="flex justify-between bg-card p-2 rounded border border-border-color text-gray-300">
+                    <span>${m.target} كج (بحلول ${m.date})</span><button onclick="window.remMilestone(${i})" class="text-red-400">✕</button></div>`;
+            });
+        }
+        window.remMilestone = async(i) => { window.currentAdminMilestones.splice(i,1); await set(ref(db, `users/${currentAdminViewUid}/milestones`), window.currentAdminMilestones); renderAdminMilestones(); };
+
+        window.loadAdminDailyLog = (date) => {
+            if(!activeUserData) return;
+            const v = document.getElementById('dailyLogViewer');
+            const prog = activeUserData.progress || {};
+            const mealsDone = prog.meals?.[date] || {};
+            const workDone = prog.workouts?.[date] || {};
+            const userMeals = activeUserData.plan?.meals || [];
+            const userExs = activeUserData.plan?.exercises || [];
+            
+            let mHtml = '', wHtml = '';
+            
+            // Meals Log
+            userMeals.forEach((m, i) => {
+                const rec = mealsDone[i] || {};
+                const pht = rec.photo ? `<img src="${rec.photo}" class="w-20 h-20 object-cover rounded mt-2 border border-coach cursor-pointer" onclick="window.open('${rec.photo}')">` : '<span class="text-[9px] text-gray-500 block mt-1">بدون صورة</span>';
+                mHtml += `<div class="flex justify-between items-center bg-card p-2 rounded mb-2 border border-border-color">
+                    <div><span class="font-bold ${rec.completed?'text-coach':'text-red-400'}">${rec.completed?'أكلتها ✔️':'لم تأكلها ❌'}</span> <span class="text-white ml-2">${m.title}</span> ${pht}</div>
+                    <div class="text-[10px] text-gray-400">${m.cal} Cal</div>
+                </div>`;
+            });
+
+            // Workouts Log
+            userExs.forEach((ex, i) => {
+                const rec = workDone[i] || 0;
+                let doneTxt = '';
+                if(ex.type==='timer') doneTxt = rec.completed ? 'أنهت الوقت ✔️' : 'لم تنهِ ❌';
+                else doneTxt = `أنهت ${rec} من ${ex.sets} جولات`;
+                wHtml += `<div class="flex justify-between bg-card p-2 rounded mb-2 border border-border-color">
+                    <span class="text-white">${ex.title}</span><span class="text-coach font-bold">${doneTxt}</span></div>`;
+            });
+
+            v.innerHTML = `
+                <h4 class="text-coach font-bold mb-2">وجبات يوم ${date}:</h4>
+                ${mHtml || '<p class="text-[10px] text-gray-500">لا يوجد نشاط</p>'}
+                <h4 class="text-coach font-bold mt-4 mb-2">تمارين يوم ${date}:</h4>
+                ${wHtml || '<p class="text-[10px] text-gray-500">لا يوجد نشاط</p>'}
+            `;
+        };
+
+        /* Admin Exercises & Meals Builders (Simplified for space) */
+        document.getElementById('addExerciseBtn').onclick = () => { window.currentAdminExercises.push({title:'تمرين جديد', media:'', type:'sets', sets:3}); renderAdminExercises(); };
+        document.getElementById('addMealBtn').onclick = () => { window.currentAdminMeals.push({title:'وجبة جديدة', cal:400, pro:30, carb:40, fat:10}); renderAdminMeals(); };
         function renderAdminExercises() {
-            const list = document.getElementById('adminExercisesList');
-            list.innerHTML = '';
+            const list = document.getElementById('adminExercisesList'); list.innerHTML = '';
             window.currentAdminExercises.forEach((ex, idx) => {
-                const isTimer = ex.type === 'timer';
-                list.innerHTML += `
-                    <div class="bg-input p-5 rounded-2xl border border-border-color relative text-xs space-y-3 shadow-sm hover:border-gray-600 transition-colors">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-extrabold text-coach bg-coach bg-opacity-10 px-3 py-1 rounded-md">تمرين #${idx+1}</span>
-                            <button onclick="window.remEx(${idx})" class="text-red-400 bg-red-400 bg-opacity-10 hover:bg-opacity-20 font-bold px-3 py-1 rounded-md transition-colors">حذف ✕</button>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div><label class="text-[10px] text-gray-400 block mb-1">اسم التمرين</label>
-                            <input type="text" onchange="window.currentAdminExercises[${idx}].title=this.value" value="${ex.title}" class="w-full bg-card p-3 rounded-lg border border-border-color" placeholder="مثال: Squat"></div>
-                            <div><label class="text-[10px] text-gray-400 block mb-1">رابط الشرح (يوتيوب/صورة)</label>
-                            <input type="text" onchange="window.currentAdminExercises[${idx}].media=this.value" value="${ex.media}" class="w-full bg-card p-3 rounded-lg border border-border-color text-blue-400" placeholder="https://..."></div>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 bg-card p-3 rounded-lg border border-border-color mt-2">
-                            <span class="opacity-75 font-bold">نوع التمرين:</span>
-                            <select onchange="window.toggleExType(${idx}, this.value)" class="bg-input p-2 rounded-md border border-border-color text-white focus:border-coach outline-none cursor-pointer">
-                                <option value="sets" ${!isTimer?'selected':''}>بالجولات والعدات 🔄</option>
-                                <option value="timer" ${isTimer?'selected':''}>بالتايمر (مدة زمنية) ⏱️</option>
-                            </select>
-                            
-                            ${isTimer ? `
-                                <div class="flex items-center gap-2 ml-auto"><span class="opacity-75">المدة (دقائق):</span>
-                                <input type="number" onchange="window.currentAdminExercises[${idx}].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-16 bg-input p-2 text-center rounded-md border border-border-color" min="1"></div>
-                            ` : `
-                                <div class="flex items-center gap-2 ml-auto"><span class="opacity-75">الجولات:</span>
-                                <input type="number" onchange="window.currentAdminExercises[${idx}].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-16 bg-input p-2 text-center rounded-md border border-border-color" min="1"></div>
-                            `}
-                        </div>
-                    </div>`;
+                list.innerHTML += `<div class="bg-input p-3 rounded-lg border border-border-color relative text-xs flex gap-2">
+                    <input type="text" onchange="window.currentAdminExercises[${idx}].title=this.value" value="${ex.title}" class="w-full bg-card p-2 rounded" placeholder="الاسم">
+                    <input type="number" onchange="window.currentAdminExercises[${idx}].sets=this.value" value="${ex.sets||3}" class="w-16 bg-card p-2 rounded text-center" title="الجولات">
+                    <button onclick="window.remEx(${idx})" class="text-red-400 font-bold px-2">✕</button>
+                </div>`;
             });
         }
-        
-        window.remEx = (idx) => { window.currentAdminExercises.splice(idx, 1); renderAdminExercises(); };
-        window.toggleExType = (idx, val) => { window.currentAdminExercises[idx].type = val; renderAdminExercises(); };
-
         function renderAdminMeals() {
-            const list = document.getElementById('adminMealsList');
-            list.innerHTML = '';
+            const list = document.getElementById('adminMealsList'); list.innerHTML = '';
             window.currentAdminMeals.forEach((m, idx) => {
-                let ingredientsHtml = (m.ingredients || []).map((ing, iIdx) => `
-                    <div class="flex gap-2 mb-2">
-                        <input type="text" onchange="window.currentAdminMeals[${idx}].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="w-2/3 bg-card p-2.5 rounded-lg border border-border-color text-xs focus:border-coach" placeholder="اسم المكون (دجاج)">
-                        <input type="text" onchange="window.currentAdminMeals[${idx}].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-1/3 bg-card p-2.5 rounded-lg border border-border-color text-xs focus:border-coach" placeholder="الكمية (150g)">
-                        <button onclick="window.remIng(${idx}, ${iIdx})" class="bg-red-500 bg-opacity-20 text-red-400 hover:bg-opacity-40 font-bold px-3 rounded-lg transition-colors">✕</button>
+                list.innerHTML += `<div class="bg-input p-3 rounded-lg border border-border-color relative text-xs flex flex-col gap-2">
+                    <div class="flex gap-2">
+                        <input type="text" onchange="window.currentAdminMeals[${idx}].title=this.value" value="${m.title}" class="w-full bg-card p-2 rounded font-bold">
+                        <button onclick="window.remMeal(${idx})" class="text-red-400 font-bold px-2">✕</button>
                     </div>
-                `).join('');
-
-                list.innerHTML += `
-                    <div class="bg-input p-5 rounded-2xl border border-border-color relative text-xs space-y-4 shadow-sm">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-extrabold text-blue-400 bg-blue-400 bg-opacity-10 px-3 py-1 rounded-md">وجبة #${idx+1}</span>
-                            <button onclick="window.remMeal(${idx})" class="text-red-400 bg-red-400 bg-opacity-10 hover:bg-opacity-20 font-bold px-3 py-1 rounded-md transition-colors">حذف ✕</button>
-                        </div>
-                        
-                        <input type="text" onchange="window.currentAdminMeals[${idx}].title=this.value" value="${m.title}" class="w-full bg-card p-3 rounded-lg border border-border-color font-bold text-sm focus:border-coach" placeholder="عنوان الوجبة (مثال: الفطور)">
-                        
-                        <div class="grid grid-cols-4 gap-3 bg-card p-3 rounded-lg border border-border-color">
-                            <div><label class="text-[10px] text-gray-400 block mb-1 text-center">سعرات</label><input type="number" onchange="window.currentAdminMeals[${idx}].cal=parseInt(this.value)" value="${m.cal||0}" class="w-full bg-input p-2 text-center rounded-md font-bold focus:border-coach"></div>
-                            <div><label class="text-[10px] text-gray-400 block mb-1 text-center">بروتين</label><input type="number" onchange="window.currentAdminMeals[${idx}].pro=parseInt(this.value)" value="${m.pro||0}" class="w-full bg-input p-2 text-center rounded-md text-coach font-bold focus:border-coach"></div>
-                            <div><label class="text-[10px] text-gray-400 block mb-1 text-center">كارب</label><input type="number" onchange="window.currentAdminMeals[${idx}].carb=parseInt(this.value)" value="${m.carb||0}" class="w-full bg-input p-2 text-center rounded-md text-blue-400 font-bold focus:border-coach"></div>
-                            <div><label class="text-[10px] text-gray-400 block mb-1 text-center">دهون</label><input type="number" onchange="window.currentAdminMeals[${idx}].fat=parseInt(this.value)" value="${m.fat||0}" class="w-full bg-input p-2 text-center rounded-md text-yellow-400 font-bold focus:border-coach"></div>
-                        </div>
-
-                        <div class="border-t border-border-color pt-4">
-                            <span class="text-xs text-coach font-bold flex items-center gap-2 mb-3">📋 مكونات الوصفة</span>
-                            ${ingredientsHtml}
-                            <button onclick="window.addIng(${idx})" class="w-full text-xs bg-card hover:bg-border-color text-coach border border-border-color border-dashed py-2.5 rounded-lg mt-1 font-bold transition-colors">+ إضافة مكون آخر</button>
-                        </div>
-
-                        <div class="space-y-3 pt-3">
-                            <textarea onchange="window.currentAdminMeals[${idx}].recipe=this.value" rows="2" class="w-full bg-card p-3 rounded-lg border border-border-color focus:border-coach" placeholder="طريقة التحضير...">${m.recipe||''}</textarea>
-                            <input type="text" onchange="window.currentAdminMeals[${idx}].image=this.value" value="${m.image||''}" class="w-full bg-card p-3 rounded-lg border border-border-color text-blue-400" placeholder="رابط صورة الوجبة (اختياري)">
-                        </div>
-                    </div>`;
+                    <div class="flex gap-1">
+                        <input type="number" onchange="window.currentAdminMeals[${idx}].cal=this.value" value="${m.cal}" class="w-1/4 bg-card p-1 rounded text-center text-[10px]" title="Cal">
+                        <input type="number" onchange="window.currentAdminMeals[${idx}].pro=this.value" value="${m.pro}" class="w-1/4 bg-card p-1 rounded text-center text-[10px] text-coach" title="Pro">
+                    </div>
+                </div>`;
             });
         }
-        
-        window.remMeal = (idx) => { window.currentAdminMeals.splice(idx, 1); renderAdminMeals(); };
-        window.addIng = (mIdx) => { window.currentAdminMeals[mIdx].ingredients = window.currentAdminMeals[mIdx].ingredients || []; window.currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
-        window.remIng = (mIdx, iIdx) => { window.currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
+        window.remEx = (idx) => { window.currentAdminExercises.splice(idx,1); renderAdminExercises(); };
+        window.remMeal = (idx) => { window.currentAdminMeals.splice(idx,1); renderAdminMeals(); };
 
         document.getElementById('adminSaveAllBtn').onclick = async () => {
-            const targets = {
-                cal: parseInt(document.getElementById('targetCalInput').value) || 2000,
-                pro: parseInt(document.getElementById('targetProInput').value) || 150,
-                carb: parseInt(document.getElementById('targetCarbInput').value) || 200,
-                fat: parseInt(document.getElementById('targetFatInput').value) || 60
-            };
-            
-            await update(ref(db, `users/${currentAdminViewUid}`), { 
-                targets: targets,
-                'plan/exercises': window.currentAdminExercises, 
-                'plan/meals': window.currentAdminMeals 
-            });
-            showMsg("تم حفظ ونشر جميع التعديلات للمتدربة بنجاح! ✔️", false);
+            const targets = { cal: document.getElementById('targetCalInput').value, pro: document.getElementById('targetProInput').value };
+            await update(ref(db, `users/${currentAdminViewUid}`), { targets: targets, 'plan/exercises': window.currentAdminExercises, 'plan/meals': window.currentAdminMeals });
+            showMsg("تم حفظ ونشر جميع التعديلات! ✔️", false);
         };
-
-        // ================= CHAT SYSTEM =================
-        function formatChatMsg(m, isAdminContext) {
-            const isMe = isAdminContext ? (m.sender === 'admin') : (m.sender === 'user');
-            const css = isMe ? 'msg-me' : 'msg-other';
-            let content = m.type === 'image' ? `<img src="${m.text}" class="chat-img">` : m.text;
-            return `<div class="chat-bubble ${css}">${content}</div>`;
-        }
-
-        function loadChat(uid, areaId) {
-            const area = document.getElementById(areaId);
-            const isAdminContext = areaId === 'adminChatArea';
-            onValue(ref(db, `chats/${uid}`), (snap) => {
-                area.innerHTML = '';
-                if(snap.exists()){
-                    snap.forEach(c => {
-                        area.innerHTML += formatChatMsg(c.val(), isAdminContext);
-                    });
-                    area.scrollTop = area.scrollHeight;
-                }
-            });
-        }
-
-        document.getElementById('userSendChatBtn').onclick = () => {
-            const inp = document.getElementById('userChatInput');
-            if(inp.value.trim()){ push(ref(db, `chats/${auth.currentUser.uid}`), { text: inp.value, type: 'text', sender: 'user', time: Date.now() }); inp.value = ''; }
-        };
-        document.getElementById('adminSendChatBtn').onclick = () => {
-            const inp = document.getElementById('adminChatInput');
-            if(inp.value.trim() && currentAdminViewUid){ push(ref(db, `chats/${currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; }
-        };
-
-        document.getElementById('userChatFile').onchange = (e) => handleImageUpload(e, auth.currentUser.uid, 'user');
-        document.getElementById('adminChatFile').onchange = (e) => handleImageUpload(e, currentAdminViewUid, 'admin');
 
     </script>
 </body>

@@ -85,7 +85,7 @@
             <div class="space-y-4">
                 <input type="email" id="emailInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full px-4 py-3.5 rounded-ios text-sm" placeholder="كلمة المرور">
-                <button id="mainAuthBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
+                <button id="mainAuthBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2 shadow-md">متابعة</button>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
             <p class="text-gray-400 text-xs mb-6">أدخلي كود الاشتراك الخاص بك لفتح المنصة.</p>
             <div class="space-y-4">
                 <input type="text" id="activationCodeInput" class="w-full px-4 py-4 rounded-ios text-xl text-center font-bold tracking-widest text-coach uppercase" placeholder="الكود هنا">
-                <button id="activateSubscriptionBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
+                <button id="activateSubscriptionBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md">تفعيل الاشتراك</button>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <textarea id="qNotes" rows="2" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="إصابات أو أمراض؟ (اختياري)"></textarea>
-                <button id="saveOnboardingBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
+                <button id="saveOnboardingBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
             </div>
         </div>
 
@@ -137,12 +137,18 @@
                     </div>
                 </div>
 
-                <!-- خانة جسمي (سجل الوزن، الطول، والتحقق من السمنة BMI) -->
+                <!-- خانة جسمي المحدثة (صورة الجسم التفاعلية، الطول، الوزن، زر سجل الأوزان التاريخي) -->
                 <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-4">
-                    <h2 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-coach">💪</span> جسمي وسجل الوزن</h2>
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-coach">💪</span> جسمي وسجل الأوزان</h2>
                     
                     <div id="weightRoastBanner" class="hidden bg-red-500/20 border border-red-500 p-3 rounded-xl text-xs text-red-400 font-bold">
-                        ⚠️ انتبهي! وزنك زاد عن المرة السابقة! وين الالتزام؟ يلا شدّي حيلك ورجعي للمسار الصحيح! 💪
+                        ⚠️ انتبهي! وزنك زاد عن القياس السابق! وين الالتزام؟ يلا شدّي حيلك ورجعي للمسار الصحيح! 💪
+                    </div>
+
+                    <!-- تمثيل بصري تفاعلي لشكل الجسم بناءً على الوزن والطول -->
+                    <div class="bg-input p-4 rounded-2xl border border-border-color flex flex-col items-center justify-center text-center">
+                        <div id="bodyVisualAvatar" class="w-20 h-20 rounded-full bg-coach/20 border-2 border-coach flex items-center justify-center text-3xl mb-2 shadow-inner transition-all duration-500">🧍‍♀️</div>
+                        <span id="bodyVisualStatus" class="text-xs font-bold text-coach">أدخلي طولك ووزنك لعرض التحليل البصري</span>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -156,7 +162,10 @@
                         </div>
                     </div>
                     
-                    <button id="updateProgressBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-xs shadow-md">تسجيل الوزن وفحص الحالة البنية</button>
+                    <div class="flex gap-2">
+                        <button id="updateProgressBtn" class="flex-grow bg-coach text-black font-extrabold py-3.5 rounded-ios text-xs shadow-md">تسجيل قياس جديد 📌</button>
+                        <button onclick="openWeightHistoryModal()" class="bg-input border border-border-color text-coach font-bold px-4 py-3.5 rounded-ios text-xs hover:border-coach">📜 سجل الأوزان</button>
+                    </div>
 
                     <!-- بطاقة حالة الجسم وكتلة الجسم BMI -->
                     <div id="bmiResultCard" class="hidden bg-input p-4 rounded-xl border border-border-color space-y-1 text-xs">
@@ -165,14 +174,9 @@
                             <span id="bmiValueText" class="font-black text-coach text-sm">--</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-400">حالة الوزن:</span>
+                            <span class="text-gray-400">حالة الجسم:</span>
                             <span id="bmiStatusText" class="font-bold text-white">--</span>
                         </div>
-                    </div>
-
-                    <div class="mt-2">
-                        <span class="text-[11px] text-gray-400 block mb-1">سجل أوزانك السابقة:</span>
-                        <div id="weightHistoryList" class="flex gap-2 flex-wrap"></div>
                     </div>
                 </div>
 
@@ -195,6 +199,21 @@
                     <div class="w-full bg-input rounded-full h-2.5">
                         <div id="timelineBar" class="bg-coach h-2.5 rounded-full transition-all duration-1000" style="width: 0%;"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- نافذة سجل الأوزان والقياسات التاريخية المنبثقة -->
+            <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
+                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-border-color my-auto space-y-4 shadow-2xl">
+                    <div class="flex justify-between items-center border-b border-border-color pb-3">
+                        <h3 class="text-sm font-extrabold text-white flex items-center gap-2">📜 سجل الأوزان والقياسات التاريخية</h3>
+                        <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="text-gray-400 font-bold text-lg">✕</button>
+                    </div>
+                    <p class="text-[11px] text-gray-400">هنا تظهر كافة قياساتك السابقة بالتواريخ والأوزان المسجلة:</p>
+                    <div id="modalWeightHistoryList" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- يتم تعبئتها ديناميكياً -->
+                    </div>
+                    <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="w-full bg-coach text-black font-bold py-3 rounded-ios text-xs">إغلاق</button>
                 </div>
             </div>
 
@@ -594,6 +613,9 @@
             const targetDate = new Date();
             targetDate.setDate(targetDate.getDate() + targetDays);
 
+            const initialHistory = {};
+            initialHistory[new Date().toLocaleString()] = weight;
+
             await update(ref(db, `users/${auth.currentUser.uid}`), {
                 onboardingCompleted: true,
                 profile: { goal, weight, height, notes },
@@ -604,7 +626,7 @@
                     targetDate: targetDate.toISOString()
                 },
                 progress: {
-                    weightHistory: { [getTodayStr()]: weight },
+                    weightHistory: initialHistory,
                     currentWeight: weight
                 }
             });
@@ -613,7 +635,7 @@
             showSection('userDashboard');
         };
 
-        // تسجيل الوزن وفحص السمنة وكتلة الجسم BMI
+        // تسجيل الوزن والقياس التاريخي وفحص السمنة وتحديث صورة الجسم
         document.getElementById('updateProgressBtn').onclick = async () => {
             const newW = parseFloat(document.getElementById('userCurrentWeight').value);
             const newH = parseFloat(document.getElementById('userHeightInput').value) || activeUserData.profile?.height || 160;
@@ -621,32 +643,37 @@
 
             const uid = auth.currentUser.uid;
             const weightHistory = activeUserData.progress?.weightHistory || {};
-            const dates = Object.keys(weightHistory).sort();
+            const dates = Object.keys(weightHistory);
             let lastWeight = activeUserData.profile?.weight || newW;
             if(dates.length > 0) {
                 lastWeight = weightHistory[dates[dates.length - 1]];
             }
 
-            weightHistory[getTodayStr()] = newW;
+            // تسجيل بختم التاريخ والوقت لتعدد القياسات بدقة
+            const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
+            weightHistory[timestamp] = newW;
+
             activeUserData.progress = activeUserData.progress || {};
             activeUserData.progress.weightHistory = weightHistory;
             activeUserData.progress.currentWeight = newW;
             activeUserData.profile = activeUserData.profile || {};
             activeUserData.profile.height = newH;
+            activeUserData.profile.weight = newW;
 
-            // حساب مؤشر كتلة الجسم BMI = الوزن (كج) / (الطول بالمتر)^2
             const heightM = newH / 100;
             const bmi = (newW / (heightM * heightM)).toFixed(1);
             let bmiStatus = "";
-            if (bmi < 18.5) bmiStatus = "نحافة (تحتاجين لزيادة الوزن قليلاً)";
-            else if (bmi >= 18.5 && bmi < 25) bmiStatus = "وزن مثالي ورائع! 🌟";
-            else if (bmi >= 25 && bmi < 30) bmiStatus = "زيادة وزن (فوق المثالي)";
-            else bmiStatus = "سمنة (تستدعي الالتزام بالخطة للنزول)";
+            let avatarEmoji = "🧍‍♀️";
+            if (bmi < 18.5) { bmiStatus = "نحافة (تحتاجين لزيادة الوزن قليلاً)"; avatarEmoji = "🏃‍♀️"; }
+            else if (bmi >= 18.5 && bmi < 25) { bmiStatus = "وزن مثالي ورائع! 🌟"; avatarEmoji = "💃"; }
+            else if (bmi >= 25 && bmi < 30) { bmiStatus = "زيادة وزن (فوق المثالي)"; avatarEmoji = "👩‍🦰"; }
+            else { bmiStatus = "سمنة (تستدعي الالتزام بالخطة للنزول)"; avatarEmoji = "🧘‍♀️"; }
 
-            const bmiCard = document.getElementById('bmiResultCard');
-            bmiCard.classList.remove('hidden');
+            document.getElementById('bmiResultCard').classList.remove('hidden');
             document.getElementById('bmiValueText').innerText = bmi;
             document.getElementById('bmiStatusText').innerText = bmiStatus;
+            document.getElementById('bodyVisualAvatar').innerText = avatarEmoji;
+            document.getElementById('bodyVisualStatus').innerText = `حالة الجسم الحالية: ${bmiStatus}`;
 
             await update(ref(db, `users/${uid}/progress`), activeUserData.progress);
             await update(ref(db, `users/${uid}/profile`), activeUserData.profile);
@@ -657,9 +684,28 @@
                 showMsg("وزنك زاد! شوفي التنبيه فوق 💪", true);
             } else {
                 roastBanner.classList.add('hidden');
-                showMsg("ممتاز! تم تحديث سجلك بنجاح 🌟", false);
+                showMsg("ممتاز! تم تسجيل القياس وحفظه في السجل التاريخي 🌟", false);
             }
             renderUserDashboard(activeUserData);
+        };
+
+        window.openWeightHistoryModal = () => {
+            const listContainer = document.getElementById('modalWeightHistoryList');
+            const history = activeUserData.progress?.weightHistory || {};
+            listContainer.innerHTML = '';
+            if(Object.keys(history).length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">لا توجد قياسات مسجلة بعد.</p>';
+            } else {
+                Object.entries(history).reverse().forEach(([timeTag, weightVal]) => {
+                    listContainer.innerHTML += `
+                        <div class="bg-input p-3 rounded-xl border border-border-color flex justify-between items-center text-xs">
+                            <span class="text-gray-300 font-medium">📅 ${timeTag}</span>
+                            <span class="bg-coach text-black font-extrabold px-3 py-1 rounded-lg">${weightVal} كج</span>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('weightHistoryModal').classList.remove('hidden');
         };
 
         function buildNativeVideoPlayer(url) {
@@ -689,14 +735,16 @@
             }
             if(data.progress?.currentWeight) {
                 document.getElementById('userCurrentWeight').value = data.progress.currentWeight;
-                // حساب تلقائي للـ BMI لو البيانات موجودة
                 if(data.profile?.height) {
                     const hM = data.profile.height / 100;
                     const bmi = (data.progress.currentWeight / (hM * hM)).toFixed(1);
                     let bmiStatus = bmi < 18.5 ? "نحافة" : bmi < 25 ? "وزن مثالي ورائع! 🌟" : bmi < 30 ? "زيادة وزن" : "سمنة";
+                    let avatarEmoji = bmi < 18.5 ? "🏃‍♀️" : bmi < 25 ? "💃" : bmi < 30 ? "👩‍🦰" : "🧘‍♀️";
                     document.getElementById('bmiResultCard').classList.remove('hidden');
                     document.getElementById('bmiValueText').innerText = bmi;
                     document.getElementById('bmiStatusText').innerText = bmiStatus;
+                    document.getElementById('bodyVisualAvatar').innerText = avatarEmoji;
+                    document.getElementById('bodyVisualStatus').innerText = `حالة الجسم الحالية: ${bmiStatus}`;
                 }
             }
 
@@ -745,8 +793,8 @@
             const list = document.getElementById('weightHistoryList');
             if(!history) { list.innerHTML = '<span class="text-xs text-gray-500">لا توجد أوزان مسجلة بعد</span>'; return; }
             list.innerHTML = '';
-            Object.entries(history).sort().forEach(([date, w]) => {
-                list.innerHTML += `<div class="bg-input px-3 py-1.5 rounded-lg border border-border-color text-xs"><span class="text-coach font-bold">${w} كج</span> <span class="opacity-60 text-[10px] ml-1">(${date})</span></div>`;
+            Object.entries(history).slice(-3).reverse().forEach(([timeTag, w]) => {
+                list.innerHTML += `<div class="bg-input px-3 py-1.5 rounded-lg border border-border-color text-xs"><span class="text-coach font-bold">${w} كج</span> <span class="opacity-60 text-[10px] ml-1">(${timeTag})</span></div>`;
             });
         }
 
@@ -1300,7 +1348,6 @@
             });
         }
 
-        document.getElementById('userSendChatFile')?.addEventListener('change', (e) => handleImageUpload(e, auth.currentUser.uid, 'user'));
         document.getElementById('userSendChatBtn').onclick = () => {
             const inp = document.getElementById('userChatInput');
             if(inp.value.trim()){ push(ref(db, `chats/${auth.currentUser.uid}`), { text: inp.value, type: 'text', sender: 'user', time: Date.now() }); inp.value = ''; }

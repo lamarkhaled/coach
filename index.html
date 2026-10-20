@@ -337,7 +337,7 @@
                 </div>
             </div>
 
-            <!-- ملف المتدربة المفصل للأدمن (مع أزرار حفظ مستقلة تماماً) -->
+            <!-- ملف المتدربة المفصل للأدمن -->
             <div id="adminUserDetailView" class="hidden flex flex-col gap-4">
                 <button id="backToAdminMainBtn" class="text-gray-400 text-xs font-bold self-start bg-input px-4 py-2.5 rounded-full border border-border-color">❮ رجوع للقائمة</button>
                 
@@ -348,7 +348,7 @@
                     <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">4. المحادثة</button>
                 </div>
 
-                <!-- 1. تبويب أهداف الماكروز (حفظ مستقل) -->
+                <!-- 1. تبويب أهداف الماكروز (أزرار حفظ مستقلة تماماً) -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <h3 class="text-sm font-bold text-white">تحديد أهداف الماكروز اليومي للمتدربة</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
@@ -594,7 +594,6 @@
             showSection('userDashboard');
         };
 
-        // تسجيل الوزن والتحقق من الزيادة
         document.getElementById('updateProgressBtn').onclick = async () => {
             const newW = parseFloat(document.getElementById('userCurrentWeight').value);
             if(isNaN(newW)) return;

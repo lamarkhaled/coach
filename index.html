@@ -32,19 +32,10 @@
         .hidden-section { display: none !important; }
         .input-field { width: 100%; background: #0a0a0a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px 16px; color: white; transition: all 0.3s; margin-bottom: 12px; }
         .input-field:focus { outline: none; border-color: #10b981; }
-        .chat-box { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px; }
-        .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        .msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
-        .msg-sent { background-color: #10b981; color: black; align-self: flex-end; border-bottom-left-radius: 4px; }
-        .msg-received { background-color: #27272a; color: white; align-self: flex-start; border-bottom-right-radius: 4px; }
-        .user-list-item { cursor: pointer; padding: 12px; border-radius: 12px; transition: 0.2s; border: 1px solid transparent; }
-        .user-list-item:hover, .user-list-item.active { background: #111; border-color: #10b981; }
     </style>
 </head>
 <body class="selection:bg-accent selection:text-black relative">
 
-    <!-- شريط التنقل -->
     <nav class="fixed w-full z-40 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -59,7 +50,6 @@
         </div>
     </nav>
 
-    <!-- واجهة المبيعات -->
     <div id="landingPage" class="pt-40 pb-24 px-6 relative">
         <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
             <div class="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent px-4 py-1.5 rounded-full text-xs font-bold mb-8">إطلاق حصري لفترة محدودة</div>
@@ -71,7 +61,6 @@
         </div>
     </div>
 
-    <!-- نافذة المصادقة -->
     <div id="authModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
         <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full relative">
             <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
@@ -95,107 +84,38 @@
         </div>
     </div>
 
-    <!-- نافذة إدارة المتدربة (للمدير فقط) -->
-    <div id="manageTraineeModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
-        <div class="bg-[#111] border border-accent/20 rounded-3xl p-8 max-w-lg w-full relative">
-            <button onclick="document.getElementById('manageTraineeModal').classList.add('hidden-section')" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
-            
-            <h3 class="text-2xl font-bold mb-1 text-accent" id="mtName">اسم المتدربة</h3>
-            <p class="text-sm text-gray-400 mb-6" id="mtEmail">email@example.com</p>
-
-            <div class="space-y-6">
-                <!-- شرب الماء من الداتابيس -->
-                <div class="bg-black border border-white/5 p-4 rounded-xl">
-                    <h4 class="text-sm font-bold mb-3">💧 تقدم شرب الماء</h4>
-                    <div class="flex gap-2 flex-wrap" id="mtWaterProgress"></div>
-                </div>
-
-                <!-- تعيين الجدول -->
-                <div class="bg-black border border-white/5 p-4 rounded-xl">
-                    <h4 class="text-sm font-bold mb-3">🏋️‍♀️ تعيين جدول التمارين للمتدربة</h4>
-                    <select id="mtScheduleSelect" class="input-field !mb-4">
-                        <option value="none">لم يتم التحديد بعد</option>
-                        <option value="3days">جدول 3 أيام في الأسبوع (شامل)</option>
-                        <option value="4days">جدول 4 أيام في الأسبوع (علوي/سفلي)</option>
-                        <option value="5days">جدول 5 أيام في الأسبوع</option>
-                        <option value="6days">جدول 6 أيام في الأسبوع (متقدم)</option>
-                        <option value="home">جدول تمارين في البيت بدون أجهزة</option>
-                    </select>
-                    <button id="mtSaveScheduleBtn" class="w-full bg-accent text-black font-bold py-2 rounded-xl hover:bg-accent/80 transition">حفظ وتحديث الجدول</button>
-                    <p id="mtSaveMsg" class="text-xs text-green-400 text-center mt-2 hidden-section">تم التحديث بنجاح!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- لوحة تحكم الإدارة (تظهر فقط لـ lm6p12@gmail.com) -->
-    <!-- ========================================================= -->
-    <div id="adminDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold mb-8 text-accent">👑 لوحة تحكم الكوتش</h2>
+    <div id="adminDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto text-center">
+        <div class="w-20 h-20 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">👑</div>
+        <h2 class="text-3xl font-bold mb-4 text-white">أهلاً كوتش صحة</h2>
+        <p class="text-gray-400 mb-8 max-w-lg mx-auto">هذه هي لوحة الإدارة الخاصة بك. بما أن النظام يعمل الآن بشكل محلي بالكامل لضمان سرعته وعدم تعطله، يمكنك إدارة المشتركات عبر الكود الموحد الواتساب.</p>
         
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="minimal-card p-6 md:col-span-1">
-                <h3 class="text-lg font-bold mb-4">🔑 إنشاء أكواد التفعيل</h3>
-                <input type="text" id="newCodeInput" placeholder="اكتبي الكود (مثال: VIP90)" class="input-field uppercase">
-                <label class="block text-xs text-gray-400 mb-1">مدة الكود بالأيام (أقصى حد 90):</label>
-                <input type="number" id="newCodeDuration" value="90" min="1" max="90" class="input-field">
-                <button id="generateCodeBtn" class="w-full bg-white text-black font-bold py-2 rounded-lg mb-6 hover:bg-gray-200 transition">إنشاء الكود</button>
-                <div id="codesList" class="space-y-2 text-xs overflow-y-auto max-h-40 pr-2"></div>
+        <div class="grid md:grid-cols-2 gap-6 text-right">
+            <div class="minimal-card p-8 border border-accent/20">
+                <h3 class="text-xl font-bold mb-4 text-accent">🔑 كود التفعيل الموحد</h3>
+                <p class="text-sm text-gray-400 mb-4">أعطي هذا الكود السري لأي متدربة تدفع لك لكي تفتح الباقة في حسابها:</p>
+                <div class="bg-black text-white text-center text-3xl font-black py-4 rounded-xl tracking-widest border border-white/10">COACH2024</div>
             </div>
-
-            <div class="minimal-card p-6 md:col-span-2 flex flex-col h-[400px]">
-                <h3 class="text-lg font-bold mb-4">💬 محادثات المتدربات</h3>
-                <div class="flex h-full gap-4">
-                    <div class="w-1/3 border-l border-white/10 pl-4 overflow-y-auto" id="adminUsersList"></div>
-                    <div class="w-2/3 flex flex-col relative hidden-section" id="adminActiveChatView">
-                        <div class="text-sm font-bold border-b border-white/10 pb-2 mb-4 text-accent" id="adminChatHeader">اختر متدربة</div>
-                        <div id="adminChatBox" class="chat-box flex-grow mb-4"></div>
-                        <div class="flex gap-2">
-                            <input type="text" id="adminChatInput" placeholder="ردك..." class="input-field !mb-0">
-                            <button id="adminSendBtn" class="bg-accent text-black px-4 rounded-xl font-bold">إرسال</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="minimal-card p-6 md:col-span-3 mt-4">
-                <h3 class="text-lg font-bold mb-4">👥 متابعة وإدارة المتدربات</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right text-gray-400">
-                        <thead class="text-xs text-white uppercase bg-white/5 border-b border-white/10">
-                            <tr>
-                                <th class="px-4 py-3">الاسم</th>
-                                <th class="px-4 py-3">الإيميل</th>
-                                <th class="px-4 py-3">الحالة / الصلاحية</th>
-                                <th class="px-4 py-3 text-center">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminAllUsersList"></tbody>
-                    </table>
-                </div>
+            <div class="minimal-card p-8 border border-white/10">
+                <h3 class="text-xl font-bold mb-4">💬 استقبال المحادثات</h3>
+                <p class="text-sm text-gray-400 mb-4">تم ربط شات المتدربات برقم الواتساب الخاص بك مباشرة. أي متدربة ترسل استفساراً من حسابها سيصلك كرسالة واتساب منظمة.</p>
             </div>
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- بوابة المتدربات (لا تظهر للأدمن) -->
-    <!-- ========================================================= -->
     <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
 
-        <!-- نافذة التفعيل -->
         <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
             <div class="text-4xl mb-4">🔐</div>
-            <h3 class="text-2xl font-bold mb-2 text-white" id="activationTitle">حسابك غير مفعل بعد</h3>
-            <div class="max-w-xs mx-auto flex gap-2 mt-6">
+            <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
+            <p class="text-sm text-gray-400 mb-6">الرجاء إدخال كود التفعيل لفتح الباقة بالكامل.</p>
+            <div class="max-w-xs mx-auto flex gap-2">
                 <input type="text" id="userActivationInput" placeholder="كود التفعيل" class="input-field !mb-0 text-center uppercase">
                 <button id="activateAccBtn" class="bg-accent text-black font-bold px-6 rounded-xl hover:bg-accent/80 transition">تفعيل</button>
             </div>
             <p id="activationMsg" class="text-xs mt-3 font-bold hidden-section"></p>
         </div>
 
-        <!-- الاستبيان -->
         <div id="onboardingOverlay" class="hidden-section bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 mb-8">
             <div class="text-center mb-8">
                 <h3 class="text-3xl font-bold mb-2 text-accent">تهانينا! تم تفعيل حسابك 🎉</h3>
@@ -235,40 +155,34 @@
             </form>
         </div>
 
-        <!-- محتوى الباقة الأساسي -->
         <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
             
             <div class="minimal-card p-6 md:col-span-2 bg-accent/5 border border-accent/30">
                 <h3 class="text-xl font-bold mb-2 text-white flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <span>📅 جدولك المخصص</span>
-                        <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">من الكوتش</span>
+                        <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">جاهز</span>
                     </div>
-                    <span id="subRemaining" class="text-xs text-gray-400"></span>
                 </h3>
+                <p class="text-sm text-gray-400 mb-4">تم اختيار هذا الجدول تلقائياً بناءً على إجاباتك.</p>
                 <div id="userActiveScheduleBox" class="bg-black rounded-xl p-6 text-center border border-white/5">
-                    <div class="animate-pulse text-gray-500 text-sm">جاري جلب الجدول...</div>
                 </div>
             </div>
 
-            <!-- الشات الخاص بالمتدربة -->
             <div class="minimal-card p-6 border border-white/10">
-                <h3 class="text-lg font-bold mb-4 text-white">💬 تواصلي مع كوتش صحة</h3>
-                <div id="userChatBox" class="chat-box bg-black/50 border border-white/5 rounded-xl p-4 mb-4"></div>
-                <div class="flex gap-2">
-                    <input type="text" id="userChatInput" placeholder="رسالتك..." class="input-field !mb-0 text-sm">
-                    <button id="userSendBtn" class="bg-white text-black px-4 rounded-xl font-bold text-sm">إرسال</button>
-                </div>
+                <h3 class="text-lg font-bold mb-4 text-white">💬 تواصل مباشر مع الكوتش</h3>
+                <p class="text-sm text-gray-400 mb-4">اكتبي استفسارك هنا وسيتم تحويلك فوراً لمحادثة الكوتش عبر الواتساب.</p>
+                <textarea id="whatsappInput" placeholder="اكتبي رسالتك هنا..." rows="3" class="input-field resize-none"></textarea>
+                <button id="whatsappSendBtn" class="w-full bg-white text-black py-3 rounded-xl font-bold hover:bg-gray-200 transition">إرسال عبر الواتساب 📲</button>
             </div>
 
-            <!-- الحاسبة -->
             <div class="minimal-card p-6 border border-white/10">
                 <h3 class="text-lg font-bold mb-4 text-white">🥗 حاسبة الماكروز</h3>
                 <div class="space-y-4 text-sm">
                     <input type="number" id="calcWeight" placeholder="الوزن (kg)" class="input-field">
                     <input type="number" id="calcHeight" placeholder="الطول (cm)" class="input-field">
                     <input type="number" id="calcAge" placeholder="العمر" class="input-field">
-                    <button id="calcBtn" class="w-full bg-accent/20 text-accent font-bold py-3 rounded-lg">احسبي سعراتي</button>
+                    <button id="calcBtn" class="w-full bg-accent/20 text-accent font-bold py-3 rounded-lg hover:bg-accent hover:text-black transition">احسبي سعراتي</button>
                 </div>
                 <div id="calcResult" class="hidden-section mt-4 text-center bg-black border border-white/5 rounded-lg p-4">
                     <p class="text-3xl font-black text-accent" id="caloriesOutput">0</p>
@@ -276,10 +190,9 @@
                 </div>
             </div>
             
-            <!-- متتبع الماء (يرتبط بالداتابيس) -->
             <div class="minimal-card p-6 md:col-span-2">
                 <h3 class="text-lg font-bold mb-4 text-white">💧 متتبع الماء</h3>
-                <p class="text-xs text-gray-400 mb-4">اضغطي على الدائرة عند شرب كوب ماء. إنجازك يُحفظ تلقائياً ليراه الكوتش.</p>
+                <p class="text-xs text-gray-400 mb-4">اضغطي على الدائرة عند شرب كوب ماء. (يُحفظ الإنجاز تلقائياً في حسابك).</p>
                 <div class="grid grid-cols-6 md:grid-cols-12 gap-3" id="waterTracker"></div>
             </div>
         </div>
@@ -287,28 +200,12 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZuXrMysUsfnMMBr9pjUNFwSCiR3lH9qo",
-            authDomain: "coach-c7e80.firebaseapp.com",
-            projectId: "coach-c7e80",
-            storageBucket: "coach-c7e80.firebasestorage.app",
-            messagingSenderId: "559057818861",
-            appId: "1:559057818861:web:bebce4f3470c44f729e8e4"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
-        // إيميل الإدارة الحصري
-        const ADMIN_EMAIL = 'lm6p12@gmail.com';
-
+    <script>
         AOS.init({ once: true });
+        
+        const ADMIN_EMAIL = 'lm6p12@gmail.com'; 
+        const MASTER_CODE = 'COACH2024'; 
+        const COACH_WHATSAPP = '966500000000'; 
 
         const landingPage = document.getElementById('landingPage');
         const adminDashboard = document.getElementById('adminDashboard');
@@ -319,307 +216,114 @@
         const actMsg = document.getElementById('activationMsg');
 
         let currentUser = null;
-        let activeAdminChatUserId = null;
-        let currentManageTraineeId = null;
-        let unsubscribeUserChat = null;
-        let unsubscribeAdminChat = null;
-        let unsubscribeUserDoc = null;
 
         const schedulesDict = {
-            'none': 'لم يتم تعيين جدول بعد. سيتم مراجعة إجاباتك وتحديد جدولك قريباً.',
-            '3days': 'جدول 3 أيام في الأسبوع (شامل للجسم - Full Body)',
-            '4days': 'جدول 4 أيام في الأسبوع (علوي / سفلي - Upper/Lower)',
-            '5days': 'جدول 5 أيام في الأسبوع (تقسيم عضلي)',
-            '6days': 'جدول 6 أيام في الأسبوع (متقدم)',
-            'home': 'جدول التمارين المنزلية'
+            '3 أيام': 'جدول 3 أيام في الأسبوع (شامل للجسم - Full Body)',
+            '4 أيام': 'جدول 4 أيام في الأسبوع (علوي / سفلي - Upper/Lower)',
+            '5 أيام أو أكثر': 'جدول 5 أيام في الأسبوع (تقسيم عضلي متقدم)',
+            'بالبيت': 'جدول التمارين المنزلية (بدون أجهزة)'
         };
 
-        // --- نظام التوجيه الذكي والصارم ---
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if (user) {
-                document.getElementById('authModal').classList.add('hidden-section');
-                landingPage.classList.add('hidden-section');
-                document.getElementById('navLoginBtn').classList.add('hidden-section');
-                document.getElementById('navLogoutBtn').classList.remove('hidden-section');
+        function simulateLogin(email, name) {
+            currentUser = { email: email, displayName: name, uid: email };
+            
+            document.getElementById('authModal').classList.add('hidden-section');
+            landingPage.classList.add('hidden-section');
+            document.getElementById('navLoginBtn').classList.add('hidden-section');
+            document.getElementById('navLogoutBtn').classList.remove('hidden-section');
 
-                const userEmailClean = user.email.toLowerCase().trim();
-                const adminEmailClean = ADMIN_EMAIL.toLowerCase().trim();
+            if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                userDashboard.classList.add('hidden-section');
+                adminDashboard.classList.remove('hidden-section');
+            } else {
+                adminDashboard.classList.add('hidden-section');
+                userDashboard.classList.remove('hidden-section');
+                document.getElementById('dashName').innerText = name || 'بطلة';
+                
+                const isActivated = localStorage.getItem(`activated_${email}`);
+                const obData = JSON.parse(localStorage.getItem(`obData_${email}`));
 
-                if (userEmailClean === adminEmailClean) {
-                    // فتح لوحة الإدارة فقط للأدمن
-                    userDashboard.classList.add('hidden-section');
-                    adminDashboard.classList.remove('hidden-section');
-                    initAdminDashboard();
-                } else {
-                    // فتح لوحة المتدربة لجميع الإيميلات الأخرى
-                    adminDashboard.classList.add('hidden-section');
-                    userDashboard.classList.remove('hidden-section');
-                    document.getElementById('dashName').innerText = user.displayName || 'بطلة';
-                    
+                if (isActivated === 'true') {
                     activationOverlay.classList.add('hidden-section');
+                    if(obData) {
+                        onboardingOverlay.classList.add('hidden-section');
+                        premiumContent.classList.remove('hidden-section');
+                        updateUserScheduleUI(obData.days);
+                    } else {
+                        onboardingOverlay.classList.remove('hidden-section');
+                        premiumContent.classList.add('hidden-section');
+                    }
+                } else {
+                    activationOverlay.classList.remove('hidden-section');
                     onboardingOverlay.classList.add('hidden-section');
                     premiumContent.classList.add('hidden-section');
-
-                    if(unsubscribeUserDoc) unsubscribeUserDoc();
-                    
-                    // قراءة بيانات المتدربة من الداتابيس لحظياً
-                    unsubscribeUserDoc = onSnapshot(doc(db, 'users', user.uid), async (docSnap) => {
-                        if (docSnap.exists()) {
-                            const data = docSnap.data();
-                            
-                            // التحقق من مدة الصلاحية
-                            let isExpired = false;
-                            if (data.isActivated && data.subscriptionEnd) {
-                                const now = new Date().getTime();
-                                if (now > data.subscriptionEnd) {
-                                    isExpired = true;
-                                    await updateDoc(doc(db, 'users', user.uid), { isActivated: false }); 
-                                }
-                            }
-
-                            if (data.isActivated && !isExpired) {
-                                const remainingMs = data.subscriptionEnd - new Date().getTime();
-                                const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
-                                document.getElementById('subRemaining').innerText = `المتبقي: ${remainingDays} يوم`;
-
-                                activationOverlay.classList.add('hidden-section');
-                                if(data.onboardingCompleted) {
-                                    onboardingOverlay.classList.add('hidden-section');
-                                    premiumContent.classList.remove('hidden-section');
-                                    initUserChat(user.uid);
-                                    updateUserScheduleUI(data.assignedSchedule || 'none');
-                                    // تفعيل متتبع الماء بربطه بالداتابيس
-                                    initWaterTracker(user.uid, data.waterData);
-                                } else {
-                                    onboardingOverlay.classList.remove('hidden-section');
-                                    premiumContent.classList.add('hidden-section');
-                                }
-                            } else {
-                                premiumContent.classList.add('hidden-section');
-                                onboardingOverlay.classList.add('hidden-section');
-                                activationOverlay.classList.remove('hidden-section');
-                                
-                                if(isExpired) {
-                                    document.getElementById('activationTitle').innerText = "انتهت فترة اشتراكك ⌛";
-                                    actMsg.innerText = "لقد انتهت الأيام المخصصة لكودك. الرجاء إدخال كود جديد للتجديد.";
-                                    actMsg.classList.remove('hidden-section', 'text-green-400');
-                                    actMsg.classList.add('text-red-400');
-                                } else {
-                                    document.getElementById('activationTitle').innerText = "حسابك غير مفعل بعد";
-                                }
-                            }
-                        } else {
-                            activationOverlay.classList.remove('hidden-section');
-                        }
-                    });
                 }
-            } else {
-                landingPage.classList.remove('hidden-section');
-                adminDashboard.classList.add('hidden-section');
-                userDashboard.classList.add('hidden-section');
-                document.getElementById('navLoginBtn').classList.remove('hidden-section');
-                document.getElementById('navLogoutBtn').classList.add('hidden-section');
+                
+                initWaterTracker(email);
             }
-        });
+        }
 
-        document.getElementById('navLogoutBtn').addEventListener('click', () => {
-            if(unsubscribeUserDoc) unsubscribeUserDoc();
-            signOut(auth);
-        });
+        function signOut() {
+            currentUser = null;
+            landingPage.classList.remove('hidden-section');
+            adminDashboard.classList.add('hidden-section');
+            userDashboard.classList.add('hidden-section');
+            document.getElementById('navLoginBtn').classList.remove('hidden-section');
+            document.getElementById('navLogoutBtn').classList.add('hidden-section');
+        }
 
-        // --- تفعيل الكود ---
-        document.getElementById('activateAccBtn').addEventListener('click', async () => {
+        document.getElementById('navLogoutBtn').addEventListener('click', signOut);
+
+        document.getElementById('activateAccBtn').addEventListener('click', () => {
             const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
             actMsg.classList.remove('hidden-section', 'text-green-400', 'text-red-400');
             
-            if(!codeInput) {
-                actMsg.innerText = "الرجاء كتابة الكود."; actMsg.classList.add('text-red-400'); return;
-            }
-
-            try {
-                const codeRef = doc(db, 'activation_codes', codeInput);
-                const codeSnap = await getDoc(codeRef);
+            if (codeInput === MASTER_CODE) {
+                localStorage.setItem(`activated_${currentUser.uid}`, 'true');
+                actMsg.innerText = "تم التفعيل بنجاح!";
+                actMsg.classList.add('text-green-400');
                 
-                if (codeSnap.exists() && codeSnap.data().active === true) {
-                    const durationDays = parseInt(codeSnap.data().duration) || 90;
-                    const expirationDate = new Date();
-                    expirationDate.setDate(expirationDate.getDate() + durationDays);
-
-                    await setDoc(doc(db, 'users', currentUser.uid), { 
-                        isActivated: true, 
-                        codeUsed: codeInput, 
-                        onboardingCompleted: false,
-                        subscriptionEnd: expirationDate.getTime()
-                    }, { merge: true });
-
-                    await updateDoc(codeRef, { active: false, usedBy: currentUser.email });
-                    
-                    actMsg.innerText = `تم التفعيل بنجاح لمدة ${durationDays} يوم!`;
-                    actMsg.classList.add('text-green-400');
-                    document.getElementById('userActivationInput').value = '';
-                } else {
-                    actMsg.innerText = "الكود غير صحيح أو مستخدم مسبقاً.";
-                    actMsg.classList.add('text-red-400');
-                }
-            } catch(e) {
-                actMsg.innerText = "حدث خطأ بالاتصال.";
+                setTimeout(() => {
+                    activationOverlay.classList.add('hidden-section');
+                    onboardingOverlay.classList.remove('hidden-section');
+                }, 1000);
+            } else {
+                actMsg.innerText = "الكود غير صحيح.";
                 actMsg.classList.add('text-red-400');
             }
         });
 
-        // --- الاستبيان ---
-        document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
+        document.getElementById('onboardingForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const goal = document.getElementById('obGoal').value;
             const level = document.getElementById('obLevel').value;
             const days = document.getElementById('obDays').value;
-            const btn = document.getElementById('submitOnboardingBtn');
 
-            btn.disabled = true; btn.innerText = "جاري الحفظ وتجهيز الباقة...";
+            const obData = { goal, level, days };
+            localStorage.setItem(`obData_${currentUser.uid}`, JSON.stringify(obData));
 
-            try {
-                await setDoc(doc(db, 'users', currentUser.uid), { 
-                    onboardingCompleted: true, goals: goal, level: level, daysAvailable: days
-                }, { merge: true });
+            const msg = `أهلاً كوتش! توني فعلت الباقة وهذي بياناتي:%0A🎯 هدفي: ${goal}%0A💪 مستواي: ${level}%0A📅 وقتي: ${days}.`;
+            window.open(`https://wa.me/${COACH_WHATSAPP}?text=${msg}`, '_blank');
 
-                const autoMessage = `أهلاً كوتش! توني فعلت اشتراكي وهذي بياناتي:\n🎯 هدفي: ${goal}\n💪 مستواي: ${level}\n📅 وقتي: ${days} بالأسبوع.\nأنتظر الجدول!`;
-                await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: autoMessage, sender: 'user', timestamp: serverTimestamp() });
-            } catch(error) {
-                btn.disabled = false; btn.innerText = "إرسال وبدء التحول 🚀";
-            }
+            onboardingOverlay.classList.add('hidden-section');
+            premiumContent.classList.remove('hidden-section');
+            updateUserScheduleUI(days);
         });
 
-        function updateUserScheduleUI(scheduleCode) {
+        function updateUserScheduleUI(daysCode) {
             const box = document.getElementById('userActiveScheduleBox');
-            if(scheduleCode === 'none') {
-                box.innerHTML = `<div class="text-gray-400 text-sm py-4">${schedulesDict[scheduleCode]}</div>`;
-            } else {
-                box.innerHTML = `<div class="text-5xl mb-3">🔥</div><div class="text-2xl font-black text-accent mb-2">${schedulesDict[scheduleCode]}</div><button class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm mt-2">الاطلاع على الجدول وبدء التمرين</button>`;
-            }
+            box.innerHTML = `<div class="text-5xl mb-3">🔥</div><div class="text-2xl font-black text-accent mb-2">${schedulesDict[daysCode]}</div><button class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm mt-2 hover:bg-gray-200 transition">الاطلاع على الجدول</button>`;
         }
 
-        // --- أدوات الأدمن ---
-        function initAdminDashboard() {
-            onSnapshot(query(collection(db, 'activation_codes')), (snap) => {
-                let html = '';
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    const status = d.active ? '<span class="text-green-400">متاح</span>' : '<span class="text-red-400">مستخدم</span>';
-                    html += `<div class="bg-black border border-white/10 p-2 rounded flex justify-between items-center mb-1">
-                                <div><strong>${doc.id}</strong> <span class="text-[10px] text-gray-500 ml-2">(${d.duration || 90} يوم)</span></div> 
-                                <span>${status}</span>
-                             </div>`;
-                });
-                document.getElementById('codesList').innerHTML = html;
-            });
-
-            onSnapshot(query(collection(db, 'users')), (snap) => {
-                let html = '';
-                snap.forEach(docSnap => {
-                    const u = docSnap.data();
-                    if(u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
-                    
-                    let subStatus = '<span class="text-yellow-400">غير مفعل</span>';
-                    if (u.isActivated) {
-                        if (u.subscriptionEnd && new Date().getTime() > u.subscriptionEnd) {
-                            subStatus = '<span class="text-red-400">منتهي</span>';
-                        } else {
-                            subStatus = '<span class="text-green-400">مفعل</span>';
-                        }
-                    }
-
-                    const manageBtn = `<button onclick="window.openTraineeManager('${docSnap.id}', '${u.name}', '${u.email}', '${u.assignedSchedule || 'none'}')" class="bg-white/10 px-3 py-1 rounded-lg text-xs font-bold hover:bg-white/20">إدارة</button>`;
-                    html += `<tr class="border-b border-white/5"><td class="px-4 py-3">${u.name || 'بدون اسم'}</td><td class="px-4 py-3">${u.email}</td><td class="px-4 py-3">${subStatus}</td><td class="px-4 py-3 flex gap-2 justify-center">${manageBtn}</td></tr>`;
-                });
-                document.getElementById('adminAllUsersList').innerHTML = html;
-            });
-
-            onSnapshot(query(collection(db, 'users'), where('isActivated', '==', true)), (snap) => {
-                let html = '';
-                snap.forEach(doc => {
-                    const u = doc.data();
-                    if(u.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-                        html += `<div class="user-list-item mb-2" onclick="window.openAdminChat('${doc.id}', '${u.name}')"><div class="font-bold text-sm text-white">${u.name}</div></div>`;
-                    }
-                });
-                document.getElementById('adminUsersList').innerHTML = html;
-            });
-        }
-
-        document.getElementById('generateCodeBtn').addEventListener('click', async () => {
-            const code = document.getElementById('newCodeInput').value.trim().toUpperCase();
-            let duration = parseInt(document.getElementById('newCodeDuration').value) || 90;
-            duration = Math.min(Math.max(duration, 1), 90);
-
-            if(code) { 
-                await setDoc(doc(db, 'activation_codes', code), { 
-                    active: true, duration: duration, createdAt: serverTimestamp() 
-                }); 
-                document.getElementById('newCodeInput').value = ''; 
+        document.getElementById('whatsappSendBtn').addEventListener('click', () => {
+            const text = document.getElementById('whatsappInput').value.trim();
+            if(text) {
+                const msg = encodeURIComponent(`استفسار من المتدربة (${currentUser.displayName || 'بدون اسم'}):\n${text}`);
+                window.open(`https://wa.me/${COACH_WHATSAPP}?text=${msg}`, '_blank');
+                document.getElementById('whatsappInput').value = '';
             }
         });
 
-        window.openTraineeManager = async (uid, name, email, schedule) => {
-            currentManageTraineeId = uid;
-            document.getElementById('mtName').innerText = name; 
-            document.getElementById('mtEmail').innerText = email;
-            document.getElementById('mtScheduleSelect').value = schedule;
-            document.getElementById('mtSaveMsg').classList.add('hidden-section');
-            
-            // قراءة تقدم الماء للمتدربة من الداتابيس ليعرض للأدمن
-            const userDoc = await getDoc(doc(db, 'users', uid));
-            let waterData = Array(12).fill(false);
-            if(userDoc.exists() && userDoc.data().waterData) waterData = userDoc.data().waterData;
-            
-            let waterHtml = ''; 
-            waterData.forEach(d => { waterHtml += `<div class="w-6 h-6 rounded-full border ${d ? 'bg-accent border-accent' : 'border-white/20'}"></div>`; });
-            document.getElementById('mtWaterProgress').innerHTML = waterHtml;
-            document.getElementById('manageTraineeModal').classList.remove('hidden-section');
-        };
-
-        document.getElementById('mtSaveScheduleBtn').addEventListener('click', async () => {
-            if(currentManageTraineeId) {
-                await updateDoc(doc(db, 'users', currentManageTraineeId), { assignedSchedule: document.getElementById('mtScheduleSelect').value });
-                document.getElementById('mtSaveMsg').classList.remove('hidden-section');
-                setTimeout(() => document.getElementById('manageTraineeModal').classList.add('hidden-section'), 1500);
-            }
-        });
-
-        // --- الشات ---
-        window.openAdminChat = (uid, name) => {
-            activeAdminChatUserId = uid;
-            document.getElementById('adminActiveChatView').classList.remove('hidden-section');
-            document.getElementById('adminChatHeader').innerText = `محادثة: ${name}`;
-            if(unsubscribeAdminChat) unsubscribeAdminChat();
-            unsubscribeAdminChat = onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
-                let html = ''; snap.forEach(doc => { const m = doc.data(); html += `<div class="msg-bubble ${m.sender === 'admin' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`; });
-                document.getElementById('adminChatBox').innerHTML = html; document.getElementById('adminChatBox').scrollTop = document.getElementById('adminChatBox').scrollHeight;
-            });
-        };
-
-        document.getElementById('adminSendBtn').addEventListener('click', async () => {
-            const input = document.getElementById('adminChatInput');
-            if(input.value.trim() && activeAdminChatUserId) {
-                await addDoc(collection(db, 'chats', activeAdminChatUserId, 'messages'), { text: input.value.trim(), sender: 'admin', timestamp: serverTimestamp() });
-                input.value = '';
-            }
-        });
-
-        function initUserChat(uid) {
-            if(unsubscribeUserChat) unsubscribeUserChat();
-            unsubscribeUserChat = onSnapshot(query(collection(db, 'chats', uid, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
-                let html = ''; snap.forEach(doc => { const m = doc.data(); html += `<div class="msg-bubble ${m.sender === 'user' ? 'msg-sent' : 'msg-received'}">${m.text}</div>`; });
-                document.getElementById('userChatBox').innerHTML = html; document.getElementById('userChatBox').scrollTop = document.getElementById('userChatBox').scrollHeight;
-            });
-        }
-
-        document.getElementById('userSendBtn').addEventListener('click', async () => {
-            const input = document.getElementById('userChatInput');
-            if(input.value.trim() && currentUser) { await addDoc(collection(db, 'chats', currentUser.uid, 'messages'), { text: input.value.trim(), sender: 'user', timestamp: serverTimestamp() }); input.value = ''; }
-        });
-
-        // --- النماذج وإنشاء الحساب ---
         document.getElementById('navLoginBtn').addEventListener('click', () => document.getElementById('authModal').classList.remove('hidden-section'));
         document.getElementById('heroJoinBtn').addEventListener('click', () => { isLoginMode = false; updateAuthUI(); document.getElementById('authModal').classList.remove('hidden-section'); });
         document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('authModal').classList.add('hidden-section'));
@@ -633,65 +337,32 @@
         }
         document.getElementById('toggleAuthModeBtn').addEventListener('click', () => { isLoginMode = !isLoginMode; updateAuthUI(); });
 
-        document.getElementById('authForm').addEventListener('submit', async (e) => {
+        document.getElementById('authForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('emailInput').value.trim().toLowerCase(); 
-            const password = document.getElementById('passwordInput').value; 
             const name = document.getElementById('nameInput').value.trim();
-            const btn = document.getElementById('submitAuthBtn'); 
-            const msgBox = document.getElementById('authMessage');
-            btn.disabled = true; btn.innerText = "جاري الدخول...";
             
-            try {
-                if(isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else {
-                    const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    await updateProfile(cred.user, { displayName: name });
-                    
-                    const userRole = (email === ADMIN_EMAIL.toLowerCase()) ? 'admin' : 'trainee';
-                    
-                    // حفظ بيانات المستخدم مع مصفوفة فارغة للماء لترتبط بقاعدة البيانات
-                    await setDoc(doc(db, 'users', cred.user.uid), { 
-                        email: email, name: name, isActivated: false, role: userRole, onboardingCompleted: false, waterData: Array(12).fill(false)
-                    });
-                }
-                document.getElementById('authModal').classList.add('hidden-section');
-            } catch (e) { 
-                msgBox.innerText = 'تأكدي من صحة البيانات.';
-                msgBox.classList.remove('hidden-section');
-            } finally { 
-                btn.disabled = false; btn.innerText = "دخول";
-            }
+            simulateLogin(email, name);
         });
 
-        // --- حاسبة الماكروز والمتتبع بقاعدة البيانات ---
         document.getElementById('calcBtn').addEventListener('click', () => {
             const weight = parseFloat(document.getElementById('calcWeight').value); const height = parseFloat(document.getElementById('calcHeight').value); const age = parseFloat(document.getElementById('calcAge').value);
             if(weight && height && age) { document.getElementById('caloriesOutput').innerText = Math.round(((10 * weight) + (6.25 * height) - (5 * age) - 161) * 1.375); document.getElementById('calcResult').classList.remove('hidden-section'); }
         });
 
-        function initWaterTracker(uid, dbWaterData) {
+        function initWaterTracker(uid) {
             const container = document.getElementById('waterTracker');
             if(!container) return; container.innerHTML = ''; 
-            
-            let waterData = dbWaterData || Array(12).fill(false);
-            
+            const storageKey = `waterData_${uid}`;
+            let waterData = JSON.parse(localStorage.getItem(storageKey)) || Array(12).fill(false);
             waterData.forEach((isDrank, index) => {
                 const circle = document.createElement('div');
                 circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${isDrank ? 'bg-accent border-accent text-black scale-110' : 'border-white/20 hover:border-white/50'}`;
                 if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
-                
-                circle.addEventListener('click', async () => { 
+                circle.addEventListener('click', () => { 
                     waterData[index] = !waterData[index]; 
-                    initWaterTracker(uid, waterData); // تحديث الشاشة فوراً
-                    
-                    try {
-                        // حفظ التغيير في الداتابيس ليراه الكوتش
-                        await updateDoc(doc(db, 'users', uid), { waterData: waterData });
-                    } catch(e) {
-                        console.log("Error saving water data");
-                    }
+                    localStorage.setItem(storageKey, JSON.stringify(waterData)); 
+                    initWaterTracker(uid); 
                 });
                 container.appendChild(circle);
             });

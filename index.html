@@ -53,10 +53,7 @@
     <!-- Top Header -->
     <nav class="ios-glass-top sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-coach flex items-center justify-center font-black text-black text-lg">ص</div>
-                <span class="font-black text-lg tracking-wider text-white bg-black px-2 py-0.5 rounded border border-coach">كوتش <span class="text-coach">صحة</span></span>
-            </div>
+            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
         </div>
         <div class="flex items-center gap-3">
             <button onclick="toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-card border border-border-color px-3 py-1.5 rounded-full font-bold text-coach">☀️ فاتح</button>
@@ -72,12 +69,9 @@
         
         <!-- ================= AUTH ================= -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-8">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-14 h-14 rounded-2xl bg-coach flex items-center justify-center font-black text-black text-3xl shadow-lg">ص</div>
-                <h2 class="text-3xl font-black text-white tracking-wider">كوتش <span class="text-coach">صحة</span></h2>
-            </div>
-            <h1 class="text-2xl font-extrabold mb-3 text-white tracking-tight">منصة التدريب الشخصي</h1>
-            <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">برامج غذائية وتمارين تفاعلية مصممة خصيصاً لرحلتك.</p>
+            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-64 mb-8 object-contain drop-shadow-2xl">
+            <h1 class="text-3xl font-extrabold mb-3 text-white tracking-tight">منصة كوتش صحة</h1>
+            <p class="text-gray-400 text-sm mb-12 max-w-xs leading-relaxed">تدريب شخصي وبرامج تفاعلية متكاملة لإنجاز أهدافك.</p>
             <div class="w-full max-w-xs space-y-3.5">
                 <button id="showLoginBtn" class="w-full bg-coach font-extrabold py-4 rounded-ios text-md shadow-lg text-black">تسجيل الدخول</button>
                 <button id="showRegisterBtn" class="w-full bg-card border border-border-color text-white font-bold py-4 rounded-ios text-md">حساب جديد</button>
@@ -110,8 +104,15 @@
             <div class="space-y-4">
                 <input type="text" id="qGoal" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="ما هدفك الأساسي؟ (نزول وزن، بناء عضلي)">
                 <div class="flex gap-3">
-                    <input type="number" id="qWeight" class="w-1/2 px-4 py-3.5 rounded-ios text-xs" placeholder="الوزن (كج)">
+                    <input type="number" id="qWeight" class="w-1/2 px-4 py-3.5 rounded-ios text-xs" placeholder="الوزن الحالي (كج)">
                     <input type="number" id="qHeight" class="w-1/2 px-4 py-3.5 rounded-ios text-xs" placeholder="الطول (سم)">
+                </div>
+                <div class="bg-input p-3 rounded-ios border border-border-color">
+                    <label class="text-[10px] text-coach font-bold block mb-1">الهدف المطلوب والمدة (مثال: نزول 5 كج خلال 30 يوم)</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="qTargetKg" class="w-1/2 p-2 rounded text-xs text-white" placeholder="الوزن المستهدف (كج)">
+                        <input type="number" id="qTargetDays" class="w-1/2 p-2 rounded text-xs text-white" placeholder="المدة بالأيام (مثال 30)">
+                    </div>
                 </div>
                 <textarea id="qNotes" rows="2" class="w-full px-4 py-3.5 rounded-ios text-xs" placeholder="إصابات أو أمراض؟ (اختياري)"></textarea>
                 <button id="saveOnboardingBtn" class="w-full bg-coach text-black font-extrabold py-4 rounded-ios text-md mt-2">حفظ والبدء</button>
@@ -125,8 +126,29 @@
             <div id="tabHome" class="user-tab block w-full space-y-5">
                 <h1 class="text-2xl font-extrabold px-1 text-white">الخلاصة</h1>
                 
+                <!-- خط هدف الوزن والتايم لاين -->
+                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-bold text-white">هدف التغيير 🎯</span>
+                        <span id="goalStatusBadge" class="text-[10px] bg-coach text-black px-2.5 py-1 rounded-full font-bold">جاري العمل</span>
+                    </div>
+                    <p id="goalDescriptionText" class="text-xs text-gray-400">لا يوجد هدف محدد حالياً.</p>
+                    <div class="w-full bg-input rounded-full h-2.5">
+                        <div id="goalTimelineBar" class="bg-coach h-2.5 rounded-full transition-all duration-1000" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- لوحة صدارة المنافسة بين المشتركات -->
+                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-3">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-coach">🏆</span> لوحة صدارة المنافسة</h2>
+                    <p class="text-[11px] text-gray-400">تنافسي مع بقية المشتركات في الالتزام والتقدم!</p>
+                    <div id="leaderboardContainer" class="space-y-2 mt-2">
+                        <!-- يتم تعبئتها ديناميكياً -->
+                    </div>
+                </div>
+
                 <div id="workoutReminderBanner" class="hidden bg-coach/20 border border-coach p-4 rounded-ios text-xs text-coach font-bold flex items-center justify-between">
-                    <span>🔥 تنبيه: باقي لك تمارين اليوم لم تنهها بعد، استمرِ في إنجازك!</span>
+                    <span>🔥 تنبيه: باقي لك تمارين اليوم لم تنهها بعد!</span>
                     <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-coach text-black px-3 py-1.5 rounded-lg text-[11px]">أكملي الآن</button>
                 </div>
 
@@ -140,11 +162,24 @@
                     </div>
                 </div>
                 
-                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg">
-                    <h2 class="text-sm font-bold text-white mb-3">تحديث الوزن</h2>
+                <!-- تحديث الوزن وسجل الأوزان والتهزيء اللطيف عند الزيادة -->
+                <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-4">
+                    <h2 class="text-sm font-bold text-white">تحديث الوزن وسجلك</h2>
+                    
+                    <div id="weightRoastBanner" class="hidden bg-red-500/20 border border-red-500 p-3 rounded-xl text-xs text-red-400 font-bold">
+                        ⚠️ انتبهي! وزنك زاد عن المرة السابقة! وين الالتزام؟ يلا شدّي حيلك ورجعي للمسار الصحيح! 💪
+                    </div>
+
                     <div class="flex gap-3">
                         <input type="number" id="userCurrentWeight" class="w-2/3 px-4 py-3.5 rounded-ios text-xs" placeholder="الوزن الحالي (كج)">
-                        <button id="updateProgressBtn" class="w-1/3 bg-card border border-border-color text-coach font-bold rounded-ios text-xs">تحديث</button>
+                        <button id="updateProgressBtn" class="w-1/3 bg-card border border-border-color text-coach font-bold rounded-ios text-xs">تسجيل الوزن</button>
+                    </div>
+
+                    <div class="mt-3">
+                        <span class="text-[11px] text-gray-400 block mb-1">سجل أوزانك السابقة:</span>
+                        <div id="weightHistoryList" class="flex gap-2 flex-wrap">
+                            <!-- الأوزان المسجلة -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,7 +352,7 @@
                     <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">4. المحادثة</button>
                 </div>
 
-                <!-- 1. تبويب أهداف الماكروز (زر حفظ مستقل) -->
+                <!-- 1. تبويب أهداف الماكروز -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <h3 class="text-sm font-bold text-white">تحديد أهداف الماكروز اليومي للمتدربة</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
@@ -329,7 +364,7 @@
                     <button id="saveMacrosBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ أهداف الماكروز وحدها</button>
                 </div>
 
-                <!-- 2. تبويب الوجبات والتغذية (زر حفظ مستقل) -->
+                <!-- 2. تبويب الوجبات والتغذية (حفظ مستقل) -->
                 <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🍎 وجبات التغذية والمكونات</label>
@@ -339,7 +374,7 @@
                     <button id="saveMealsBtn" class="w-full bg-coach text-black font-extrabold py-3.5 rounded-ios text-sm shadow-md">حفظ وجبات التغذية وحدها</button>
                 </div>
 
-                <!-- 3. تبويب التمارين (زر حفظ مستقل) -->
+                <!-- 3. تبويب التمارين (حفظ مستقل تماماً) -->
                 <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🏋️‍♀️ جدول تمارين اليوم</label>
@@ -535,34 +570,77 @@
 
         document.getElementById('saveOnboardingBtn').onclick = async () => {
             const goal = document.getElementById('qGoal').value;
-            const weight = document.getElementById('qWeight').value;
-            const height = document.getElementById('qHeight').value;
+            const weight = parseFloat(document.getElementById('qWeight').value) || 0;
+            const height = parseFloat(document.getElementById('qHeight').value) || 0;
+            const targetKg = parseFloat(document.getElementById('qTargetKg').value) || 0;
+            const targetDays = parseInt(document.getElementById('qTargetDays').value) || 30;
             const notes = document.getElementById('qNotes').value;
+
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + targetDays);
+
             await update(ref(db, `users/${auth.currentUser.uid}`), {
                 onboardingCompleted: true,
-                profile: { goal, weight, height, notes }
+                profile: { goal, weight, height, notes },
+                goalPlan: {
+                    startWeight: weight,
+                    targetWeight: targetKg,
+                    startDate: new Date().toISOString(),
+                    targetDate: targetDate.toISOString()
+                },
+                progress: {
+                    weightHistory: { [getTodayStr()]: weight },
+                    currentWeight: weight
+                }
             });
             const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`));
             renderUserDashboard(snap.val());
             showSection('userDashboard');
         };
 
+        // تسجيل الوزن والتحقق من الزيادة (التهزيء اللطيف)
         document.getElementById('updateProgressBtn').onclick = async () => {
-            const newW = document.getElementById('userCurrentWeight').value;
-            if(!newW) return;
-            await update(ref(db, `users/${auth.currentUser.uid}/progress`), { currentWeight: newW });
-            showMsg("تم تحديث الوزن بنجاح", false);
+            const newW = parseFloat(document.getElementById('userCurrentWeight').value);
+            if(isNaN(newW)) return;
+
+            const uid = auth.currentUser.uid;
+            const weightHistory = activeUserData.progress?.weightHistory || {};
+            const dates = Object.keys(weightHistory).sort();
+            let lastWeight = activeUserData.profile?.weight || newW;
+            if(dates.length > 0) {
+                lastWeight = weightHistory[dates[dates.length - 1]];
+            }
+
+            weightHistory[getTodayStr()] = newW;
+            activeUserData.progress = activeUserData.progress || {};
+            activeUserData.progress.weightHistory = weightHistory;
+            activeUserData.progress.currentWeight = newW;
+
+            await update(ref(db, `users/${uid}/progress`), activeUserData.progress);
+
+            // فحص الزيادة
+            const roastBanner = document.getElementById('weightRoastBanner');
+            if(newW > lastWeight) {
+                roastBanner.classList.remove('hidden');
+                showMsg("وزنك زاد! شوفي التنبيه فوق 💪", true);
+            } else {
+                roastBanner.classList.add('hidden');
+                showMsg("ممتاز! استمري في النزول 🌟", false);
+            }
+
+            renderUserDashboard(activeUserData);
         };
 
+        // مشغل الفيديو المتطور والمستقل للتمارين والتغذية
         function buildNativeVideoPlayer(url) {
             if(!url) return '';
             const lower = url.toLowerCase();
             if(lower.match(/\.(mp4|webm|mov)$/)) {
-                return `<video src="${url}" controls playsinline class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover bg-black"></video>`;
+                return `<video src="${url}" controls playsinline preload="metadata" class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover bg-black"></video>`;
             }
             if(lower.includes('youtube.com/watch?v=') || lower.includes('youtu.be/')) {
                 let vidId = lower.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1].split('&')[0];
-                return `<iframe src="https://www.youtube.com/embed/${vidId}?autoplay=0&rel=0" class="w-full rounded-2xl my-3 h-56 border border-border-color shadow-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                return `<iframe src="https://www.youtube.com/embed/${vidId}?rel=0" class="w-full rounded-2xl my-3 h-56 border border-border-color shadow-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             }
             if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
                 return `<img src="${url}" class="w-full rounded-2xl my-3 border border-border-color shadow-xl max-h-72 object-cover">`;
@@ -570,16 +648,97 @@
             return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3.5 rounded-xl text-xs font-bold my-3 border border-border-color hover:border-coach">فتح الرابط المرفق 📎</a>`;
         }
 
-        // ================= USER DASHBOARD =================
+        // ================= USER DASHBOARD & LEADERBOARD =================
         function renderUserDashboard(data) {
             activeUserData = data;
             const end = new Date(data.endDate);
             const daysRem = Math.ceil((end - new Date())/(1000*60*60*24));
             document.getElementById('daysRemainingText').innerText = daysRem > 0 ? `باقي ${daysRem} يوم` : 'منتهي';
             
+            renderGoalTimeline(data.goalPlan, data.progress?.currentWeight);
+            renderWeightHistory(data.progress?.weightHistory);
+            loadLeaderboard();
+
             renderUserNutritionCourse(data.plan?.meals, data.progress?.meals, data.progress?.swaps, data.targets);
             renderUserWorkoutSummary(data.plan?.exercises, data.progress?.workouts);
             checkWorkoutReminder(data.plan?.exercises, data.progress?.workouts);
+        }
+
+        function renderGoalTimeline(goalPlan, currentWeight) {
+            const card = document.getElementById('goalTimelineCard');
+            if(!goalPlan) { card.classList.add('hidden'); return; }
+            card.classList.remove('hidden');
+
+            const startW = goalPlan.startWeight;
+            const targetW = goalPlan.targetWeight;
+            const curW = currentWeight || startW;
+            const startDate = new Date(goalPlan.startDate);
+            const targetDate = new Date(goalPlan.targetDate);
+            const now = new Date();
+
+            let totalDiff = Math.abs(startW - targetW);
+            let currentProgress = Math.abs(startW - curW);
+            let percent = totalDiff > 0 ? (currentProgress / totalDiff) * 100 : 0;
+            percent = Math.max(0, Math.min(percent, 100));
+
+            const badge = document.getElementById('goalStatusBadge');
+            const desc = document.getElementById('goalDescriptionText');
+            const bar = document.getElementById('goalTimelineBar');
+
+            if(curW <= targetW && startW > targetW) {
+                badge.className = 'text-[10px] bg-coach text-black px-2.5 py-1 rounded-full font-bold';
+                badge.innerText = 'أتممتِ الهدف! شطورة 🌟';
+                desc.innerText = `حققتِ الهدف بنجاح (${curW} كج)! أثبتي جدارتكِ بطلة.`;
+                percent = 100;
+            } else {
+                badge.className = 'text-[10px] bg-blue-500 text-white px-2.5 py-1 rounded-full font-bold';
+                badge.innerText = 'الخط الزمني للهدف';
+                desc.innerText = `الهدف: الوصول إلى ${targetW} كج بحلول ${targetDate.toLocaleDateString('en-GB')}. وزنك الحالي: ${curW} كج.`;
+            }
+            setTimeout(() => bar.style.width = percent + '%', 100);
+        }
+
+        function renderWeightHistory(history) {
+            const list = document.getElementById('weightHistoryList');
+            if(!history) { list.innerHTML = '<span class="text-xs text-gray-500">لا توجد أوزان مسجلة بعد</span>'; return; }
+            list.innerHTML = '';
+            Object.entries(history).sort().forEach(([date, w]) => {
+                list.innerHTML += `<div class="bg-input px-3 py-1.5 rounded-lg border border-border-color text-xs"><span class="text-coach font-bold">${w} كج</span> <span class="opacity-60 text-[10px] ml-1">(${date})</span></div>`;
+            });
+        }
+
+        // لوحة صدارة المنافسة بين المشتركات
+        async function loadLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            const snap = await get(child(ref(db), 'users'));
+            if(!snap.exists()) { container.innerHTML = '<p class="text-xs text-gray-500">لا توجد منافسة نشطة بعد.</p>'; return; }
+            
+            let usersArr = [];
+            snap.forEach(u => {
+                const val = u.val();
+                let score = 0;
+                // حساب سكور مبسط بناءً على إنجاز التمارين والوجبات
+                const today = getTodayStr();
+                const wDone = val.progress?.workouts?.[today] || {};
+                const mDone = val.progress?.meals?.[today] || {};
+                score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
+                usersArr.push({ email: val.email.split('@')[0], score });
+            });
+
+            usersArr.sort((a,b) => b.score - a.score);
+            container.innerHTML = '';
+            usersArr.slice(0, 5).forEach((usr, idx) => {
+                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-input px-3 py-2 rounded-xl text-xs border border-border-color">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-coach">${medal}</span>
+                            <span class="font-bold text-white">${usr.email}</span>
+                        </div>
+                        <span class="bg-card px-2.5 py-1 rounded-lg text-coach font-black">${usr.score} نقطة</span>
+                    </div>
+                `;
+            });
         }
 
         function checkWorkoutReminder(exercises, progress) {
@@ -638,7 +797,7 @@
             const warningBadge = document.getElementById('macroWarningBadge');
             if(totalCal > Number(userTargets.cal)) {
                 warningBadge.classList.remove('hidden');
-                warningBadge.innerText = `⚠️ هيه! تعديت السعرات (${totalCal} / ${userTargets.cal})! ركزي بوجباتك القادمة!`;
+                warningBadge.innerText = `⚠️ هيه! تعديت السعرات (${totalCal} /${userTargets.cal})! ركزي بوجباتك القادمة!`;
             } else {
                 warningBadge.classList.add('hidden');
             }
@@ -830,7 +989,7 @@
                 let setsHtml = '';
                 for(let i=1; i<=ex.sets; i++) {
                     const isActive = i <= doneSets ? 'done' : '';
-                    setsHtml += `<button onclick="window.markPlayerSet(${playerActiveIndex}, ${i})" class="set-pill ${isActive}">${i}</button>`;
+                    setsHtml += `<button onclick="window.markPlayerSet(${playerActiveIndex},${i})" class="set-pill ${isActive}">${i}</button>`;
                 }
 
                 area.innerHTML = `
@@ -1030,7 +1189,7 @@
                     <div class="flex gap-2 mb-1.5">
                         <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="w-2/3 bg-card p-2 rounded-lg text-xs" placeholder="المكون (دجاج، أرز)">
                         <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-1/3 bg-card p-2 rounded-lg text-xs" placeholder="المقدار (150جم)">
-                        <button onclick="window.remIng(${idx}, ${iIdx})" class="text-red-400 font-bold px-2">x</button>
+                        <button onclick="window.remIng(${idx},${iIdx})" class="text-red-400 font-bold px-2">x</button>
                     </div>
                 `).join('');
 
@@ -1062,7 +1221,7 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        // أزرار الحفظ المستقلة لكل قسم
+        // أزرار الحفظ المستقلة تماماً لكل قسم في لوحة الأدمن
         document.getElementById('saveMacrosBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,
@@ -1096,7 +1255,7 @@
             const area = document.getElementById(areaId);
             const isAdminContext = areaId === 'adminChatArea';
             onValue(ref(db, `chats/${uid}`), (snap) => {
-                area.innerHTML = '';
+                area.innerHTML = ``;
                 if(snap.exists()){
                     snap.forEach(c => {
                         area.innerHTML += formatChatMsg(c.val(), isAdminContext);

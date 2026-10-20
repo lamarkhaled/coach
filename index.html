@@ -2,161 +2,166 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كوتش صحة | للتدريب الشخصي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>كوتش صحة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'coach-green': '#9DFF13', /* لون الشعار النيون */
-                        'coach-dark': '#111111',
-                        'coach-gray': '#F5F5F7' /* لون أبل الرمادي الفاتح */
+                        'apple-bg': '#F2F2F7',
+                        'apple-card': '#FFFFFF',
+                        'apple-text': '#000000',
+                        'apple-gray': '#8E8E93',
+                        'apple-input': '#7676801F',
+                        'apple-blue': '#007AFF',
+                        'coach-green': '#9DFF13',
+                        'coach-dark': '#000000'
                     },
                     fontFamily: {
-                        sans: ['Tajawal', 'sans-serif'],
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Arabic"', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'ios': '14px',
+                        'ios-lg': '20px',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #FAFAFA; color: #111; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #F2F2F7; /* خلفية iOS الرمادية */
+            color: #000;
+            -webkit-font-smoothing: antialiased;
+        }
+        .ios-glass { 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(20px) saturate(180%); 
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+        }
         .hidden { display: none !important; }
-        .timeline-progress { transition: width 1s ease-in-out; }
+        .timeline-progress { transition: width 1s cubic-bezier(0.25, 0.1, 0.25, 1); }
+        
+        /* إخفاء شريط التمرير بأسلوب أبل */
+        ::-webkit-scrollbar { display: none; }
+        
+        /* حقول الإدخال ستايل iOS */
+        input {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        input:focus { outline: none; }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-    <!-- شريط التنقل العلوي -->
-    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-3">
-            <!-- الشعار -->
-            <div class="w-10 h-10 bg-coach-dark rounded-xl flex items-center justify-center text-coach-green font-bold text-xl">
-                صحة
-            </div>
-            <h1 class="font-bold text-xl tracking-wide">كوتش صحة</h1>
+    <!-- شريط التنقل بأسلوب iOS -->
+    <nav class="ios-glass sticky top-0 z-50 px-5 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-coach-green font-bold text-sm">صحة</div>
         </div>
-        <button id="logoutBtn" class="hidden text-sm font-medium text-red-500 hover:text-red-700 transition">تسجيل الخروج</button>
+        <div class="flex items-center gap-4">
+            <span id="userEmailDisplay" class="text-xs font-medium text-apple-gray hidden md:block"></span>
+            <button id="logoutBtn" class="hidden text-sm text-red-500 font-medium">تسجيل الخروج</button>
+        </div>
     </nav>
 
-    <!-- الحاوية الرئيسية -->
-    <main class="flex-grow flex items-center justify-center p-6">
+    <!-- رسائل النظام -->
+    <div id="globalMessage" class="hidden mx-4 mt-4 p-3 rounded-ios text-sm font-medium text-center shadow-sm transition-all duration-300"></div>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4 w-full max-w-3xl mx-auto">
         
-        <!-- 1. واجهة تسجيل الدخول / التسجيل -->
-        <div id="authSection" class="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100">
-            <h2 class="text-2xl font-bold mb-2 text-center">أهلاً بك في كوتش صحة</h2>
-            <p class="text-gray-500 text-center mb-8 text-sm">أدخلي بياناتك أو كود الاشتراك للبدء</p>
+        <!-- 1. واجهة الدخول (iOS Modal Style) -->
+        <div id="authSection" class="w-full bg-apple-card rounded-ios-lg shadow-sm p-6 sm:p-8">
+            <h1 id="authTitle" class="text-3xl font-bold mb-1 text-center tracking-tight">تسجيل الدخول</h1>
+            <p id="authSubtitle" class="text-apple-gray text-center mb-8 text-sm">أدخلي بياناتك للمتابعة</p>
             
-            <div id="authMessage" class="hidden mb-4 p-3 rounded-lg text-sm text-center"></div>
-
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
-                    <input type="email" id="emailInput" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-coach-green focus:border-transparent transition bg-coach-gray" placeholder="name@example.com">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
-                    <input type="password" id="passwordInput" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-coach-green focus:border-transparent transition bg-coach-gray" placeholder="••••••••">
-                </div>
-                <div id="codeField" class="hidden">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">كود الاشتراك</label>
-                    <input type="text" id="codeInput" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-coach-green focus:border-transparent transition bg-coach-gray" placeholder="أدخلي الكود هنا">
-                </div>
-
-                <button id="loginBtn" class="w-full bg-coach-dark text-coach-green font-bold py-3 rounded-xl hover:bg-black transition shadow-lg">تسجيل الدخول</button>
-                <button id="registerBtn" class="w-full bg-coach-green text-coach-dark font-bold py-3 rounded-xl hover:bg-[#8AE510] transition shadow-lg hidden">إنشاء حساب جديد بالكود</button>
-            </div>
-
-            <div class="mt-6 text-center space-y-2">
-                <button id="toggleAuthModeBtn" class="text-sm text-gray-500 hover:text-coach-dark">ليس لديك حساب؟ اشتركي الآن باستخدام الكود</button>
-                <br>
-                <button id="forgotPasswordBtn" class="text-sm text-gray-500 hover:text-coach-dark">نسيت كلمة المرور؟</button>
-            </div>
-        </div>
-
-        <!-- 2. واجهة التنبيه بضرورة تفعيل الإيميل -->
-        <div id="verifyEmailSection" class="hidden w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100 text-center">
-            <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✉️</div>
-            <h2 class="text-2xl font-bold mb-2">حسابك غير مفعل</h2>
-            <p class="text-gray-500 text-sm mb-6">يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب لتتمكني من الدخول لبرنامجك.</p>
-            <button id="resendVerificationBtn" class="w-full bg-coach-dark text-coach-green font-bold py-3 rounded-xl hover:bg-black transition">إرسال رسالة التفعيل مجدداً</button>
-        </div>
-
-        <!-- 3. واجهة المشتركة (التايم لاين) -->
-        <div id="userDashboard" class="hidden w-full max-w-2xl">
-            <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100 mb-6">
-                <h2 class="text-2xl font-bold mb-6">مرحباً بكِ في رحلتك الصحية 🌿</h2>
+                <input type="email" id="emailInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="البريد الإلكتروني">
+                <input type="password" id="passwordInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="كلمة المرور">
                 
-                <!-- التايم لاين -->
-                <div class="bg-coach-gray rounded-2xl p-6 relative overflow-hidden">
-                    <div class="flex justify-between text-sm font-medium text-gray-600 mb-2">
-                        <span>البداية</span>
-                        <span id="daysRemainingText" class="text-coach-dark font-bold">باقي 15 يوم</span>
-                        <span>النهاية</span>
+                <div id="codeField" class="hidden">
+                    <input type="text" id="codeInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="كود الاشتراك">
+                </div>
+
+                <button id="mainAuthBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px] mt-2">متابعة</button>
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3">
+                <button id="toggleAuthBtn" class="text-[15px] text-apple-blue font-medium">ليس لديك حساب؟ اشتركي بالكود</button>
+                <button id="forgotPasswordBtn" class="text-[15px] text-apple-blue font-medium">نسيت كلمة المرور؟</button>
+            </div>
+        </div>
+
+        <!-- 2. واجهة تفعيل الإيميل -->
+        <div id="verifyEmailSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-8 text-center">
+            <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✉️</div>
+            <h2 class="text-2xl font-bold mb-2 tracking-tight">تفعيل الحساب</h2>
+            <p class="text-apple-gray text-[15px] mb-8">يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب والمتابعة.</p>
+            <button id="resendVerificationBtn" class="w-full bg-apple-blue text-white font-semibold py-3.5 rounded-ios text-[17px]">إرسال الرسالة مجدداً</button>
+        </div>
+
+        <!-- 3. لوحة المشتركة (iOS Widget Style) -->
+        <div id="userDashboard" class="hidden w-full">
+            <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">الخلاصة</h1>
+            
+            <div class="bg-apple-card rounded-ios-lg shadow-sm p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">اشتراك التدريب</h2>
+                    <span id="daysRemainingText" class="text-coach-dark font-bold text-lg bg-coach-green px-3 py-1 rounded-full text-sm">--</span>
+                </div>
+                
+                <div class="relative pt-2">
+                    <div class="w-full bg-apple-input rounded-full h-2.5 mb-3">
+                        <div id="timelineBar" class="bg-black h-2.5 rounded-full timeline-progress" style="width: 0%;"></div>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
-                        <div id="timelineBar" class="bg-coach-dark h-3 rounded-full timeline-progress" style="width: 50%;"></div>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-400">
-                        <span id="startDateText">2026/10/01</span>
-                        <span id="endDateText">2026/11/01</span>
+                    <div class="flex justify-between text-[13px] font-medium text-apple-gray">
+                        <span id="startDateText">--/--/----</span>
+                        <span id="endDateText">--/--/----</span>
                     </div>
                 </div>
             </div>
-
-            <!-- زر تغيير الباسورد للمشتركة -->
-            <button id="changePasswordInsideBtn" class="text-sm text-gray-500 hover:text-coach-dark underline">تغيير كلمة المرور</button>
-        </div>
-
-        <!-- 4. واجهة انتهاء الاشتراك -->
-        <div id="expiredSection" class="hidden w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100 text-center">
-            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⏳</div>
-            <h2 class="text-2xl font-bold mb-2">انتهى اشتراكك</h2>
-            <p class="text-gray-500 text-sm mb-6">لقد انتهت مدة اشتراكك الحالية. لتجديد الاشتراك ومواصلة رحلتك الصحية، يرجى زيارة المتجر.</p>
-            <a href="https://salla.sa/YOUR_STORE_LINK" target="_blank" class="block w-full bg-coach-green text-coach-dark font-bold py-3 rounded-xl hover:bg-[#8AE510] transition shadow-lg">تجديد الاشتراك من سلة</a>
-        </div>
-
-        <!-- 5. لوحة تحكم الإدارة (لمار) -->
-        <div id="adminDashboard" class="hidden w-full max-w-4xl">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-bold">لوحة تحكم الإدارة (لمار)</h2>
-                <span class="bg-coach-dark text-coach-green px-4 py-1 rounded-full text-sm font-bold">lm6p12@gmail.com</span>
+            
+            <div class="px-2">
+                <button id="changePasswordBtn" class="text-[15px] text-apple-blue font-medium">تغيير كلمة المرور</button>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- قسم إنشاء الأكواد -->
-                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 border border-gray-100">
-                    <h3 class="text-xl font-bold mb-4">إنشاء كود اشتراك جديد</h3>
-                    <div class="space-y-3">
-                        <input type="text" id="newCodeInput" class="w-full px-4 py-2 rounded-xl border bg-coach-gray" placeholder="اكتب الكود (مثال: VIP2026)">
-                        <div class="flex gap-2">
-                            <input type="number" id="codeDays" class="w-1/3 px-4 py-2 rounded-xl border bg-coach-gray" placeholder="الأيام">
-                            <input type="number" id="codeHours" class="w-1/3 px-4 py-2 rounded-xl border bg-coach-gray" placeholder="الساعات">
-                            <input type="number" id="codeMinutes" class="w-1/3 px-4 py-2 rounded-xl border bg-coach-gray" placeholder="الدقائق">
-                        </div>
-                        <button id="generateCodeBtn" class="w-full bg-coach-dark text-coach-green font-bold py-2 rounded-xl">حفظ الكود</button>
+        <!-- 4. واجهة الانتهاء -->
+        <div id="expiredSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-8 text-center">
+            <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⏳</div>
+            <h2 class="text-2xl font-bold mb-2 tracking-tight">انتهى الاشتراك</h2>
+            <p class="text-apple-gray text-[15px] mb-8">لقد انتهت رحلتك الحالية. يمكنك التجديد لمواصلة التدريب.</p>
+            <a href="https://salla.sa/YOUR_STORE_LINK" target="_blank" class="block w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px]">تجديد من المتجر</a>
+        </div>
+
+        <!-- 5. لوحة الإدارة (Settings Style) -->
+        <div id="adminDashboard" class="hidden w-full">
+            <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">الإدارة</h1>
+
+            <div class="flex flex-col gap-6">
+                <!-- إضافة كود -->
+                <div class="bg-apple-card rounded-ios-lg shadow-sm p-6">
+                    <h3 class="text-[17px] font-semibold mb-4">كود جديد</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="adminNewCode" class="w-full bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="مثال: LAMAR26">
+                        <input type="number" id="adminDays" class="w-full bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="عدد الأيام" value="30">
+                        <button id="generateCodeBtn" class="w-full bg-apple-blue text-white font-semibold py-3 rounded-ios text-[17px]">إنشاء وحفظ</button>
                     </div>
                 </div>
 
-                <!-- قسم إدارة المشتركات -->
-                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 border border-gray-100 overflow-y-auto max-h-96">
-                    <h3 class="text-xl font-bold mb-4">المشتركات الحاليات</h3>
-                    <div id="usersList" class="space-y-3">
-                        <!-- سيتم تعبئة هذا القسم برمجياً من فايربيس -->
-                        <div class="p-3 border rounded-xl flex justify-between items-center bg-gray-50">
-                            <div>
-                                <p class="font-bold text-sm">user@example.com</p>
-                                <p class="text-xs text-gray-500">باقي: 10 أيام</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">تعديل المدة</button>
-                                <button class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">حذف</button>
-                            </div>
-                        </div>
+                <!-- المشتركات -->
+                <div class="bg-apple-card rounded-ios-lg shadow-sm overflow-hidden">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                        <h3 class="text-[17px] font-semibold">المشتركات</h3>
+                        <button id="refreshUsersBtn" class="text-[15px] text-apple-blue font-medium">تحديث</button>
+                    </div>
+                    <div id="usersList" class="divide-y divide-gray-100">
+                        <p class="text-[15px] text-apple-gray text-center py-6">جاري التحميل...</p>
                     </div>
                 </div>
             </div>
@@ -164,89 +169,265 @@
 
     </main>
 
-    <!-- الأكواد البرمجية (تحتاج لربطها بـ Firebase) -->
     <script type="module">
-        // ⚠️ مهم جداً: لكي يعمل هذا الكود فعلياً، يجب عليك إنشاء مشروع في Firebase
-        // ثم إضافة أكواد الربط الخاصة بك هنا. 
-        // سأقوم ببناء هيكلة العمليات المنطقية لتكون جاهزة.
-
-        /* 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+        // استدعاء مكتبات فايربيس بناءً على إصدار 13.0.0 كما طلبتِ
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM",
+            authDomain: "helth-c7e42.firebaseapp.com",
+            projectId: "helth-c7e42",
+            storageBucket: "helth-c7e42.firebasestorage.app",
+            messagingSenderId: "308704396481",
+            appId: "1:308704396481:web:d0c8ad6598342bfbad8040",
+            measurementId: "G-PK0JP2KRSR"
         };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        */
 
-        // واجهات المتصفح (UI Elements)
-        const ui = {
-            authSection: document.getElementById('authSection'),
-            verifyEmailSection: document.getElementById('verifyEmailSection'),
-            userDashboard: document.getElementById('userDashboard'),
-            expiredSection: document.getElementById('expiredSection'),
-            adminDashboard: document.getElementById('adminDashboard'),
-            codeField: document.getElementById('codeField'),
-            loginBtn: document.getElementById('loginBtn'),
-            registerBtn: document.getElementById('registerBtn'),
-            toggleAuthBtn: document.getElementById('toggleAuthModeBtn'),
-            logoutBtn: document.getElementById('logoutBtn'),
-            authMessage: document.getElementById('authMessage')
-        };
-
-        const adminEmail = 'lm6p12@gmail.com';
+        const adminEmail = "lm6p12@gmail.com";
         let isRegisterMode = false;
 
-        // دالة لعرض رسائل الخطأ والنجاح
-        function showMessage(text, isError = true) {
-            ui.authMessage.textContent = text;
-            ui.authMessage.className = `mb-4 p-3 rounded-lg text-sm text-center block ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
-            ui.authMessage.classList.remove('hidden');
+        const ui = {
+            sections: ['authSection', 'verifyEmailSection', 'userDashboard', 'expiredSection', 'adminDashboard'],
+            email: document.getElementById('emailInput'),
+            password: document.getElementById('passwordInput'),
+            code: document.getElementById('codeInput'),
+            mainBtn: document.getElementById('mainAuthBtn'),
+            toggleBtn: document.getElementById('toggleAuthBtn'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            userEmailDisplay: document.getElementById('userEmailDisplay'),
+            msgBox: document.getElementById('globalMessage')
+        };
+
+        function showSection(sectionId) {
+            ui.sections.forEach(id => document.getElementById(id).classList.add('hidden'));
+            if(sectionId) document.getElementById(sectionId).classList.remove('hidden');
+            
+            if(sectionId !== 'authSection' && sectionId) {
+                ui.logoutBtn.classList.remove('hidden');
+                ui.userEmailDisplay.textContent = auth.currentUser?.email || '';
+            } else {
+                ui.logoutBtn.classList.add('hidden');
+                ui.userEmailDisplay.textContent = '';
+            }
         }
 
-        // التبديل بين تسجيل الدخول والتسجيل بكود
-        ui.toggleAuthBtn.addEventListener('click', () => {
+        function showMsg(text, isError = true) {
+            ui.msgBox.textContent = text;
+            ui.msgBox.className = `mx-4 mt-4 p-3 rounded-ios text-[15px] font-medium text-center block ${isError ? 'bg-red-50 text-red-600' : 'bg-[#E5FADD] text-green-700'}`;
+            ui.msgBox.classList.remove('hidden');
+            setTimeout(() => ui.msgBox.classList.add('hidden'), 5000);
+        }
+
+        ui.toggleBtn.addEventListener('click', () => {
             isRegisterMode = !isRegisterMode;
-            if (isRegisterMode) {
-                ui.codeField.classList.remove('hidden');
-                ui.loginBtn.classList.add('hidden');
-                ui.registerBtn.classList.remove('hidden');
-                ui.toggleAuthBtn.textContent = 'لديك حساب بالفعل؟ تسجيل الدخول';
-            } else {
-                ui.codeField.classList.add('hidden');
-                ui.loginBtn.classList.remove('hidden');
-                ui.registerBtn.classList.add('hidden');
-                ui.toggleAuthBtn.textContent = 'ليس لديك حساب؟ اشتركي الآن باستخدام الكود';
+            document.getElementById('authTitle').textContent = isRegisterMode ? 'اشتراك جديد' : 'تسجيل الدخول';
+            document.getElementById('authSubtitle').textContent = isRegisterMode ? 'أدخلي بياناتك وكود الاشتراك' : 'أدخلي بياناتك للمتابعة';
+            document.getElementById('codeField').classList.toggle('hidden', !isRegisterMode);
+            ui.mainBtn.textContent = isRegisterMode ? 'تفعيل الحساب' : 'متابعة';
+            ui.toggleBtn.textContent = isRegisterMode ? 'لديك حساب بالفعل؟ الدخول' : 'ليس لديك حساب؟ اشتركي بالكود';
+        });
+
+        ui.mainBtn.addEventListener('click', async () => {
+            const email = ui.email.value.trim();
+            const pass = ui.password.value.trim();
+            const code = ui.code.value.trim();
+
+            if (!email || !pass) return showMsg("البيانات غير مكتملة");
+
+            try {
+                ui.mainBtn.textContent = "جاري التحميل...";
+                ui.mainBtn.disabled = true;
+
+                if (isRegisterMode) {
+                    if (!code) throw new Error("مطلوب كود الاشتراك");
+                    
+                    const codeDoc = await getDoc(doc(db, "codes", code));
+                    if (!codeDoc.exists() || codeDoc.data().used) {
+                        throw new Error("الكود غير صحيح أو مستخدم");
+                    }
+
+                    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await sendEmailVerification(userCred.user);
+                    
+                    const days = codeDoc.data().days || 30;
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() + days);
+
+                    await setDoc(doc(db, "users", userCred.user.uid), {
+                        email: email,
+                        startDate: new Date().toISOString(),
+                        endDate: endDate.toISOString()
+                    });
+
+                    await updateDoc(doc(db, "codes", code), { used: true, usedBy: email });
+                    showMsg("تم إنشاء الحساب! فعلي إيميلك", false);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
+            } catch (error) {
+                let errorMsg = "حدث خطأ غير متوقع";
+                if (error.code === 'auth/invalid-credential') errorMsg = "الإيميل أو الرقم السري غير صحيح";
+                if (error.code === 'auth/email-already-in-use') errorMsg = "الإيميل مسجل مسبقاً";
+                showMsg(error.message || errorMsg);
+            } finally {
+                ui.mainBtn.textContent = isRegisterMode ? 'تفعيل الحساب' : 'متابعة';
+                ui.mainBtn.disabled = false;
             }
         });
 
-        // الخوارزمية التي سيتم تنفيذها عند تفعيل Firebase:
-        /*
-        1. التسجيل (Register):
-           - التحقق من Firestore إذا كان الكود المدخل صحيح وغير مستخدم.
-           - إذا صح: إنشاء حساب بـ Email & Password -> إرسال رسالة تحقق -> حفظ الكود كـ "مستخدم" -> حفظ مدة الاشتراك للمستخدم.
-           - إذا خطأ: إظهار رسالة خطأ.
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                if (user.email === adminEmail) {
+                    showSection('adminDashboard');
+                    loadAdminUsers();
+                } else {
+                    if (!user.emailVerified) {
+                        showSection('verifyEmailSection');
+                    } else {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
+                            const end = new Date(data.endDate);
+                            const now = new Date();
+                            
+                            if (now > end) {
+                                showSection('expiredSection');
+                            } else {
+                                showSection('userDashboard');
+                                renderTimeline(data.startDate, data.endDate);
+                            }
+                        } else {
+                            showMsg("لا توجد بيانات لاشتراكك");
+                            auth.signOut();
+                        }
+                    }
+                }
+            } else {
+                showSection('authSection');
+            }
+        });
 
-        2. تسجيل الدخول (Login):
-           - تسجيل الدخول.
-           - التحقق إذا الإيميل === lm6p12@gmail.com -> إظهار لوحة التحكم adminDashboard.
-           - إذا مستخدم عادي:
-               - هل تم التحقق من الإيميل؟ 
-                   - لا: إظهار verifyEmailSection.
-                   - نعم: جلب بيانات الاشتراك.
-                       - هل انتهت المدة؟ -> إظهار expiredSection.
-                       - هل صالحة؟ -> إظهار userDashboard ورسم التايم لاين.
-        */
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
+        document.getElementById('forgotPasswordBtn').addEventListener('click', async () => {
+            const email = ui.email.value.trim();
+            if(!email) return showMsg("أدخلي الإيميل أولاً");
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showMsg("تم إرسال الرابط", false);
+            } catch (error) { showMsg("حدث خطأ"); }
+        });
+
+        document.getElementById('resendVerificationBtn').addEventListener('click', async () => {
+            try {
+                await sendEmailVerification(auth.currentUser);
+                showMsg("تم إرسال الرسالة", false);
+            } catch (e) { showMsg("انتظري قليلاً قبل المحاولة"); }
+        });
+
+        document.getElementById('changePasswordBtn').addEventListener('click', async () => {
+            try {
+                await sendPasswordResetEmail(auth, auth.currentUser.email);
+                showMsg("تم إرسال الرابط", false);
+            } catch(e) { showMsg("حدث خطأ"); }
+        });
+
+        // ---------------- الإدارة ---------------- //
+        document.getElementById('generateCodeBtn').addEventListener('click', async () => {
+            const codeVal = document.getElementById('adminNewCode').value.trim();
+            const daysVal = parseInt(document.getElementById('adminDays').value) || 0;
+            if(!codeVal || daysVal <= 0) return showMsg("بيانات الكود غير مكتملة");
+
+            try {
+                await setDoc(doc(db, "codes", codeVal), { code: codeVal, days: daysVal, used: false });
+                showMsg("تم حفظ الكود!", false);
+                document.getElementById('adminNewCode').value = '';
+            } catch (e) { showMsg("حدث خطأ"); }
+        });
+
+        document.getElementById('refreshUsersBtn').addEventListener('click', loadAdminUsers);
+
+        async function loadAdminUsers() {
+            const listUI = document.getElementById('usersList');
+            listUI.innerHTML = '<p class="text-[15px] text-apple-gray text-center py-6">جاري التحميل...</p>';
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                listUI.innerHTML = '';
+                if(querySnapshot.empty) {
+                    listUI.innerHTML = '<p class="text-[15px] text-apple-gray text-center py-6">لا توجد مشتركات</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((documentSnapshot) => {
+                    const data = documentSnapshot.data();
+                    const uid = documentSnapshot.id;
+                    const end = new Date(data.endDate);
+                    const diffDays = Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24));
+                    
+                    listUI.innerHTML += `
+                        <div class="p-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-[15px] font-semibold text-black">${data.email}</p>
+                                <p class="text-[13px] ${diffDays > 0 ? 'text-apple-blue' : 'text-red-500'} mt-0.5">${diffDays > 0 ? 'باقي ' + diffDays + ' يوم' : 'منتهي'}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="window.addDays('${uid}')" class="text-[13px] bg-gray-100 text-black px-3 py-1.5 rounded-lg font-medium">تعديل</button>
+                                <button onclick="window.deleteUser('${uid}')" class="text-[13px] text-red-500 bg-red-50 px-3 py-1.5 rounded-lg font-medium">حذف</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) { listUI.innerHTML = '<p class="text-sm text-red-500 text-center py-4">فشل التحميل</p>'; }
+        }
+
+        window.addDays = async (uid) => {
+            const extraDays = prompt("كم عدد الأيام المراد إضافتها؟ (بالسالب للخصم)", "10");
+            if(extraDays) {
+                try {
+                    const userRef = doc(db, "users", uid);
+                    const docSnap = await getDoc(userRef);
+                    const newEndDate = new Date(docSnap.data().endDate);
+                    newEndDate.setDate(newEndDate.getDate() + parseInt(extraDays));
+                    await updateDoc(userRef, { endDate: newEndDate.toISOString() });
+                    showMsg("تم التعديل!", false);
+                    loadAdminUsers();
+                } catch(e) { showMsg("حدث خطأ"); }
+            }
+        };
+
+        window.deleteUser = async (uid) => {
+            if(confirm("متأكدة من الحذف؟")) {
+                try {
+                    await deleteDoc(doc(db, "users", uid));
+                    showMsg("تم الحذف", false);
+                    loadAdminUsers();
+                } catch(e) { showMsg("حدث خطأ"); }
+            }
+        };
+
+        // ---------------- التايم لاين ---------------- //
+        function renderTimeline(startIso, endIso) {
+            const start = new Date(startIso);
+            const end = new Date(endIso);
+            const now = new Date();
+
+            let percentage = ((now - start) / (end - start)) * 100;
+            percentage = Math.max(0, Math.min(percentage, 100));
+
+            const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+
+            document.getElementById('startDateText').textContent = start.toLocaleDateString('en-GB');
+            document.getElementById('endDateText').textContent = end.toLocaleDateString('en-GB');
+            document.getElementById('daysRemainingText').textContent = `${diffDays} يوم`;
+            
+            setTimeout(() => { document.getElementById('timelineBar').style.width = `${percentage}%`; }, 100);
+        }
     </script>
 </body>
 </html>

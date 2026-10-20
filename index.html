@@ -3,370 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كوتش صحة | المنظومة الرقمية</title>
-    
+    <title>كوتش صحة | للتدريب الشخصي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Alexandria', 'sans-serif'] },
                     colors: {
-                        brand: '#050505',
-                        surface: '#111111',
-                        accent: '#10b981',
+                        'coach-green': '#9DFF13', /* لون الشعار النيون */
+                        'coach-dark': '#111111',
+                        'coach-gray': '#F5F5F7' /* لون أبل الرمادي الفاتح */
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-
     <style>
-        body { background-color: #050505; color: #f3f4f6; -webkit-font-smoothing: antialiased; }
-        .minimal-card { background: #0a0a0a; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 24px; transition: all 0.3s ease; }
-        .text-accent-gradient { background: linear-gradient(120deg, #34d399 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .modal-overlay { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); }
-        .hidden-section { display: none !important; }
-        .input-field { width: 100%; background: #0a0a0a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px 16px; color: white; transition: all 0.3s; margin-bottom: 12px; }
-        .input-field:focus { outline: none; border-color: #10b981; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #FAFAFA; color: #111; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .hidden { display: none !important; }
+        .timeline-progress { transition: width 1s ease-in-out; }
     </style>
 </head>
-<body class="selection:bg-accent selection:text-black relative">
+<body class="antialiased min-h-screen flex flex-col">
 
-    <nav class="fixed w-full z-40 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center font-black text-black text-lg">C</div>
-                <h1 class="text-xl font-bold tracking-wide">كوتش صحة</h1>
+    <!-- شريط التنقل العلوي -->
+    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-3">
+            <!-- الشعار -->
+            <div class="w-10 h-10 bg-coach-dark rounded-xl flex items-center justify-center text-coach-green font-bold text-xl">
+                صحة
             </div>
-            <div class="flex items-center gap-4">
-                <span id="userGreeting" class="hidden-section text-sm text-gray-400 font-medium"></span>
-                <button id="navLoginBtn" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all">دخول المنصة</button>
-                <button id="navLogoutBtn" class="hidden-section bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-2.5 rounded-full text-sm font-medium transition-all">خروج</button>
-            </div>
+            <h1 class="font-bold text-xl tracking-wide">كوتش صحة</h1>
         </div>
+        <button id="logoutBtn" class="hidden text-sm font-medium text-red-500 hover:text-red-700 transition">تسجيل الخروج</button>
     </nav>
 
-    <div id="landingPage" class="pt-40 pb-24 px-6 relative">
-        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
-            <div class="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent px-4 py-1.5 rounded-full text-xs font-bold mb-8">إطلاق حصري لفترة محدودة</div>
-            <h2 class="text-5xl md:text-7xl font-black leading-[1.2] mb-8 text-white">
-                اصنع نسختك الأفضل بذكاء، <br><span class="text-accent-gradient">وبدون حرمان.</span>
-            </h2>
-            <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto font-light">منظومة رقمية متكاملة تختصر عليك سنوات من التجارب العشوائية. جداول ذكية، تغذية مرنة، ومتابعة دقيقة.</p>
-            <button id="heroJoinBtn" class="bg-accent text-black px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition shadow-[0_0_20px_rgba(16,185,129,0.3)]">سجلي حسابك الآن</button>
-        </div>
-    </div>
-
-    <div id="authModal" class="hidden-section fixed inset-0 z-50 flex items-center justify-center p-6 modal-overlay">
-        <div class="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full relative">
-            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
-            <div class="w-16 h-16 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🔒</div>
-            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-center">تسجيل الدخول</h3>
-            <div id="authMessage" class="hidden-section text-center text-xs p-3 rounded-lg mb-4"></div>
-            
-            <form id="authForm" class="space-y-2">
-                <input type="text" id="nameInput" placeholder="الاسم الكريم (للتسجيل فقط)" class="input-field hidden-section">
-                <input type="email" id="emailInput" placeholder="البريد الإلكتروني" required class="input-field">
-                <input type="password" id="passwordInput" placeholder="كلمة المرور" required class="input-field">
-                <button type="submit" id="submitAuthBtn" class="w-full bg-accent text-black font-bold py-3 rounded-xl hover:bg-accent/80 transition mt-4">دخول</button>
-            </form>
-            
-            <div class="mt-6 text-center text-sm text-gray-400 space-y-3 flex flex-col">
-                <div class="border-t border-white/10 pt-3">
-                    <span id="toggleText">ليس لديك حساب؟</span>
-                    <button id="toggleAuthModeBtn" class="text-accent font-bold hover:underline ml-1">إنشاء حساب</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="adminDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto text-center">
-        <div class="w-20 h-20 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">👑</div>
-        <h2 class="text-3xl font-bold mb-4 text-white">أهلاً كوتش صحة</h2>
-        <p class="text-gray-400 mb-8 max-w-lg mx-auto">هذه هي لوحة الإدارة الخاصة بك. بما أن النظام يعمل الآن بشكل محلي بالكامل لضمان سرعته وعدم تعطله، يمكنك إدارة المشتركات عبر الكود الموحد الواتساب.</p>
+    <!-- الحاوية الرئيسية -->
+    <main class="flex-grow flex items-center justify-center p-6">
         
-        <div class="grid md:grid-cols-2 gap-6 text-right">
-            <div class="minimal-card p-8 border border-accent/20">
-                <h3 class="text-xl font-bold mb-4 text-accent">🔑 كود التفعيل الموحد</h3>
-                <p class="text-sm text-gray-400 mb-4">أعطي هذا الكود السري لأي متدربة تدفع لك لكي تفتح الباقة في حسابها:</p>
-                <div class="bg-black text-white text-center text-3xl font-black py-4 rounded-xl tracking-widest border border-white/10">COACH2024</div>
-            </div>
-            <div class="minimal-card p-8 border border-white/10">
-                <h3 class="text-xl font-bold mb-4">💬 استقبال المحادثات</h3>
-                <p class="text-sm text-gray-400 mb-4">تم ربط شات المتدربات برقم الواتساب الخاص بك مباشرة. أي متدربة ترسل استفساراً من حسابها سيصلك كرسالة واتساب منظمة.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="userDashboard" class="hidden-section pt-32 pb-24 px-6 max-w-5xl mx-auto">
-        <h2 class="text-3xl font-bold mb-8">أهلاً بكِ يا <span id="dashName" class="text-accent">بطلة</span> 🚀</h2>
-
-        <div id="activationOverlay" class="hidden-section bg-black border border-accent/30 rounded-3xl p-8 text-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
-            <div class="text-4xl mb-4">🔐</div>
-            <h3 class="text-2xl font-bold mb-2 text-white">حسابك غير مفعل بعد</h3>
-            <p class="text-sm text-gray-400 mb-6">الرجاء إدخال كود التفعيل لفتح الباقة بالكامل.</p>
-            <div class="max-w-xs mx-auto flex gap-2">
-                <input type="text" id="userActivationInput" placeholder="كود التفعيل" class="input-field !mb-0 text-center uppercase">
-                <button id="activateAccBtn" class="bg-accent text-black font-bold px-6 rounded-xl hover:bg-accent/80 transition">تفعيل</button>
-            </div>
-            <p id="activationMsg" class="text-xs mt-3 font-bold hidden-section"></p>
-        </div>
-
-        <div id="onboardingOverlay" class="hidden-section bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 mb-8">
-            <div class="text-center mb-8">
-                <h3 class="text-3xl font-bold mb-2 text-accent">تهانينا! تم تفعيل حسابك 🎉</h3>
-                <p class="text-gray-400">جاوبي على هالأسئلة السريعة عشان نخصص لك الخطة:</p>
-            </div>
+        <!-- 1. واجهة تسجيل الدخول / التسجيل -->
+        <div id="authSection" class="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100">
+            <h2 class="text-2xl font-bold mb-2 text-center">أهلاً بك في كوتش صحة</h2>
+            <p class="text-gray-500 text-center mb-8 text-sm">أدخلي بياناتك أو كود الاشتراك للبدء</p>
             
-            <form id="onboardingForm" class="max-w-xl mx-auto space-y-6">
+            <div id="authMessage" class="hidden mb-4 p-3 rounded-lg text-sm text-center"></div>
+
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-bold mb-2">1. هدفك الأساسي؟</label>
-                    <select id="obGoal" class="input-field" required>
-                        <option value="" disabled selected>اختاري هدفك...</option>
-                        <option value="خسارة دهون وشد الجسم">خسارة دهون وشد الجسم</option>
-                        <option value="بناء عضلي وزيادة وزن">بناء عضلي وزيادة وزن</option>
-                        <option value="إعادة تكوين جسماني">إعادة تكوين جسماني</option>
-                    </select>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+                    <input type="email" id="emailInput" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-coach-green focus:border-transparent transition bg-coach-gray" placeholder="name@example.com">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold mb-2">2. مستواك بالنادي؟</label>
-                    <select id="obLevel" class="input-field" required>
-                        <option value="" disabled selected>مستواك...</option>
-                        <option value="مبتدئة">مبتدئة</option>
-                        <option value="متوسطة">متوسطة</option>
-                        <option value="متقدمة">متقدمة</option>
-                    </select>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+                    <input type="password" id="passwordInput" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-coach-green focus:border-transparent transition bg-coach-gray" placeholder="••••••••">
                 </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">3. أيام التدريب؟</label>
-                    <select id="obDays" class="input-field" required>
-                        <option value="" disabled selected>عدد الأيام...</option>
-                        <option value="3 أيام">3 أيام</option>
-                        <option value="4 أيام">4 أيام</option>
-                        <option value="5 أيام أو أكثر">5 أيام أو أكثر</option>
-                        <option value="بالبيت">أتمرن في البيت</option>
-                    </select>
+                <div id="codeField" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">كود الاشتراك</label>
+                    <input type="text" id="codeInput" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-coach-green focus:border-transparent transition bg-coach-gray" placeholder="أدخلي الكود هنا">
                 </div>
-                <button type="submit" id="submitOnboardingBtn" class="w-full bg-accent text-black font-bold py-4 rounded-xl hover:bg-accent/80 transition text-lg mt-4">إرسال وبدء التحول 🚀</button>
-            </form>
+
+                <button id="loginBtn" class="w-full bg-coach-dark text-coach-green font-bold py-3 rounded-xl hover:bg-black transition shadow-lg">تسجيل الدخول</button>
+                <button id="registerBtn" class="w-full bg-coach-green text-coach-dark font-bold py-3 rounded-xl hover:bg-[#8AE510] transition shadow-lg hidden">إنشاء حساب جديد بالكود</button>
+            </div>
+
+            <div class="mt-6 text-center space-y-2">
+                <button id="toggleAuthModeBtn" class="text-sm text-gray-500 hover:text-coach-dark">ليس لديك حساب؟ اشتركي الآن باستخدام الكود</button>
+                <br>
+                <button id="forgotPasswordBtn" class="text-sm text-gray-500 hover:text-coach-dark">نسيت كلمة المرور؟</button>
+            </div>
         </div>
 
-        <div id="premiumContent" class="grid md:grid-cols-2 gap-6 hidden-section">
-            
-            <div class="minimal-card p-6 md:col-span-2 bg-accent/5 border border-accent/30">
-                <h3 class="text-xl font-bold mb-2 text-white flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <span>📅 جدولك المخصص</span>
-                        <span class="text-[10px] bg-accent text-black px-2 py-0.5 rounded-full">جاهز</span>
+        <!-- 2. واجهة التنبيه بضرورة تفعيل الإيميل -->
+        <div id="verifyEmailSection" class="hidden w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100 text-center">
+            <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✉️</div>
+            <h2 class="text-2xl font-bold mb-2">حسابك غير مفعل</h2>
+            <p class="text-gray-500 text-sm mb-6">يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب لتتمكني من الدخول لبرنامجك.</p>
+            <button id="resendVerificationBtn" class="w-full bg-coach-dark text-coach-green font-bold py-3 rounded-xl hover:bg-black transition">إرسال رسالة التفعيل مجدداً</button>
+        </div>
+
+        <!-- 3. واجهة المشتركة (التايم لاين) -->
+        <div id="userDashboard" class="hidden w-full max-w-2xl">
+            <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100 mb-6">
+                <h2 class="text-2xl font-bold mb-6">مرحباً بكِ في رحلتك الصحية 🌿</h2>
+                
+                <!-- التايم لاين -->
+                <div class="bg-coach-gray rounded-2xl p-6 relative overflow-hidden">
+                    <div class="flex justify-between text-sm font-medium text-gray-600 mb-2">
+                        <span>البداية</span>
+                        <span id="daysRemainingText" class="text-coach-dark font-bold">باقي 15 يوم</span>
+                        <span>النهاية</span>
                     </div>
-                </h3>
-                <p class="text-sm text-gray-400 mb-4">تم اختيار هذا الجدول تلقائياً بناءً على إجاباتك.</p>
-                <div id="userActiveScheduleBox" class="bg-black rounded-xl p-6 text-center border border-white/5">
+                    <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                        <div id="timelineBar" class="bg-coach-dark h-3 rounded-full timeline-progress" style="width: 50%;"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span id="startDateText">2026/10/01</span>
+                        <span id="endDateText">2026/11/01</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="minimal-card p-6 border border-white/10">
-                <h3 class="text-lg font-bold mb-4 text-white">💬 تواصل مباشر مع الكوتش</h3>
-                <p class="text-sm text-gray-400 mb-4">اكتبي استفسارك هنا وسيتم تحويلك فوراً لمحادثة الكوتش عبر الواتساب.</p>
-                <textarea id="whatsappInput" placeholder="اكتبي رسالتك هنا..." rows="3" class="input-field resize-none"></textarea>
-                <button id="whatsappSendBtn" class="w-full bg-white text-black py-3 rounded-xl font-bold hover:bg-gray-200 transition">إرسال عبر الواتساب 📲</button>
+            <!-- زر تغيير الباسورد للمشتركة -->
+            <button id="changePasswordInsideBtn" class="text-sm text-gray-500 hover:text-coach-dark underline">تغيير كلمة المرور</button>
+        </div>
+
+        <!-- 4. واجهة انتهاء الاشتراك -->
+        <div id="expiredSection" class="hidden w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100 text-center">
+            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⏳</div>
+            <h2 class="text-2xl font-bold mb-2">انتهى اشتراكك</h2>
+            <p class="text-gray-500 text-sm mb-6">لقد انتهت مدة اشتراكك الحالية. لتجديد الاشتراك ومواصلة رحلتك الصحية، يرجى زيارة المتجر.</p>
+            <a href="https://salla.sa/YOUR_STORE_LINK" target="_blank" class="block w-full bg-coach-green text-coach-dark font-bold py-3 rounded-xl hover:bg-[#8AE510] transition shadow-lg">تجديد الاشتراك من سلة</a>
+        </div>
+
+        <!-- 5. لوحة تحكم الإدارة (لمار) -->
+        <div id="adminDashboard" class="hidden w-full max-w-4xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold">لوحة تحكم الإدارة (لمار)</h2>
+                <span class="bg-coach-dark text-coach-green px-4 py-1 rounded-full text-sm font-bold">lm6p12@gmail.com</span>
             </div>
 
-            <div class="minimal-card p-6 border border-white/10">
-                <h3 class="text-lg font-bold mb-4 text-white">🥗 حاسبة الماكروز</h3>
-                <div class="space-y-4 text-sm">
-                    <input type="number" id="calcWeight" placeholder="الوزن (kg)" class="input-field">
-                    <input type="number" id="calcHeight" placeholder="الطول (cm)" class="input-field">
-                    <input type="number" id="calcAge" placeholder="العمر" class="input-field">
-                    <button id="calcBtn" class="w-full bg-accent/20 text-accent font-bold py-3 rounded-lg hover:bg-accent hover:text-black transition">احسبي سعراتي</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- قسم إنشاء الأكواد -->
+                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 border border-gray-100">
+                    <h3 class="text-xl font-bold mb-4">إنشاء كود اشتراك جديد</h3>
+                    <div class="space-y-3">
+                        <input type="text" id="newCodeInput" class="w-full px-4 py-2 rounded-xl border bg-coach-gray" placeholder="اكتب الكود (مثال: VIP2026)">
+                        <div class="flex gap-2">
+                            <input type="number" id="codeDays" class="w-1/3 px-4 py-2 rounded-xl border bg-coach-gray" placeholder="الأيام">
+                            <input type="number" id="codeHours" class="w-1/3 px-4 py-2 rounded-xl border bg-coach-gray" placeholder="الساعات">
+                            <input type="number" id="codeMinutes" class="w-1/3 px-4 py-2 rounded-xl border bg-coach-gray" placeholder="الدقائق">
+                        </div>
+                        <button id="generateCodeBtn" class="w-full bg-coach-dark text-coach-green font-bold py-2 rounded-xl">حفظ الكود</button>
+                    </div>
                 </div>
-                <div id="calcResult" class="hidden-section mt-4 text-center bg-black border border-white/5 rounded-lg p-4">
-                    <p class="text-3xl font-black text-accent" id="caloriesOutput">0</p>
-                    <p class="text-xs text-gray-400">سعرة حرارية (TDEE)</p>
+
+                <!-- قسم إدارة المشتركات -->
+                <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 border border-gray-100 overflow-y-auto max-h-96">
+                    <h3 class="text-xl font-bold mb-4">المشتركات الحاليات</h3>
+                    <div id="usersList" class="space-y-3">
+                        <!-- سيتم تعبئة هذا القسم برمجياً من فايربيس -->
+                        <div class="p-3 border rounded-xl flex justify-between items-center bg-gray-50">
+                            <div>
+                                <p class="font-bold text-sm">user@example.com</p>
+                                <p class="text-xs text-gray-500">باقي: 10 أيام</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">تعديل المدة</button>
+                                <button class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">حذف</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="minimal-card p-6 md:col-span-2">
-                <h3 class="text-lg font-bold mb-4 text-white">💧 متتبع الماء</h3>
-                <p class="text-xs text-gray-400 mb-4">اضغطي على الدائرة عند شرب كوب ماء. (يُحفظ الإنجاز تلقائياً في حسابك).</p>
-                <div class="grid grid-cols-6 md:grid-cols-12 gap-3" id="waterTracker"></div>
             </div>
         </div>
-    </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    </main>
 
-    <script>
-        AOS.init({ once: true });
-        
-        const ADMIN_EMAIL = 'lm6p12@gmail.com'; 
-        const MASTER_CODE = 'COACH2024'; 
-        const COACH_WHATSAPP = '966500000000'; 
+    <!-- الأكواد البرمجية (تحتاج لربطها بـ Firebase) -->
+    <script type="module">
+        // ⚠️ مهم جداً: لكي يعمل هذا الكود فعلياً، يجب عليك إنشاء مشروع في Firebase
+        // ثم إضافة أكواد الربط الخاصة بك هنا. 
+        // سأقوم ببناء هيكلة العمليات المنطقية لتكون جاهزة.
 
-        const landingPage = document.getElementById('landingPage');
-        const adminDashboard = document.getElementById('adminDashboard');
-        const userDashboard = document.getElementById('userDashboard');
-        const premiumContent = document.getElementById('premiumContent');
-        const activationOverlay = document.getElementById('activationOverlay');
-        const onboardingOverlay = document.getElementById('onboardingOverlay');
-        const actMsg = document.getElementById('activationMsg');
+        /* 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
-        let currentUser = null;
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        */
 
-        const schedulesDict = {
-            '3 أيام': 'جدول 3 أيام في الأسبوع (شامل للجسم - Full Body)',
-            '4 أيام': 'جدول 4 أيام في الأسبوع (علوي / سفلي - Upper/Lower)',
-            '5 أيام أو أكثر': 'جدول 5 أيام في الأسبوع (تقسيم عضلي متقدم)',
-            'بالبيت': 'جدول التمارين المنزلية (بدون أجهزة)'
+        // واجهات المتصفح (UI Elements)
+        const ui = {
+            authSection: document.getElementById('authSection'),
+            verifyEmailSection: document.getElementById('verifyEmailSection'),
+            userDashboard: document.getElementById('userDashboard'),
+            expiredSection: document.getElementById('expiredSection'),
+            adminDashboard: document.getElementById('adminDashboard'),
+            codeField: document.getElementById('codeField'),
+            loginBtn: document.getElementById('loginBtn'),
+            registerBtn: document.getElementById('registerBtn'),
+            toggleAuthBtn: document.getElementById('toggleAuthModeBtn'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            authMessage: document.getElementById('authMessage')
         };
 
-        function simulateLogin(email, name) {
-            currentUser = { email: email, displayName: name, uid: email };
-            
-            document.getElementById('authModal').classList.add('hidden-section');
-            landingPage.classList.add('hidden-section');
-            document.getElementById('navLoginBtn').classList.add('hidden-section');
-            document.getElementById('navLogoutBtn').classList.remove('hidden-section');
+        const adminEmail = 'lm6p12@gmail.com';
+        let isRegisterMode = false;
 
-            if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                userDashboard.classList.add('hidden-section');
-                adminDashboard.classList.remove('hidden-section');
+        // دالة لعرض رسائل الخطأ والنجاح
+        function showMessage(text, isError = true) {
+            ui.authMessage.textContent = text;
+            ui.authMessage.className = `mb-4 p-3 rounded-lg text-sm text-center block ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+            ui.authMessage.classList.remove('hidden');
+        }
+
+        // التبديل بين تسجيل الدخول والتسجيل بكود
+        ui.toggleAuthBtn.addEventListener('click', () => {
+            isRegisterMode = !isRegisterMode;
+            if (isRegisterMode) {
+                ui.codeField.classList.remove('hidden');
+                ui.loginBtn.classList.add('hidden');
+                ui.registerBtn.classList.remove('hidden');
+                ui.toggleAuthBtn.textContent = 'لديك حساب بالفعل؟ تسجيل الدخول';
             } else {
-                adminDashboard.classList.add('hidden-section');
-                userDashboard.classList.remove('hidden-section');
-                document.getElementById('dashName').innerText = name || 'بطلة';
-                
-                const isActivated = localStorage.getItem(`activated_${email}`);
-                const obData = JSON.parse(localStorage.getItem(`obData_${email}`));
-
-                if (isActivated === 'true') {
-                    activationOverlay.classList.add('hidden-section');
-                    if(obData) {
-                        onboardingOverlay.classList.add('hidden-section');
-                        premiumContent.classList.remove('hidden-section');
-                        updateUserScheduleUI(obData.days);
-                    } else {
-                        onboardingOverlay.classList.remove('hidden-section');
-                        premiumContent.classList.add('hidden-section');
-                    }
-                } else {
-                    activationOverlay.classList.remove('hidden-section');
-                    onboardingOverlay.classList.add('hidden-section');
-                    premiumContent.classList.add('hidden-section');
-                }
-                
-                initWaterTracker(email);
-            }
-        }
-
-        function signOut() {
-            currentUser = null;
-            landingPage.classList.remove('hidden-section');
-            adminDashboard.classList.add('hidden-section');
-            userDashboard.classList.add('hidden-section');
-            document.getElementById('navLoginBtn').classList.remove('hidden-section');
-            document.getElementById('navLogoutBtn').classList.add('hidden-section');
-        }
-
-        document.getElementById('navLogoutBtn').addEventListener('click', signOut);
-
-        document.getElementById('activateAccBtn').addEventListener('click', () => {
-            const codeInput = document.getElementById('userActivationInput').value.trim().toUpperCase();
-            actMsg.classList.remove('hidden-section', 'text-green-400', 'text-red-400');
-            
-            if (codeInput === MASTER_CODE) {
-                localStorage.setItem(`activated_${currentUser.uid}`, 'true');
-                actMsg.innerText = "تم التفعيل بنجاح!";
-                actMsg.classList.add('text-green-400');
-                
-                setTimeout(() => {
-                    activationOverlay.classList.add('hidden-section');
-                    onboardingOverlay.classList.remove('hidden-section');
-                }, 1000);
-            } else {
-                actMsg.innerText = "الكود غير صحيح.";
-                actMsg.classList.add('text-red-400');
+                ui.codeField.classList.add('hidden');
+                ui.loginBtn.classList.remove('hidden');
+                ui.registerBtn.classList.add('hidden');
+                ui.toggleAuthBtn.textContent = 'ليس لديك حساب؟ اشتركي الآن باستخدام الكود';
             }
         });
 
-        document.getElementById('onboardingForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const goal = document.getElementById('obGoal').value;
-            const level = document.getElementById('obLevel').value;
-            const days = document.getElementById('obDays').value;
+        // الخوارزمية التي سيتم تنفيذها عند تفعيل Firebase:
+        /*
+        1. التسجيل (Register):
+           - التحقق من Firestore إذا كان الكود المدخل صحيح وغير مستخدم.
+           - إذا صح: إنشاء حساب بـ Email & Password -> إرسال رسالة تحقق -> حفظ الكود كـ "مستخدم" -> حفظ مدة الاشتراك للمستخدم.
+           - إذا خطأ: إظهار رسالة خطأ.
 
-            const obData = { goal, level, days };
-            localStorage.setItem(`obData_${currentUser.uid}`, JSON.stringify(obData));
+        2. تسجيل الدخول (Login):
+           - تسجيل الدخول.
+           - التحقق إذا الإيميل === lm6p12@gmail.com -> إظهار لوحة التحكم adminDashboard.
+           - إذا مستخدم عادي:
+               - هل تم التحقق من الإيميل؟ 
+                   - لا: إظهار verifyEmailSection.
+                   - نعم: جلب بيانات الاشتراك.
+                       - هل انتهت المدة؟ -> إظهار expiredSection.
+                       - هل صالحة؟ -> إظهار userDashboard ورسم التايم لاين.
+        */
 
-            const msg = `أهلاً كوتش! توني فعلت الباقة وهذي بياناتي:%0A🎯 هدفي: ${goal}%0A💪 مستواي: ${level}%0A📅 وقتي: ${days}.`;
-            window.open(`https://wa.me/${COACH_WHATSAPP}?text=${msg}`, '_blank');
-
-            onboardingOverlay.classList.add('hidden-section');
-            premiumContent.classList.remove('hidden-section');
-            updateUserScheduleUI(days);
-        });
-
-        function updateUserScheduleUI(daysCode) {
-            const box = document.getElementById('userActiveScheduleBox');
-            box.innerHTML = `<div class="text-5xl mb-3">🔥</div><div class="text-2xl font-black text-accent mb-2">${schedulesDict[daysCode]}</div><button class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm mt-2 hover:bg-gray-200 transition">الاطلاع على الجدول</button>`;
-        }
-
-        document.getElementById('whatsappSendBtn').addEventListener('click', () => {
-            const text = document.getElementById('whatsappInput').value.trim();
-            if(text) {
-                const msg = encodeURIComponent(`استفسار من المتدربة (${currentUser.displayName || 'بدون اسم'}):\n${text}`);
-                window.open(`https://wa.me/${COACH_WHATSAPP}?text=${msg}`, '_blank');
-                document.getElementById('whatsappInput').value = '';
-            }
-        });
-
-        document.getElementById('navLoginBtn').addEventListener('click', () => document.getElementById('authModal').classList.remove('hidden-section'));
-        document.getElementById('heroJoinBtn').addEventListener('click', () => { isLoginMode = false; updateAuthUI(); document.getElementById('authModal').classList.remove('hidden-section'); });
-        document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('authModal').classList.add('hidden-section'));
-        
-        let isLoginMode = true;
-        function updateAuthUI() {
-            document.getElementById('nameInput').classList.toggle('hidden-section', isLoginMode);
-            document.getElementById('toggleText').innerText = isLoginMode ? 'ليس لديك حساب؟' : 'لديك حساب بالفعل؟';
-            document.getElementById('toggleAuthModeBtn').innerText = isLoginMode ? 'إنشاء حساب' : 'تسجيل الدخول';
-            document.getElementById('modalTitle').innerText = isLoginMode ? 'تسجيل الدخول' : 'حساب جديد';
-        }
-        document.getElementById('toggleAuthModeBtn').addEventListener('click', () => { isLoginMode = !isLoginMode; updateAuthUI(); });
-
-        document.getElementById('authForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('emailInput').value.trim().toLowerCase(); 
-            const name = document.getElementById('nameInput').value.trim();
-            
-            simulateLogin(email, name);
-        });
-
-        document.getElementById('calcBtn').addEventListener('click', () => {
-            const weight = parseFloat(document.getElementById('calcWeight').value); const height = parseFloat(document.getElementById('calcHeight').value); const age = parseFloat(document.getElementById('calcAge').value);
-            if(weight && height && age) { document.getElementById('caloriesOutput').innerText = Math.round(((10 * weight) + (6.25 * height) - (5 * age) - 161) * 1.375); document.getElementById('calcResult').classList.remove('hidden-section'); }
-        });
-
-        function initWaterTracker(uid) {
-            const container = document.getElementById('waterTracker');
-            if(!container) return; container.innerHTML = ''; 
-            const storageKey = `waterData_${uid}`;
-            let waterData = JSON.parse(localStorage.getItem(storageKey)) || Array(12).fill(false);
-            waterData.forEach((isDrank, index) => {
-                const circle = document.createElement('div');
-                circle.className = `w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 ${isDrank ? 'bg-accent border-accent text-black scale-110' : 'border-white/20 hover:border-white/50'}`;
-                if(isDrank) circle.innerHTML = '<span class="text-sm">💧</span>';
-                circle.addEventListener('click', () => { 
-                    waterData[index] = !waterData[index]; 
-                    localStorage.setItem(storageKey, JSON.stringify(waterData)); 
-                    initWaterTracker(uid); 
-                });
-                container.appendChild(circle);
-            });
-        }
     </script>
 </body>
 </html>

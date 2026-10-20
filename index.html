@@ -25,6 +25,7 @@
                     borderRadius: {
                         'ios': '14px',
                         'ios-lg': '20px',
+                        'ios-xl': '32px',
                     }
                 }
             }
@@ -33,7 +34,7 @@
     <style>
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #F2F2F7; /* خلفية iOS الرمادية */
+            background-color: #F2F2F7; 
             color: #000;
             -webkit-font-smoothing: antialiased;
         }
@@ -41,58 +42,67 @@
             background: rgba(255, 255, 255, 0.7); 
             backdrop-filter: blur(20px) saturate(180%); 
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
         }
         .hidden { display: none !important; }
         .timeline-progress { transition: width 1s cubic-bezier(0.25, 0.1, 0.25, 1); }
-        
-        /* إخفاء شريط التمرير بأسلوب أبل */
         ::-webkit-scrollbar { display: none; }
-        
-        /* حقول الإدخال ستايل iOS */
-        input {
-            appearance: none;
-            -webkit-appearance: none;
-        }
+        input { appearance: none; -webkit-appearance: none; }
         input:focus { outline: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative">
 
-    <!-- شريط التنقل بأسلوب iOS -->
-    <nav class="ios-glass sticky top-0 z-50 px-5 py-3 flex justify-between items-center">
-        <div class="flex items-center gap-2">
+    <!-- شريط التنقل -->
+    <nav class="ios-glass sticky top-0 z-50 px-5 py-3 flex justify-between items-center border-b border-gray-200">
+        <div class="flex items-center gap-2 cursor-pointer" id="homeLogoBtn">
             <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-coach-green font-bold text-sm">صحة</div>
         </div>
         <div class="flex items-center gap-4">
             <span id="userEmailDisplay" class="text-xs font-medium text-apple-gray hidden md:block"></span>
-            <button id="logoutBtn" class="hidden text-sm text-red-500 font-medium">تسجيل الخروج</button>
+            <button id="logoutBtn" class="hidden text-[15px] text-red-500 font-medium">تسجيل الخروج</button>
         </div>
     </nav>
 
     <!-- رسائل النظام -->
-    <div id="globalMessage" class="hidden mx-4 mt-4 p-3 rounded-ios text-sm font-medium text-center shadow-sm transition-all duration-300"></div>
+    <div id="globalMessage" class="hidden absolute top-16 left-4 right-4 z-50 p-3 rounded-ios text-sm font-medium text-center shadow-lg transition-all duration-300"></div>
 
     <main class="flex-grow flex flex-col items-center justify-center p-4 w-full max-w-3xl mx-auto">
         
-        <!-- 1. واجهة الدخول (iOS Modal Style) -->
-        <div id="authSection" class="w-full bg-apple-card rounded-ios-lg shadow-sm p-6 sm:p-8">
+        <!-- 0. الواجهة الترحيبية (Landing Page) -->
+        <div id="welcomeSection" class="w-full flex flex-col items-center text-center fade-in">
+            <div class="w-24 h-24 bg-black rounded-ios-xl flex items-center justify-center text-coach-green font-bold text-3xl mb-6 shadow-xl">
+                صحة
+            </div>
+            <h1 class="text-4xl font-bold mb-3 tracking-tight text-black">كوتش صحة</h1>
+            <p class="text-apple-gray text-[17px] mb-10 max-w-sm leading-relaxed">تدريب شخصي متكامل لرحلتك الصحية. تابعي تقدمك واستمري في تحقيق أهدافك.</p>
+            
+            <div class="w-full max-w-xs space-y-3">
+                <button id="showLoginBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px] shadow-md hover:scale-[1.02] transition-transform">تسجيل الدخول</button>
+                <button id="showRegisterBtn" class="w-full bg-apple-card text-black font-semibold py-3.5 rounded-ios text-[17px] shadow-sm hover:bg-gray-50 transition-colors">تفعيل اشتراك بكود</button>
+            </div>
+        </div>
+
+        <!-- 1. واجهة الدخول / التسجيل -->
+        <div id="authSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-6 sm:p-8">
+            <button id="backToWelcomeBtn" class="text-apple-blue text-[15px] mb-4 flex items-center gap-1 font-medium">
+                <span>❮</span> تراجع
+            </button>
+            
             <h1 id="authTitle" class="text-3xl font-bold mb-1 text-center tracking-tight">تسجيل الدخول</h1>
-            <p id="authSubtitle" class="text-apple-gray text-center mb-8 text-sm">أدخلي بياناتك للمتابعة</p>
+            <p id="authSubtitle" class="text-apple-gray text-center mb-8 text-[15px]">أدخلي بياناتك للمتابعة</p>
             
             <div class="space-y-4">
                 <input type="email" id="emailInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="كلمة المرور">
                 
                 <div id="codeField" class="hidden">
-                    <input type="text" id="codeInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="كود الاشتراك">
+                    <input type="text" id="codeInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="كود الاشتراك (مثال: VIP26)">
                 </div>
 
-                <button id="mainAuthBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px] mt-2">متابعة</button>
+                <button id="mainAuthBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px] mt-2">دخول</button>
             </div>
 
-            <div class="mt-6 flex flex-col gap-3">
-                <button id="toggleAuthBtn" class="text-[15px] text-apple-blue font-medium">ليس لديك حساب؟ اشتركي بالكود</button>
+            <div class="mt-6 text-center">
                 <button id="forgotPasswordBtn" class="text-[15px] text-apple-blue font-medium">نسيت كلمة المرور؟</button>
             </div>
         </div>
@@ -148,9 +158,9 @@
                 <div class="bg-apple-card rounded-ios-lg shadow-sm p-6">
                     <h3 class="text-[17px] font-semibold mb-4">كود جديد</h3>
                     <div class="space-y-4">
-                        <input type="text" id="adminNewCode" class="w-full bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="مثال: LAMAR26">
-                        <input type="number" id="adminDays" class="w-full bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="عدد الأيام" value="30">
-                        <button id="generateCodeBtn" class="w-full bg-apple-blue text-white font-semibold py-3 rounded-ios text-[17px]">إنشاء وحفظ</button>
+                        <input type="text" id="adminNewCode" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="مثال: LAMAR26">
+                        <input type="number" id="adminDays" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="عدد الأيام" value="30">
+                        <button id="generateCodeBtn" class="w-full bg-apple-blue text-white font-semibold py-3.5 rounded-ios text-[17px]">إنشاء وحفظ</button>
                     </div>
                 </div>
 
@@ -169,11 +179,12 @@
 
     </main>
 
+    <!-- أكواد Firebase Realtime Database -->
     <script type="module">
-        // استدعاء مكتبات فايربيس بناءً على إصدار 13.0.0 كما طلبتِ
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        // تحديث المكتبة لتتوافق مع Realtime Database بدلاً من Firestore
+        import { getDatabase, ref, set, get, child, update, remove } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM",
@@ -182,23 +193,24 @@
             storageBucket: "helth-c7e42.firebasestorage.app",
             messagingSenderId: "308704396481",
             appId: "1:308704396481:web:d0c8ad6598342bfbad8040",
-            measurementId: "G-PK0JP2KRSR"
+            measurementId: "G-PK0JP2KRSR",
+            // إضافة رابط قاعدة البيانات لضمان الاتصال
+            databaseURL: "https://helth-c7e42-default-rtdb.firebaseio.com"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
         const adminEmail = "lm6p12@gmail.com";
         let isRegisterMode = false;
 
         const ui = {
-            sections: ['authSection', 'verifyEmailSection', 'userDashboard', 'expiredSection', 'adminDashboard'],
+            sections: ['welcomeSection', 'authSection', 'verifyEmailSection', 'userDashboard', 'expiredSection', 'adminDashboard'],
             email: document.getElementById('emailInput'),
             password: document.getElementById('passwordInput'),
             code: document.getElementById('codeInput'),
             mainBtn: document.getElementById('mainAuthBtn'),
-            toggleBtn: document.getElementById('toggleAuthBtn'),
             logoutBtn: document.getElementById('logoutBtn'),
             userEmailDisplay: document.getElementById('userEmailDisplay'),
             msgBox: document.getElementById('globalMessage')
@@ -208,7 +220,7 @@
             ui.sections.forEach(id => document.getElementById(id).classList.add('hidden'));
             if(sectionId) document.getElementById(sectionId).classList.remove('hidden');
             
-            if(sectionId !== 'authSection' && sectionId) {
+            if(sectionId !== 'welcomeSection' && sectionId !== 'authSection' && sectionId) {
                 ui.logoutBtn.classList.remove('hidden');
                 ui.userEmailDisplay.textContent = auth.currentUser?.email || '';
             } else {
@@ -219,26 +231,51 @@
 
         function showMsg(text, isError = true) {
             ui.msgBox.textContent = text;
-            ui.msgBox.className = `mx-4 mt-4 p-3 rounded-ios text-[15px] font-medium text-center block ${isError ? 'bg-red-50 text-red-600' : 'bg-[#E5FADD] text-green-700'}`;
+            ui.msgBox.className = `absolute top-16 left-4 right-4 z-50 p-3 rounded-ios text-[15px] font-medium text-center shadow-lg block ${isError ? 'bg-[#FF3B30] text-white' : 'bg-[#34C759] text-white'}`;
             ui.msgBox.classList.remove('hidden');
-            setTimeout(() => ui.msgBox.classList.add('hidden'), 5000);
+            setTimeout(() => ui.msgBox.classList.add('hidden'), 4000);
         }
 
-        ui.toggleBtn.addEventListener('click', () => {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authTitle').textContent = isRegisterMode ? 'اشتراك جديد' : 'تسجيل الدخول';
-            document.getElementById('authSubtitle').textContent = isRegisterMode ? 'أدخلي بياناتك وكود الاشتراك' : 'أدخلي بياناتك للمتابعة';
-            document.getElementById('codeField').classList.toggle('hidden', !isRegisterMode);
-            ui.mainBtn.textContent = isRegisterMode ? 'تفعيل الحساب' : 'متابعة';
-            ui.toggleBtn.textContent = isRegisterMode ? 'لديك حساب بالفعل؟ الدخول' : 'ليس لديك حساب؟ اشتركي بالكود';
+        // إعداد واجهة الدخول
+        document.getElementById('showLoginBtn').addEventListener('click', () => {
+            isRegisterMode = false;
+            document.getElementById('authTitle').textContent = 'تسجيل الدخول';
+            document.getElementById('authSubtitle').textContent = 'أدخلي الإيميل وكلمة المرور';
+            document.getElementById('codeField').classList.add('hidden');
+            ui.mainBtn.textContent = 'دخول';
+            document.getElementById('forgotPasswordBtn').classList.remove('hidden');
+            showSection('authSection');
         });
 
+        // إعداد واجهة التسجيل بكود
+        document.getElementById('showRegisterBtn').addEventListener('click', () => {
+            isRegisterMode = true;
+            document.getElementById('authTitle').textContent = 'تفعيل الاشتراك';
+            document.getElementById('authSubtitle').textContent = 'أدخلي بياناتك وكود الاشتراك';
+            document.getElementById('codeField').classList.remove('hidden');
+            ui.mainBtn.textContent = 'تفعيل وبدء الرحلة';
+            document.getElementById('forgotPasswordBtn').classList.add('hidden');
+            showSection('authSection');
+        });
+
+        // زر التراجع
+        document.getElementById('backToWelcomeBtn').addEventListener('click', () => {
+            showSection('welcomeSection');
+            ui.email.value = ''; ui.password.value = ''; ui.code.value = '';
+        });
+
+        // زر الشعار للعودة للرئيسية
+        document.getElementById('homeLogoBtn').addEventListener('click', () => {
+            if(!auth.currentUser) showSection('welcomeSection');
+        });
+
+        // تنفيذ الدخول أو التسجيل باستخدام Realtime Database
         ui.mainBtn.addEventListener('click', async () => {
             const email = ui.email.value.trim();
             const pass = ui.password.value.trim();
             const code = ui.code.value.trim();
 
-            if (!email || !pass) return showMsg("البيانات غير مكتملة");
+            if (!email || !pass) return showMsg("يرجى إكمال البيانات");
 
             try {
                 ui.mainBtn.textContent = "جاري التحميل...";
@@ -247,36 +284,38 @@
                 if (isRegisterMode) {
                     if (!code) throw new Error("مطلوب كود الاشتراك");
                     
-                    const codeDoc = await getDoc(doc(db, "codes", code));
-                    if (!codeDoc.exists() || codeDoc.data().used) {
-                        throw new Error("الكود غير صحيح أو مستخدم");
+                    const dbRef = ref(db);
+                    const codeSnapshot = await get(child(dbRef, `codes/${code}`));
+                    
+                    if (!codeSnapshot.exists() || codeSnapshot.val().used) {
+                        throw new Error("الكود غير صحيح أو مستخدم مسبقاً");
                     }
 
                     const userCred = await createUserWithEmailAndPassword(auth, email, pass);
                     await sendEmailVerification(userCred.user);
                     
-                    const days = codeDoc.data().days || 30;
+                    const days = codeSnapshot.val().days || 30;
                     const endDate = new Date();
                     endDate.setDate(endDate.getDate() + days);
 
-                    await setDoc(doc(db, "users", userCred.user.uid), {
+                    await set(ref(db, 'users/' + userCred.user.uid), {
                         email: email,
                         startDate: new Date().toISOString(),
                         endDate: endDate.toISOString()
                     });
 
-                    await updateDoc(doc(db, "codes", code), { used: true, usedBy: email });
-                    showMsg("تم إنشاء الحساب! فعلي إيميلك", false);
+                    await update(ref(db, 'codes/' + code), { used: true, usedBy: email });
+                    showMsg("تم إنشاء الحساب! يرجى تفعيل إيميلك", false);
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);
                 }
             } catch (error) {
                 let errorMsg = "حدث خطأ غير متوقع";
-                if (error.code === 'auth/invalid-credential') errorMsg = "الإيميل أو الرقم السري غير صحيح";
+                if (error.code === 'auth/invalid-credential') errorMsg = "الإيميل أو كلمة المرور غير صحيحة";
                 if (error.code === 'auth/email-already-in-use') errorMsg = "الإيميل مسجل مسبقاً";
                 showMsg(error.message || errorMsg);
             } finally {
-                ui.mainBtn.textContent = isRegisterMode ? 'تفعيل الحساب' : 'متابعة';
+                ui.mainBtn.textContent = isRegisterMode ? 'تفعيل وبدء الرحلة' : 'دخول';
                 ui.mainBtn.disabled = false;
             }
         });
@@ -290,9 +329,11 @@
                     if (!user.emailVerified) {
                         showSection('verifyEmailSection');
                     } else {
-                        const userDoc = await getDoc(doc(db, "users", user.uid));
-                        if (userDoc.exists()) {
-                            const data = userDoc.data();
+                        const dbRef = ref(db);
+                        const userSnapshot = await get(child(dbRef, `users/${user.uid}`));
+                        
+                        if (userSnapshot.exists()) {
+                            const data = userSnapshot.val();
                             const end = new Date(data.endDate);
                             const now = new Date();
                             
@@ -309,19 +350,22 @@
                     }
                 }
             } else {
-                showSection('authSection');
+                showSection('welcomeSection');
             }
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth);
+            ui.email.value = ''; ui.password.value = ''; ui.code.value = '';
+        });
 
         document.getElementById('forgotPasswordBtn').addEventListener('click', async () => {
             const email = ui.email.value.trim();
-            if(!email) return showMsg("أدخلي الإيميل أولاً");
+            if(!email) return showMsg("أدخلي الإيميل في الحقل أولاً لإرسال الرابط");
             try {
                 await sendPasswordResetEmail(auth, email);
-                showMsg("تم إرسال الرابط", false);
-            } catch (error) { showMsg("حدث خطأ"); }
+                showMsg("تم إرسال الرابط بنجاح", false);
+            } catch (error) { showMsg("حدث خطأ في الإرسال"); }
         });
 
         document.getElementById('resendVerificationBtn').addEventListener('click', async () => {
@@ -334,21 +378,21 @@
         document.getElementById('changePasswordBtn').addEventListener('click', async () => {
             try {
                 await sendPasswordResetEmail(auth, auth.currentUser.email);
-                showMsg("تم إرسال الرابط", false);
+                showMsg("تم إرسال الرابط لإيميلك", false);
             } catch(e) { showMsg("حدث خطأ"); }
         });
 
-        // ---------------- الإدارة ---------------- //
+        // ---------------- الإدارة (Realtime Database) ---------------- //
         document.getElementById('generateCodeBtn').addEventListener('click', async () => {
             const codeVal = document.getElementById('adminNewCode').value.trim();
             const daysVal = parseInt(document.getElementById('adminDays').value) || 0;
             if(!codeVal || daysVal <= 0) return showMsg("بيانات الكود غير مكتملة");
 
             try {
-                await setDoc(doc(db, "codes", codeVal), { code: codeVal, days: daysVal, used: false });
-                showMsg("تم حفظ الكود!", false);
+                await set(ref(db, 'codes/' + codeVal), { code: codeVal, days: daysVal, used: false });
+                showMsg("تم حفظ الكود بنجاح!", false);
                 document.getElementById('adminNewCode').value = '';
-            } catch (e) { showMsg("حدث خطأ"); }
+            } catch (e) { showMsg("حدث خطأ في الحفظ"); }
         });
 
         document.getElementById('refreshUsersBtn').addEventListener('click', loadAdminUsers);
@@ -357,16 +401,18 @@
             const listUI = document.getElementById('usersList');
             listUI.innerHTML = '<p class="text-[15px] text-apple-gray text-center py-6">جاري التحميل...</p>';
             try {
-                const querySnapshot = await getDocs(collection(db, "users"));
+                const dbRef = ref(db);
+                const snapshot = await get(child(dbRef, 'users'));
                 listUI.innerHTML = '';
-                if(querySnapshot.empty) {
+                
+                if(!snapshot.exists()) {
                     listUI.innerHTML = '<p class="text-[15px] text-apple-gray text-center py-6">لا توجد مشتركات</p>';
                     return;
                 }
 
-                querySnapshot.forEach((documentSnapshot) => {
-                    const data = documentSnapshot.data();
-                    const uid = documentSnapshot.id;
+                snapshot.forEach((childSnapshot) => {
+                    const uid = childSnapshot.key;
+                    const data = childSnapshot.val();
                     const end = new Date(data.endDate);
                     const diffDays = Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24));
                     
@@ -390,24 +436,25 @@
             const extraDays = prompt("كم عدد الأيام المراد إضافتها؟ (بالسالب للخصم)", "10");
             if(extraDays) {
                 try {
-                    const userRef = doc(db, "users", uid);
-                    const docSnap = await getDoc(userRef);
-                    const newEndDate = new Date(docSnap.data().endDate);
+                    const dbRef = ref(db);
+                    const userSnapshot = await get(child(dbRef, `users/${uid}`));
+                    const newEndDate = new Date(userSnapshot.val().endDate);
                     newEndDate.setDate(newEndDate.getDate() + parseInt(extraDays));
-                    await updateDoc(userRef, { endDate: newEndDate.toISOString() });
-                    showMsg("تم التعديل!", false);
+                    
+                    await update(ref(db, `users/${uid}`), { endDate: newEndDate.toISOString() });
+                    showMsg("تم تعديل الأيام بنجاح!", false);
                     loadAdminUsers();
-                } catch(e) { showMsg("حدث خطأ"); }
+                } catch(e) { showMsg("حدث خطأ أثناء التعديل"); }
             }
         };
 
         window.deleteUser = async (uid) => {
-            if(confirm("متأكدة من الحذف؟")) {
+            if(confirm("هل أنتِ متأكدة من حذف المشتركة نهائياً؟")) {
                 try {
-                    await deleteDoc(doc(db, "users", uid));
-                    showMsg("تم الحذف", false);
+                    await remove(ref(db, `users/${uid}`));
+                    showMsg("تم الحذف بنجاح", false);
                     loadAdminUsers();
-                } catch(e) { showMsg("حدث خطأ"); }
+                } catch(e) { showMsg("حدث خطأ أثناء الحذف"); }
             }
         };
 

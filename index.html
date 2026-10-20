@@ -44,10 +44,6 @@
         .msg-me { background: var(--coach-green); color: #000; align-self: flex-start; border-bottom-right-radius: 4px; font-weight: 500; }
         .msg-other { background: var(--input-color); color: var(--text-color); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
         .chat-img { border-radius: 12px; max-width: 100%; margin-top: 6px; }
-
-        /* Course Set Buttons */
-        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid var(--border-color); background: var(--input-color); color: var(--text-color); transition: all 0.2s; cursor: pointer; }
-        .set-pill.done { border-color: var(--coach-green); background: var(--coach-green); color: #000; }
         
         .nav-btn.active { color: var(--coach-green); }
     </style>
@@ -57,7 +53,6 @@
     <!-- Top Header -->
     <nav class="ios-glass-top sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-            <!-- الشعار المدمج المباشر لضمان ظهوره 100% -->
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 rounded-lg bg-coach flex items-center justify-center font-black text-black text-lg">ص</div>
                 <span class="font-black text-lg tracking-wider text-white bg-black px-2 py-0.5 rounded border border-coach">كوتش <span class="text-coach">صحة</span></span>
@@ -129,6 +124,13 @@
             <!-- الخلاصة -->
             <div id="tabHome" class="user-tab block w-full space-y-5">
                 <h1 class="text-2xl font-extrabold px-1 text-white">الخلاصة</h1>
+                
+                <!-- إشعار تذكير التمارين لو لم تكملها -->
+                <div id="workoutReminderBanner" class="hidden bg-coach/20 border border-coach p-4 rounded-ios text-xs text-coach font-bold flex items-center justify-between">
+                    <span>🔥 تنبيه: باقي لك تمارين اليوم لم تنهها بعد، استمرِ في إنجازك!</span>
+                    <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-coach text-black px-3 py-1.5 rounded-lg text-[11px]">أكملي الآن</button>
+                </div>
+
                 <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg">
                     <div class="flex justify-between items-center mb-4">
                         <span class="text-sm font-bold text-gray-300">الاشتراك النشط</span>
@@ -203,12 +205,12 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي (مع تايمر وفيديو مباشر) -->
+            <!-- مشغل التمارين التفاعلي (مع التايمر المستقل وزر حفظ والتشغيل التلقائي) -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-6 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-md mx-auto w-full">
-                    <button onclick="closeCoursePlayer()" class="text-gray-400 text-xs font-bold bg-card px-4 py-2 rounded-full border border-border-color">✕ خروج وحفظ التقدم</button>
+                    <button onclick="saveAndExitCoursePlayer()" class="text-black text-xs font-bold bg-coach px-4 py-2 rounded-full shadow-md">💾 حفظ ومتابعة لاحقاً</button>
                     <div class="flex items-center gap-3">
-                        <span id="workoutTimer" class="text-xs font-black text-coach bg-card px-3 py-1.5 rounded-lg border border-border-color">⏱️ 00:00</span>
+                        <span id="workoutTimerDisplay" class="text-xs font-black text-coach bg-card px-3 py-1.5 rounded-lg border border-border-color">⏱️ 00:00</span>
                         <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
                     </div>
                 </div>
@@ -391,8 +393,11 @@
         let currentAdminMeals = [];
         let activeUserData = null;
         let playerActiveIndex = 0;
-        let workoutTimerInterval = null;
-        let workoutSeconds = 0;
+        
+        // متغيرات التايمر المستقل للتمرين
+        let exerciseTimerInterval = null;
+        let exerciseRemainingSeconds = 0;
+        let isTimerRunning = false;
 
         window.toggleThemeMode = () => {
             const html = document.documentElement;
@@ -552,21 +557,21 @@
             showMsg("تم تحديث الوزن بنجاح", false);
         };
 
-        // دالة إنشاء مشغل الفيديو المباشر للتمارين والوجبات
-        function buildNativeVideoPlayer(url) {
+        // مشغل الفيديو التلقائي المباشر (Autoplay Video Player)
+        function buildAutoplayVideoPlayer(url) {
             if(!url) return '';
             const lower = url.toLowerCase();
             if(lower.match(/\.(mp4|webm|mov)$/)) {
-                return `<video src="${url}" controls playsinline class="w-full rounded-xl mt-3 border border-border-color shadow-lg"></video>`;
+                return `<video src="${url}" autoplay muted controls playsinline class="w-full rounded-2xl my-3 border border-border-color shadow-lg max-h-64 object-cover"></video>`;
             }
             if(lower.includes('youtube.com/watch?v=') || lower.includes('youtu.be/')) {
                 let vidId = lower.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1].split('&')[0];
-                return `<iframe src="https://www.youtube.com/embed/${vidId}" class="w-full rounded-xl mt-3 h-52 border border-border-color shadow-lg" allowfullscreen></iframe>`;
+                return `<iframe src="https://www.youtube.com/embed/${vidId}?autoplay=1&mute=1" class="w-full rounded-2xl my-3 h-52 border border-border-color shadow-lg" allow="autoplay" allowfullscreen></iframe>`;
             }
             if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
-                return `<img src="${url}" class="w-full rounded-xl mt-3 border border-border-color shadow-lg">`;
+                return `<img src="${url}" class="w-full rounded-2xl my-3 border border-border-color shadow-lg max-h-64 object-cover">`;
             }
-            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3 rounded-xl text-xs font-bold mt-3 border border-border-color">فتح الرابط المرفق 📎</a>`;
+            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-3 rounded-xl text-xs font-bold my-3 border border-border-color">فتح الرابط المرفق 📎</a>`;
         }
 
         // ================= USER NUTRITION & WORKOUT COURSE ENGINE =================
@@ -578,6 +583,26 @@
             
             renderUserNutritionCourse(data.plan?.meals, data.progress?.meals, data.progress?.swaps, data.targets);
             renderUserWorkoutSummary(data.plan?.exercises, data.progress?.workouts);
+            
+            // فحص هل أنجزت تمارين اليوم لعرض بنر التذكير
+            checkWorkoutReminder(data.plan?.exercises, data.progress?.workouts);
+        }
+
+        function checkWorkoutReminder(exercises, progress) {
+            const banner = document.getElementById('workoutReminderBanner');
+            if(!exercises || exercises.length === 0) { banner.classList.add('hidden'); return; }
+            const today = getTodayStr();
+            const todayDone = progress?.[today] || {};
+            let allDone = true;
+            exercises.forEach((ex, idx) => {
+                if(ex.type === 'timer') {
+                    if(!todayDone[idx]?.completed) allDone = false;
+                } else {
+                    if((todayDone[idx] || 0) < ex.sets) allDone = false;
+                }
+            });
+            if(!allDone) banner.classList.remove('hidden');
+            else banner.classList.add('hidden');
         }
 
         function renderUserNutritionCourse(meals, progress, swaps, targets) {
@@ -589,7 +614,6 @@
             const userTargets = targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
 
             let totalCal = 0, totalPro = 0, totalCarb = 0, totalFat = 0;
-            
             if(meals) {
                 meals.forEach((m, idx) => {
                     if(doneMeals[idx]) {
@@ -600,7 +624,6 @@
                     }
                 });
             }
-
             todaySwaps.forEach(sw => {
                 totalCal += Number(sw.cal || 0);
                 totalPro += Number(sw.pro || 0);
@@ -665,20 +688,6 @@
             } else {
                 html = '<p class="text-xs text-gray-400">لا توجد وجبات مضافة اليوم.</p>';
             }
-
-            if(todaySwaps.length > 0) {
-                html += `<div class="mt-4 border-t border-border-color pt-4"><strong class="text-xs text-coach block mb-2">وجبات بديلة أكلتيها اليوم:</strong>`;
-                todaySwaps.forEach((sw, sIdx) => {
-                    html += `
-                        <div class="bg-input p-3 rounded-xl border border-border-color text-xs flex justify-between items-center mb-2">
-                            <div><strong>${sw.name}</strong> <span class="opacity-75">(${sw.cal} سعرة | P:${sw.pro}g)</span></div>
-                            <button onclick="window.removeSwapMeal(${sIdx})" class="text-red-400 font-bold">حذف</button>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-            }
-
             area.innerHTML = html;
         }
 
@@ -703,7 +712,7 @@
                     <strong class="text-coach block mb-1">طريقة التحضير والوصف:</strong>
                     <p class="opacity-90 leading-relaxed">${m.recipe || 'لا توجد تفاصيل مضافة.'}</p>
                 </div>
-                ${buildNativeVideoPlayer(m.media)}
+                ${buildAutoplayVideoPlayer(m.media)}
             `;
             document.getElementById('mealDetailModal').classList.remove('hidden');
         };
@@ -729,14 +738,6 @@
             showMsg("تمت إضافة الوجبة البديلة لعجلة اليوم!", false);
         };
 
-        window.removeSwapMeal = async (sIdx) => {
-            const today = getTodayStr();
-            const uid = auth.currentUser.uid;
-            activeUserData.progress.swaps[today].splice(sIdx, 1);
-            await update(ref(db, `users/${uid}/progress/swaps`), activeUserData.progress.swaps);
-            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
-        };
-
         function renderUserWorkoutSummary(exercises, progress) {
             const area = document.getElementById('userWorkoutCourseSummary');
             if(!exercises || exercises.length === 0) {
@@ -759,33 +760,25 @@
             const progress = activeUserData.progress?.workouts?.[today] || {};
             const exercises = activeUserData.plan?.exercises || [];
             for(let i=0; i<exercises.length; i++) {
-                if((progress[i] || 0) < exercises[i].sets) {
-                    playerActiveIndex = i;
-                    break;
+                if(exercises[i].type === 'timer') {
+                    if(!progress[i]?.completed) { playerActiveIndex = i; break; }
+                } else {
+                    if((progress[i] || 0) < exercises[i].sets) { playerActiveIndex = i; break; }
                 }
             }
-            
-            // تشغيل التايمر
-            workoutSeconds = 0;
-            if(workoutTimerInterval) clearInterval(workoutTimerInterval);
-            workoutTimerInterval = setInterval(() => {
-                workoutSeconds++;
-                const mins = String(Math.floor(workoutSeconds / 60)).padStart(2, '0');
-                const secs = String(workoutSeconds % 60).padStart(2, '0');
-                const tEl = document.getElementById('workoutTimer');
-                if(tEl) tEl.innerText = `⏱️ ${mins}:${secs}`;
-            }, 1000);
-
             document.getElementById('coursePlayerView').classList.remove('hidden');
             renderPlayerStep();
         };
 
-        window.closeCoursePlayer = () => {
-            if(workoutTimerInterval) clearInterval(workoutTimerInterval);
+        window.saveAndExitCoursePlayer = () => {
+            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
             document.getElementById('coursePlayerView').classList.add('hidden');
+            showMsg("تم حفظ تقدمك بنجاح! يمكنك العودة لاحقاً لإكمال التمرين.", false);
+            renderUserDashboard(activeUserData);
         };
 
         window.playerPrevStep = () => {
+            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
             if(playerActiveIndex > 0) {
                 playerActiveIndex--;
                 renderPlayerStep();
@@ -793,17 +786,19 @@
         };
 
         window.playerNextStep = () => {
+            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
             const exercises = activeUserData.plan?.exercises || [];
             if(playerActiveIndex < exercises.length - 1) {
                 playerActiveIndex++;
                 renderPlayerStep();
             } else {
-                closeCoursePlayer();
+                saveAndExitCoursePlayer();
                 showMsg("أتممت جلسة التمارين بنجاح بطلة! 🎉", false);
             }
         };
 
         function renderPlayerStep() {
+            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
             const area = document.getElementById('playerContentArea');
             const exercises = activeUserData.plan?.exercises || [];
             const ex = exercises[playerActiveIndex];
@@ -811,24 +806,111 @@
 
             document.getElementById('playerProgressTitle').innerText = `التمرين ${playerActiveIndex + 1} من ${exercises.length}`;
             const today = getTodayStr();
-            const doneSets = activeUserData.progress?.workouts?.[today]?.[playerActiveIndex] || 0;
+            const todayProg = activeUserData.progress?.workouts?.[today] || {};
 
-            let setsHtml = '';
-            for(let i=1; i<=ex.sets; i++) {
-                const isActive = i <= doneSets ? 'done' : '';
-                setsHtml += `<button onclick="window.markPlayerSet(${playerActiveIndex}, ${i})" class="set-pill ${isActive}">${i}</button>`;
+            if(ex.type === 'timer') {
+                // تمرين مؤقت بالدقائق
+                let totalSecs = (ex.timerMins || 1) * 60;
+                exerciseRemainingSeconds = todayProg[playerActiveIndex]?.secondsLeft !== undefined ? todayProg[playerActiveIndex].secondsLeft : totalSecs;
+                const isCompleted = todayProg[playerActiveIndex]?.completed || false;
+
+                area.innerHTML = `
+                    <h2 class="text-xl font-bold mb-2">${ex.title}</h2>
+                    <p class="text-xs text-coach font-bold mb-2">نوع التمرين: مؤقت (كرر الحركة طوال المدة)</p>
+                    <div class="mb-4">${buildAutoplayVideoPlayer(ex.media)}</div>
+                    
+                    <div class="bg-input p-6 rounded-ios border border-border-color my-4">
+                        <div id="exerciseCountdown" class="text-4xl font-black text-coach mb-4 tracking-widest">--:--</div>
+                        <div class="flex gap-3 justify-center">
+                            <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md">بدء المؤقت ⏱️</button>
+                            <button onclick="window.resetExerciseTimer(${totalSecs})" class="bg-card border border-border-color px-4 py-3 rounded-xl text-xs font-bold">إعادة تعيين</button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 w-full mt-4">
+                        <button onclick="window.playerPrevStep()" class="flex-1 bg-input border border-border-color py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-40 cursor-not-allowed' : ''}">السابق</button>
+                        <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
+                    </div>
+                `;
+                updateTimerDisplay();
+            } else {
+                // تمرين بالجولات والعدات
+                const doneSets = todayProg[playerActiveIndex] || 0;
+                let setsHtml = '';
+                for(let i=1; i<=ex.sets; i++) {
+                    const isActive = i <= doneSets ? 'done' : '';
+                    setsHtml += `<button onclick="window.markPlayerSet(${playerActiveIndex}, ${i})" class="set-pill ${isActive}">${i}</button>`;
+                }
+
+                area.innerHTML = `
+                    <h2 class="text-xl font-bold mb-3">${ex.title}</h2>
+                    <div class="mb-4">${buildAutoplayVideoPlayer(ex.media)}</div>
+                    <p class="text-xs opacity-75 mb-4 font-bold">اضغطي على رقم الجولة عند إتمامها:</p>
+                    <div class="flex gap-3 justify-center mb-8 flex-wrap">${setsHtml}</div>
+                    <div class="flex gap-3 w-full">
+                        <button onclick="window.playerPrevStep()" class="flex-1 bg-input border border-border-color py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-40 cursor-not-allowed' : ''}">السابق</button>
+                        <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
+                    </div>
+                `;
             }
+        }
 
-            area.innerHTML = `
-                <h2 class="text-xl font-bold mb-3">${ex.title}</h2>
-                <div class="mb-4">${buildNativeVideoPlayer(ex.media)}</div>
-                <p class="text-xs opacity-75 mb-4 font-bold">اضغطي على رقم الجولة عند إتمامها:</p>
-                <div class="flex gap-3 justify-center mb-8 flex-wrap">${setsHtml}</div>
-                <div class="flex gap-3 w-full">
-                    <button onclick="window.playerPrevStep()" class="flex-1 bg-input border border-border-color py-3.5 rounded-ios text-xs font-bold ${playerActiveIndex === 0 ? 'opacity-40 cursor-not-allowed' : ''}">السابق</button>
-                    <button onclick="window.playerNextStep()" class="flex-1 bg-coach text-black py-3.5 rounded-ios text-xs font-bold shadow-md">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
-                </div>
-            `;
+        window.updateTimerDisplay = () => {
+            const m = String(Math.floor(exerciseRemainingSeconds / 60)).padStart(2, '0');
+            const s = String(exerciseRemainingSeconds % 60).padStart(2, '0');
+            const el = document.getElementById('exerciseCountdown');
+            if(el) el.innerText = `${m}:${s}`;
+        };
+
+        window.toggleExerciseTimer = (defaultSecs) => {
+            const btn = document.getElementById('timerToggleBtn');
+            if(isTimerRunning) {
+                clearInterval(exerciseTimerInterval);
+                isTimerRunning = false;
+                btn.innerText = 'استئناف ⏱️';
+                btn.className = 'bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md';
+            } else {
+                isTimerRunning = true;
+                btn.innerText = 'إيقاف مؤقت ⏸️';
+                btn.className = 'bg-red-500 text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md';
+                exerciseTimerInterval = setInterval(async () => {
+                    if(exerciseRemainingSeconds > 0) {
+                        exerciseRemainingSeconds--;
+                        updateTimerDisplay();
+                        // حفظ التلقائي للوقت
+                        saveTimerProgress(false);
+                    } else {
+                        clearInterval(exerciseTimerInterval);
+                        isTimerRunning = false;
+                        btn.innerText = 'انتهى الوقت! ✔️';
+                        saveTimerProgress(true);
+                        showMsg("أتممت مدة التمرين بنجاح!", false);
+                    }
+                }, 1000);
+            }
+        };
+
+        window.resetExerciseTimer = (defaultSecs) => {
+            if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
+            isTimerRunning = false;
+            exerciseRemainingSeconds = defaultSecs;
+            updateTimerDisplay();
+            const btn = document.getElementById('timerToggleBtn');
+            if(btn) { btn.innerText = 'بدء المؤقت ⏱️'; btn.className = 'bg-coach text-black font-extrabold px-6 py-3 rounded-xl text-sm shadow-md'; }
+            saveTimerProgress(false);
+        };
+
+        async function saveTimerProgress(isCompleted) {
+            const today = getTodayStr();
+            const uid = auth.currentUser.uid;
+            activeUserData.progress = activeUserData.progress || {};
+            activeUserData.progress.workouts = activeUserData.progress.workouts || {};
+            activeUserData.progress.workouts[today] = activeUserData.progress.workouts[today] || {};
+            activeUserData.progress.workouts[today][playerActiveIndex] = {
+                secondsLeft: exerciseRemainingSeconds,
+                completed: isCompleted
+            };
+            await update(ref(db, `users/${uid}/progress/workouts`), activeUserData.progress.workouts);
         }
 
         window.markPlayerSet = async (exIdx, setNum) => {
@@ -917,23 +999,38 @@
             loadAdminUsers();
         };
 
-        document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', sets:3}); renderAdminExercises(); };
+        document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5}); renderAdminExercises(); };
         document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
 
         function renderAdminExercises() {
             const list = document.getElementById('adminExercisesList');
             list.innerHTML = '';
             currentAdminExercises.forEach((ex, idx) => {
+                const isTimer = ex.type === 'timer';
                 list.innerHTML += `
-                    <div class="bg-input p-4 rounded-xl border border-border-color relative text-xs space-y-2">
+                    <div class="bg-input p-4 rounded-xl border border-border-color relative text-xs space-y-2.5">
                         <button onclick="window.remEx(${idx})" class="absolute top-2 left-2 text-red-400 font-bold px-2 py-1">✕</button>
                         <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card p-2.5 rounded-lg font-bold" placeholder="اسم التمرين">
-                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين المباشر">
-                        <div class="flex items-center gap-2"><span class="opacity-75">الجولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets}" class="w-14 bg-card p-1.5 text-center rounded-lg" min="1" max="10"></div>
+                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card p-2.5 rounded-lg text-coach" placeholder="رابط فيديو أو صورة التمرين">
+                        
+                        <div class="flex items-center gap-3">
+                            <span class="opacity-75">نوع التمرين:</span>
+                            <select onchange="window.toggleExType(${idx}, this.value)" class="bg-card p-1.5 rounded-lg text-white">
+                                <option value="sets" ${!isTimer?'selected':''}>بالجولات والعدات</option>
+                                <option value="timer" ${isTimer?'selected':''}>بالتايمر (مدة زمنية)</option>
+                            </select>
+                        </div>
+
+                        ${isTimer ? `
+                            <div class="flex items-center gap-2"><span class="opacity-75">مدة التمرين (بالدقائق):</span><input type="number" onchange="currentAdminExercises[idx].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-16 bg-card p-1.5 text-center rounded-lg" min="1" max="120"></div>
+                        ` : `
+                            <div class="flex items-center gap-2"><span class="opacity-75">عدد الجولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-14 bg-card p-1.5 text-center rounded-lg" min="1" max="10"></div>
+                        `}
                     </div>`;
             });
         }
         window.remEx = (idx) => { currentAdminExercises.splice(idx, 1); renderAdminExercises(); };
+        window.toggleExType = (idx, val) => { currentAdminExercises[idx].type = val; renderAdminExercises(); };
 
         function renderAdminMeals() {
             const list = document.getElementById('adminMealsList');

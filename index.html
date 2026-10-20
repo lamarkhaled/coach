@@ -102,7 +102,7 @@
             <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-input border border-theme px-3 py-1.5 rounded-lg font-bold text-accent">☀️ فاتح</button>
+            <button onclick="window.toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-input border border-theme px-3 py-1.5 rounded-lg font-bold text-accent">☀️ فاتح</button>
             <span id="userEmailDisplay" class="text-xs font-bold text-muted hidden md:block"></span>
             <button id="logoutBtn" class="hidden text-xs bg-red-500 text-white px-3 py-1.5 rounded-lg font-bold">خروج</button>
         </div>
@@ -195,8 +195,8 @@
                 <div class="bg-card rounded-ios-lg p-5 border border-theme space-y-4">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> تحديث القياسات</h2>
                     
-                    <div id="weightRoastBanner" class="hidden bg-red-500 text-white p-3 rounded-lg text-xs font-bold">
-                        ⚠️ وزنك زاد عن القياس السابق! شدي حيلك ورجعي للمسار.
+                    <div id="weightRoastBanner" class="hidden p-3 rounded-lg text-xs font-bold mb-2">
+                        <!-- رسائل التحفيز والتهزيء تظهر هنا -->
                     </div>
 
                     <div class="bg-input p-4 rounded-lg border border-theme flex flex-col items-center justify-center text-center">
@@ -217,7 +217,7 @@
                     
                     <div class="flex gap-2 pt-1">
                         <button id="updateProgressBtn" class="flex-grow bg-accent font-bold py-3.5 rounded-lg text-xs">حفظ التحديث</button>
-                        <button onclick="openWeightHistoryModal()" class="bg-card border border-theme text-primary font-bold px-4 py-3.5 rounded-lg text-xs">سجل الأوزان</button>
+                        <button onclick="window.openWeightHistoryModal()" class="bg-card border border-theme text-primary font-bold px-4 py-3.5 rounded-lg text-xs">سجل الأوزان</button>
                     </div>
 
                     <div id="bmiResultCard" class="hidden bg-input p-4 rounded-lg border border-theme space-y-2 mt-2">
@@ -233,13 +233,13 @@
                 </div>
 
                 <div class="bg-card rounded-ios-lg p-5 border border-theme">
-                    <h2 class="text-sm font-bold text-primary mb-3">🏆 لوحة الصدارة</h2>
+                    <h2 class="text-sm font-bold text-primary mb-3">🏆 لوحة الصدارة (Top 3)</h2>
                     <div id="leaderboardContainer" class="space-y-2"></div>
                 </div>
 
                 <div id="workoutReminderBanner" class="hidden bg-accent text-black p-4 rounded-lg text-xs font-bold flex justify-between items-center">
                     <span>🔥 لديك تمارين لم تنجزيها اليوم!</span>
-                    <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-black text-white px-3 py-1.5 rounded-md">الذهاب للتمرين</button>
+                    <button onclick="window.switchTab('tabPlan'); window.switchPlanSubTab('workouts');" class="bg-black text-white px-3 py-1.5 rounded-md">الذهاب للتمرين</button>
                 </div>
             </div>
 
@@ -260,8 +260,8 @@
                 <h1 class="text-2xl font-black px-1 text-primary">برنامج اليوم</h1>
                 
                 <div class="flex gap-2">
-                    <button onclick="switchPlanSubTab('nutrition')" id="btnSubNut" class="flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent">🍎 التغذية</button>
-                    <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors">🏋️‍♀️ التمارين</button>
+                    <button onclick="window.switchPlanSubTab('nutrition')" id="btnSubNut" class="flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent">🍎 التغذية</button>
+                    <button onclick="window.switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors">🏋️‍♀️ التمارين</button>
                 </div>
 
                 <div id="subTabNutrition" class="plan-sub-tab block space-y-5">
@@ -292,7 +292,7 @@
                                 <span class="text-[9px] text-muted">من <span id="targetFatVal">60g</span></span>
                             </div>
                         </div>
-                        <button onclick="openSwapModal()" class="w-full bg-input border border-theme text-primary font-bold text-xs py-3 rounded-lg mt-2">
+                        <button onclick="window.openSwapModal()" class="w-full bg-input border border-theme text-primary font-bold text-xs py-3 rounded-lg mt-2">
                             🔄 تسجيل وجبة خارجية بديلة
                         </button>
                     </div>
@@ -307,7 +307,7 @@
             <!-- مشغل التمارين التفاعلي -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-[100] bg-main-solid flex flex-col p-5 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-sm mx-auto w-full pt-2">
-                    <button onclick="saveAndExitCoursePlayer()" class="text-primary text-xs font-bold bg-input px-4 py-2 rounded-lg border border-theme">💾 حفظ وخروج</button>
+                    <button onclick="window.saveAndExitCoursePlayer()" class="text-primary text-xs font-bold bg-input px-4 py-2 rounded-lg border border-theme">💾 حفظ وخروج</button>
                     <span id="workoutTimerDisplay" class="text-xs font-bold text-accent bg-card px-3 py-1.5 rounded-md border border-theme">00:00</span>
                 </div>
                 <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-sm mx-auto w-full text-center pb-10"></div>
@@ -338,7 +338,7 @@
                         <div><label class="text-[11px] text-muted font-bold block mb-1">كارب</label><input type="number" id="swapCarb" class="w-full p-2 bg-input border border-theme rounded text-blue-500 text-center font-bold" value="50"></div>
                         <div><label class="text-[11px] text-muted font-bold block mb-1">دهون</label><input type="number" id="swapFat" class="w-full p-2 bg-input border border-theme rounded text-yellow-500 text-center font-bold" value="15"></div>
                     </div>
-                    <button onclick="saveSwapMeal()" class="w-full bg-accent font-bold py-3.5 rounded-lg text-sm mt-2">إضافة الوجبة</button>
+                    <button onclick="window.saveSwapMeal()" class="w-full bg-accent font-bold py-3.5 rounded-lg text-sm mt-2">إضافة الوجبة</button>
                 </div>
             </div>
 
@@ -364,13 +364,13 @@
 
             <!-- الشريط السفلي الثابت -->
             <div class="fixed bottom-0 left-0 w-full bg-card border-t border-theme flex justify-around items-center py-2 z-40 pb-safe">
-                <button onclick="switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1 py-1 px-4">
+                <button onclick="window.switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1 py-1 px-4">
                     <span class="text-lg">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
                 </button>
-                <button onclick="switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1 py-1 px-4">
+                <button onclick="window.switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1 py-1 px-4">
                     <span class="text-lg">📋</span><span class="text-[11px] font-bold">البرنامج</span>
                 </button>
-                <button onclick="switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1 py-1 px-4">
+                <button onclick="window.switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1 py-1 px-4">
                     <span class="text-lg">💬</span><span class="text-[11px] font-bold">المحادثة</span>
                 </button>
             </div>
@@ -426,13 +426,14 @@
                     <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-3 rounded-lg text-sm">حفظ ونشر الكل ✔️</button>
                 </div>
 
-                <!-- إضافة تبويب الأوسمة في الإدارة -->
+                <!-- تبويبات الإدارة المعدلة لتشمل "الخطة" -->
                 <div class="flex flex-wrap sm:flex-nowrap bg-input rounded-lg p-1 border border-theme gap-1">
-                    <button onclick="switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 py-3 text-[11px] font-bold rounded-md bg-card text-primary shadow-sm border border-theme">1. الماكروز</button>
-                    <button onclick="switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">2. الوجبات</button>
-                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">3. التمارين</button>
-                    <button onclick="switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">4. الشات</button>
-                    <button onclick="switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">5. الأوسمة</button>
+                    <button onclick="window.switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 py-3 text-[11px] font-bold rounded-md bg-card text-primary shadow-sm border border-theme">الماكروز</button>
+                    <button onclick="window.switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">الوجبات</button>
+                    <button onclick="window.switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">التمارين</button>
+                    <button onclick="window.switchAdminTab('adminTabTimeline')" id="btnAdmTabTimeline" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">الخطة</button>
+                    <button onclick="window.switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">الشات</button>
+                    <button onclick="window.switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent">الأوسمة</button>
                 </div>
 
                 <!-- تبويبات الإدارة -->
@@ -460,6 +461,23 @@
                         <button id="addExerciseBtn" class="text-xs bg-input border border-theme text-primary font-bold px-4 py-2 rounded-lg">+ إضافة تمرين</button>
                     </div>
                     <div id="adminExercisesList" class="space-y-3"></div>
+                </div>
+
+                <!-- تبويب بناء الخطة (التايم لاين) -->
+                <div id="adminTabTimeline" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme space-y-4">
+                    <h3 class="text-sm font-bold text-primary mb-2">🎯 بناء خطة مسار المتدربة</h3>
+                    <div class="bg-input p-3 rounded-lg border border-theme flex justify-between items-center">
+                        <span class="text-xs font-bold text-muted">الوزن الحالي: <span id="admCurrentW" class="text-primary text-sm">--</span> كج</span>
+                        <span class="text-xs font-bold text-muted">الوزن الهدف (اللي تبيه): <span id="admTargetW" class="text-accent text-sm">--</span> كج</span>
+                    </div>
+                    <div class="space-y-2 mt-4 bg-input p-4 rounded-lg border border-theme">
+                        <h4 class="text-xs font-bold text-primary mb-2">إضافة مرحلة جديدة:</h4>
+                        <input type="text" id="msTitle" class="w-full bg-card px-3 py-2.5 rounded border border-theme text-sm text-primary" placeholder="اسم المرحلة (مثال: نهاية شهر 1)">
+                        <input type="number" id="msWeight" class="w-full bg-card px-3 py-2.5 rounded border border-theme text-sm text-primary" placeholder="الوزن المتوقع الوصول له (مثال: 65)">
+                        <input type="text" id="msNote" class="w-full bg-card px-3 py-2.5 rounded border border-theme text-sm text-primary" placeholder="رسالة للمتدربة (مثال: بتنقصين 4 كيلو وبتكونين بطلة)">
+                        <button onclick="window.addMilestone()" class="w-full bg-accent font-bold py-3 rounded-lg text-sm mt-2">إضافة المرحلة</button>
+                    </div>
+                    <div id="adminTimelineList" class="space-y-3 mt-4"></div>
                 </div>
 
                 <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-theme h-[60vh] flex flex-col overflow-hidden">
@@ -515,13 +533,15 @@
         
         let currentAdminExercises = [];
         let currentAdminMeals = [];
-        let currentAdminBadges = []; // مصفوفة الأوسمة الخاصة بالإدارة
+        let currentAdminBadges = []; 
+        let currentAdminTimeline = []; // مصفوفة الخطة (التايم لاين)
         let activeUserData = null;
         let playerActiveIndex = 0;
         
         let exerciseTimerInterval = null;
         let exerciseRemainingSeconds = 0;
         let isTimerRunning = false;
+        let leaderboardListenerAttached = false; // لمنع تكرار الاستماع للوحة الصدارة
 
         window.toggleThemeMode = () => {
             const html = document.documentElement;
@@ -566,12 +586,12 @@
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
             
-            ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabChat', 'btnAdmTabBadges'].forEach(id => {
+            ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabTimeline', 'btnAdmTabChat', 'btnAdmTabBadges'].forEach(id => {
                 const btn = document.getElementById(id);
                 if(btn) btn.className = 'flex-1 py-3 text-[11px] font-bold rounded-md text-muted border border-transparent';
             });
             
-            const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabChat': 'btnAdmTabChat', 'adminTabBadges': 'btnAdmTabBadges' };
+            const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabTimeline': 'btnAdmTabTimeline', 'adminTabChat': 'btnAdmTabChat', 'adminTabBadges': 'btnAdmTabBadges' };
             if(activeMap[tabId]) {
                 document.getElementById(activeMap[tabId]).className = 'flex-1 py-3 text-[11px] font-bold rounded-md bg-card text-primary shadow-sm border border-theme';
             }
@@ -581,8 +601,8 @@
             document.querySelectorAll('.plan-sub-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById('subTab' + (sub === 'nutrition' ? 'Nutrition' : 'Workouts')).classList.remove('hidden');
             
-            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent' : 'flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors';
-            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent' : 'flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors';
+            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent text-accent-text' : 'flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors';
+            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent text-accent-text' : 'flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors';
         };
 
         function getTodayStr() { return new Date().toISOString().split('T')[0]; }
@@ -712,6 +732,7 @@
             showSection('userDashboard');
         };
 
+        // تحديث الوزن مع نظام التشجيع والتهزيء
         document.getElementById('updateProgressBtn').onclick = async () => {
             const newW = parseFloat(document.getElementById('userCurrentWeight').value);
             const newH = parseFloat(document.getElementById('userHeightInput').value) || activeUserData.profile?.height || 160;
@@ -754,13 +775,24 @@
             await update(ref(db, `users/${uid}/profile`), activeUserData.profile);
 
             const roastBanner = document.getElementById('weightRoastBanner');
+            roastBanner.classList.remove('hidden');
+
             if(newW > lastWeight) {
-                roastBanner.classList.remove('hidden');
+                // تهزيء للزيادة
+                roastBanner.className = 'bg-red-500 text-white p-3 rounded-lg text-xs font-bold mb-2 transition-all duration-300';
+                roastBanner.innerText = 'يا ويلك! 😡 وزنك زاد عن القياس السابق.. وين الالتزام بالخطة؟ شدي حيلك!';
                 showMsg("الوزن زاد! انتبهي ⚠️", true);
+            } else if (newW < lastWeight) {
+                // شطورة للنزول
+                roastBanner.className = 'bg-green-500 text-white p-3 rounded-lg text-xs font-bold mb-2 transition-all duration-300';
+                roastBanner.innerText = 'شطووورة! 🎉 نزلتي وزنك.. استمري يا بطلة فخورة فيك!';
+                showMsg("عاش بطلتنا! نزول ممتاز 🌟", false);
             } else {
-                roastBanner.classList.add('hidden');
+                roastBanner.className = 'bg-yellow-500 text-black p-3 rounded-lg text-xs font-bold mb-2 transition-all duration-300';
+                roastBanner.innerText = 'وزنك ثابت! مو مشكلة أهم شيء الالتزام، راجعي وجباتك وتمرينك.';
                 showMsg("تم حفظ القياس بنجاح 🌟", false);
             }
+            
             renderUserDashboard(activeUserData);
         };
 
@@ -801,9 +833,6 @@
 
         function renderUserDashboard(data) {
             activeUserData = data;
-            const end = new Date(data.endDate);
-            const daysRem = Math.ceil((end - new Date())/(1000*60*60*24));
-            document.getElementById('daysRemainingText').innerText = daysRem > 0 ? `باقي ${daysRem} يوم` : 'منتهي';
             
             if(data.profile?.height) {
                 document.getElementById('userHeightInput').value = data.profile.height;
@@ -823,11 +852,15 @@
                 }
             }
 
-            // رسم مسار الهدف التفصيلي والأوسمة
-            renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight);
+            // رسم مسار الهدف (سواء المخصص من الإدارة أو التلقائي)
+            renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, data.plan?.timeline);
             renderUserBadges(data.badges || []);
 
-            loadLeaderboard();
+            // تفعيل لوحة الصدارة التلقائية (Top 3)
+            if(!leaderboardListenerAttached) {
+                loadLeaderboardAuto();
+                leaderboardListenerAttached = true;
+            }
 
             const mealsList = data.plan?.meals || data.meals || [];
             const exercisesList = data.plan?.exercises || data.exercises || [];
@@ -837,8 +870,8 @@
             checkWorkoutReminder(exercisesList, data.progress?.workouts);
         }
 
-        // مسار الهدف المفصل (Timeline)
-        function renderDetailedGoalTimeline(goalPlan, currentWeight) {
+        // مسار الهدف المفصل (Timeline المربوط بلوحة الإدارة)
+        function renderDetailedGoalTimeline(goalPlan, currentWeight, customTimeline) {
             const card = document.getElementById('goalTimelineCard');
             const container = document.getElementById('timelineContainerArea');
             if(!goalPlan) { card.classList.add('hidden'); return; }
@@ -847,16 +880,11 @@
             const startW = goalPlan.startWeight;
             const targetW = goalPlan.targetWeight;
             const curW = currentWeight || startW;
-            const targetDate = new Date(goalPlan.targetDate);
-            
             const isGaining = targetW > startW;
-            let remaining = Math.abs(curW - targetW).toFixed(1);
-            let reached = Math.abs(startW - curW).toFixed(1);
-
+            
             let isGoalReached = false;
             if((!isGaining && curW <= targetW) || (isGaining && curW >= targetW)) {
                 isGoalReached = true;
-                remaining = 0;
             }
 
             const badge = document.getElementById('goalStatusBadge');
@@ -868,7 +896,6 @@
                 badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-2 py-1 rounded-md font-bold';
             }
 
-            // توليد خطوات التايم لاين
             container.innerHTML = `
                 <div class="timeline-step">
                     <div class="timeline-dot ${curW !== startW ? 'active' : ''}"></div>
@@ -877,28 +904,51 @@
                         <span class="text-sm font-black text-primary">${startW} كج</span>
                     </div>
                 </div>
-                
-                <div class="timeline-step">
-                    <div class="timeline-dot active"></div>
-                    <p class="text-[10px] text-muted font-bold mb-1">الوضع الحالي</p>
-                    <div class="bg-input border border-theme p-3 rounded-lg flex justify-between items-center">
-                        <span class="text-sm font-black text-accent">${curW} كج</span>
-                        <span class="text-[10px] text-primary bg-card border border-theme px-2 py-1 rounded-md">قطعتِ: ${reached} كج</span>
-                    </div>
-                </div>
-
-                <div class="timeline-step">
-                    <div class="timeline-dot ${isGoalReached ? 'active' : ''}"></div>
-                    <p class="text-[10px] text-muted font-bold mb-1">الهدف النهائي</p>
-                    <div class="bg-input border border-theme p-3 rounded-lg flex justify-between items-center">
-                        <div>
-                            <span class="text-sm font-black text-primary block">${targetW} كج</span>
-                            <span class="text-[10px] text-muted mt-1 block">تاريخ الوصول: ${targetDate.toLocaleDateString('ar-SA')}</span>
-                        </div>
-                        <span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-2 py-1 rounded-md font-bold">المتبقي: ${remaining} كج</span>
-                    </div>
-                </div>
             `;
+
+            // إذا كان فيه خطة مخصصة من المدربة
+            if(customTimeline && customTimeline.length > 0) {
+                customTimeline.forEach(m => {
+                    const isPassed = (!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight);
+                    container.innerHTML += `
+                        <div class="timeline-step">
+                            <div class="timeline-dot ${isPassed ? 'active' : ''}"></div>
+                            <p class="text-[10px] text-muted font-bold mb-1">${m.title}</p>
+                            <div class="bg-card border ${isPassed ? 'border-accent' : 'border-theme'} p-3 rounded-lg">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-sm font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.targetWeight} كج</span>
+                                    ${isPassed ? '<span class="text-[10px] bg-accent text-accent-text px-2 py-0.5 rounded font-bold">تم الإنجاز ✔️</span>' : ''}
+                                </div>
+                                ${m.note ? `<p class="text-[11px] text-muted font-bold mt-2 pt-2 border-t border-theme">${m.note}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // إذا مافيه خطة مخصصة، نعرض الافتراضي
+                let remaining = Math.abs(curW - targetW).toFixed(1);
+                let reached = Math.abs(startW - curW).toFixed(1);
+                if(isGoalReached) remaining = 0;
+
+                container.innerHTML += `
+                    <div class="timeline-step">
+                        <div class="timeline-dot active"></div>
+                        <p class="text-[10px] text-muted font-bold mb-1">الوضع الحالي</p>
+                        <div class="bg-input border border-theme p-3 rounded-lg flex justify-between items-center">
+                            <span class="text-sm font-black text-accent">${curW} كج</span>
+                            <span class="text-[10px] text-primary bg-card border border-theme px-2 py-1 rounded-md">قطعتِ: ${reached} كج</span>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot ${isGoalReached ? 'active' : ''}"></div>
+                        <p class="text-[10px] text-muted font-bold mb-1">الهدف النهائي</p>
+                        <div class="bg-input border border-theme p-3 rounded-lg flex justify-between items-center">
+                            <span class="text-sm font-black text-primary block">${targetW} كج</span>
+                            <span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-2 py-1 rounded-md font-bold">المتبقي: ${remaining} كج</span>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         function renderUserBadges(badges) {
@@ -915,37 +965,41 @@
             `).join('');
         }
 
-        async function loadLeaderboard() {
-            const container = document.getElementById('leaderboardContainer');
-            const snap = await get(child(ref(db), 'users'));
-            if(!snap.exists()) { container.innerHTML = '<p class="text-sm text-muted">لا توجد منافسة.</p>'; return; }
-            
-            let usersArr = [];
-            snap.forEach(u => {
-                const val = u.val();
-                let score = 0;
-                const today = getTodayStr();
-                const wDone = val.progress?.workouts?.[today] || {};
-                const mDone = val.progress?.meals?.[today] || {};
-                score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
-                // إعطاء نقاط بناءً على الأوسمة
-                if(val.badges) score += val.badges.length * 50; 
+        // لوحة الصدارة تتحدث تلقائياً وتأخذ أعلى 3 فقط
+        function loadLeaderboardAuto() {
+            onValue(ref(db, 'users'), (snap) => {
+                const container = document.getElementById('leaderboardContainer');
+                if(!snap.exists()) { container.innerHTML = '<p class="text-sm text-muted">لا توجد منافسة.</p>'; return; }
+                
+                let usersArr = [];
+                snap.forEach(u => {
+                    const val = u.val();
+                    if(val.email === adminEmail) return; // استبعاد الإدارة
+                    let score = 0;
+                    const today = getTodayStr();
+                    const wDone = val.progress?.workouts?.[today] || {};
+                    const mDone = val.progress?.meals?.[today] || {};
+                    score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
+                    if(val.badges) score += val.badges.length * 50; 
 
-                usersArr.push({ email: val.email.split('@')[0], score });
-            });
+                    usersArr.push({ email: val.email.split('@')[0], score });
+                });
 
-            usersArr.sort((a,b) => b.score - a.score);
-            container.innerHTML = '';
-            usersArr.slice(0, 5).forEach((usr, idx) => {
-                container.innerHTML += `
-                    <div class="flex justify-between items-center bg-input px-3 py-2.5 rounded-lg text-sm border border-theme">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-accent">#${idx+1}</span>
-                            <span class="font-bold text-primary">${usr.email}</span>
+                usersArr.sort((a,b) => b.score - a.score);
+                container.innerHTML = '';
+                // أخذ التوب 3 فقط 
+                usersArr.slice(0, 3).forEach((usr, idx) => {
+                    let medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-input px-3 py-2.5 rounded-lg text-sm border border-theme">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-lg">${medal}</span>
+                                <span class="font-bold text-primary">${usr.email}</span>
+                            </div>
+                            <span class="bg-card border border-theme px-2 py-1 rounded text-primary text-xs font-bold">${usr.score} نقطة</span>
                         </div>
-                        <span class="bg-card border border-theme px-2 py-1 rounded text-primary text-xs font-bold">${usr.score} نقطة</span>
-                    </div>
-                `;
+                    `;
+                });
             });
         }
 
@@ -1112,7 +1166,7 @@
                 <div class="text-center py-4">
                     <h3 class="font-black text-xl mb-2 text-primary">جلسة التمارين جاهزة</h3>
                     <p class="text-sm text-muted mb-6">الجلسة تتضمن ${exercises.length} تمارين مخصصة.</p>
-                    <button onclick="startCoursePlayer()" class="w-full bg-accent text-accent-text font-bold py-4 rounded-lg text-base">بدء التمرين</button>
+                    <button onclick="window.startCoursePlayer()" class="w-full bg-accent text-accent-text font-bold py-4 rounded-lg text-base">بدء التمرين</button>
                 </div>
             `;
         }
@@ -1355,14 +1409,19 @@
             document.getElementById('targetCarbInput').value = targets.carb;
             document.getElementById('targetFatInput').value = targets.fat;
 
+            document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--';
+            document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
+
             currentAdminExercises = d.plan?.exercises || d.exercises || [];
             currentAdminMeals = d.plan?.meals || d.meals || [];
             currentAdminBadges = d.badges || [];
+            currentAdminTimeline = d.plan?.timeline || [];
             
             renderAdminExercises();
             renderAdminMeals();
             renderAdminBadges();
-            switchAdminTab('adminTabMacros');
+            renderAdminTimeline();
+            window.switchAdminTab('adminTabMacros');
             loadChat(uid, 'adminChatArea');
         };
 
@@ -1372,10 +1431,55 @@
             loadAdminUsers();
         };
 
+        // ================= إدارة الخطة (التايم لاين) =================
+        window.addMilestone = () => {
+            const title = document.getElementById('msTitle').value.trim();
+            const weight = parseFloat(document.getElementById('msWeight').value) || 0;
+            const note = document.getElementById('msNote').value.trim();
+
+            if(!title || !weight) {
+                showMsg("أدخلي اسم المرحلة والوزن المستهدف", true);
+                return;
+            }
+
+            currentAdminTimeline.push({ title, targetWeight: weight, note });
+            
+            document.getElementById('msTitle').value = '';
+            document.getElementById('msWeight').value = '';
+            document.getElementById('msNote').value = '';
+            
+            renderAdminTimeline();
+        };
+
+        function renderAdminTimeline() {
+            const list = document.getElementById('adminTimelineList');
+            list.innerHTML = '';
+            if(currentAdminTimeline.length === 0) {
+                list.innerHTML = '<p class="text-xs text-muted py-2 text-center">لم يتم بناء خطة مخصصة بعد. ستظهر الخطة التلقائية للمتدربة.</p>';
+            }
+            currentAdminTimeline.forEach((m, idx) => {
+                list.innerHTML += `
+                    <div class="bg-card p-3 rounded-lg border border-theme flex flex-col gap-2 relative">
+                        <button onclick="window.remMilestone(${idx})" class="absolute left-2 top-2 text-red-500 font-bold px-2 py-1">✕</button>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-bold text-primary">${m.title}</span>
+                            <span class="text-[10px] bg-accent text-accent-text px-2 py-1 rounded font-bold">${m.targetWeight} كج</span>
+                        </div>
+                        ${m.note ? `<span class="text-[11px] text-muted font-bold">${m.note}</span>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        window.remMilestone = (idx) => {
+            currentAdminTimeline.splice(idx, 1);
+            renderAdminTimeline();
+        };
+
+        // ================= إدارة التمارين والوجبات =================
         document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5}); renderAdminExercises(); };
         document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
         
-        // إدارة الأوسمة من الإدارة
         document.getElementById('addBadgeBtn').onclick = () => { 
             currentAdminBadges.push({icon:'🏆', title:'إنجاز جديد'}); 
             renderAdminBadges(); 
@@ -1391,7 +1495,7 @@
                 list.innerHTML += `
                     <div class="flex items-center gap-2 bg-input p-3 rounded-lg border border-theme relative">
                         <button onclick="window.remBadge(${idx})" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-red-500 font-bold px-2">✕</button>
-                        <select onchange="currentAdminBadges[idx].icon=this.value" class="bg-card px-2 py-2 rounded-md text-lg border border-theme">
+                        <select onchange="currentAdminBadges[${idx}].icon=this.value" class="bg-card px-2 py-2 rounded-md text-lg border border-theme">
                             <option value="🏆" ${b.icon==='🏆'?'selected':''}>🏆</option>
                             <option value="🌟" ${b.icon==='🌟'?'selected':''}>🌟</option>
                             <option value="🔥" ${b.icon==='🔥'?'selected':''}>🔥</option>
@@ -1401,7 +1505,7 @@
                             <option value="🏅" ${b.icon==='🏅'?'selected':''}>🏅</option>
                             <option value="💯" ${b.icon==='💯'?'selected':''}>💯</option>
                         </select>
-                        <input type="text" onchange="currentAdminBadges[idx].title=this.value" value="${b.title}" class="flex-grow bg-card px-3 py-2 rounded-md text-sm text-primary" placeholder="اسم الوسام (مثال: بطلة الأسبوع)">
+                        <input type="text" onchange="currentAdminBadges[${idx}].title=this.value" value="${b.title}" class="flex-grow bg-card px-3 py-2 rounded-md text-sm text-primary" placeholder="اسم الوسام (مثال: بطلة الأسبوع)">
                     </div>
                 `;
             });
@@ -1416,8 +1520,8 @@
                 list.innerHTML += `
                     <div class="bg-input p-4 rounded-ios-lg border border-theme relative text-sm space-y-3">
                         <button onclick="window.remEx(${idx})" class="absolute top-3 left-3 text-red-500 font-bold px-2 py-1">✕</button>
-                        <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card px-3 py-2.5 rounded-lg font-bold text-primary" placeholder="اسم التمرين">
-                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card px-3 py-2.5 rounded-lg text-accent font-medium text-xs" placeholder="رابط فيديو">
+                        <input type="text" onchange="currentAdminExercises[${idx}].title=this.value" value="${ex.title}" class="w-full bg-card px-3 py-2.5 rounded-lg font-bold text-primary" placeholder="اسم التمرين">
+                        <input type="text" onchange="currentAdminExercises[${idx}].media=this.value" value="${ex.media}" class="w-full bg-card px-3 py-2.5 rounded-lg text-accent font-medium text-xs" placeholder="رابط فيديو">
                         
                         <div class="flex items-center gap-3 bg-card p-2 rounded-lg border border-theme">
                             <select onchange="window.toggleExType(${idx}, this.value)" class="bg-input px-2 py-1.5 rounded text-primary font-bold text-xs border border-theme">
@@ -1426,9 +1530,9 @@
                             </select>
 
                             ${isTimer ? `
-                                <div class="flex items-center gap-2 border-r border-theme pr-3"><span class="text-[11px] text-muted font-bold">دقائق:</span><input type="number" onchange="currentAdminExercises[idx].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-14 bg-input px-1 py-1 text-center rounded text-primary font-bold border border-theme"></div>
+                                <div class="flex items-center gap-2 border-r border-theme pr-3"><span class="text-[11px] text-muted font-bold">دقائق:</span><input type="number" onchange="currentAdminExercises[${idx}].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-14 bg-input px-1 py-1 text-center rounded text-primary font-bold border border-theme"></div>
                             ` : `
-                                <div class="flex items-center gap-2 border-r border-theme pr-3"><span class="text-[11px] text-muted font-bold">جولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-14 bg-input px-1 py-1 text-center rounded text-primary font-bold border border-theme"></div>
+                                <div class="flex items-center gap-2 border-r border-theme pr-3"><span class="text-[11px] text-muted font-bold">جولات:</span><input type="number" onchange="currentAdminExercises[${idx}].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-14 bg-input px-1 py-1 text-center rounded text-primary font-bold border border-theme"></div>
                             `}
                         </div>
                     </div>`;
@@ -1443,8 +1547,8 @@
             currentAdminMeals.forEach((m, idx) => {
                 let ingredientsHtml = (m.ingredients || []).map((ing, iIdx) => `
                     <div class="flex gap-2 mb-2">
-                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="flex-grow bg-card px-2 py-1.5 rounded-md text-xs text-primary" placeholder="المكون">
-                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-20 bg-card px-2 py-1.5 rounded-md text-xs text-center text-primary" placeholder="الكمية">
+                        <input type="text" onchange="currentAdminMeals[${idx}].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="flex-grow bg-card px-2 py-1.5 rounded-md text-xs text-primary" placeholder="المكون">
+                        <input type="text" onchange="currentAdminMeals[${idx}].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-20 bg-card px-2 py-1.5 rounded-md text-xs text-center text-primary" placeholder="الكمية">
                         <button onclick="window.remIng(${idx}, ${iIdx})" class="text-red-500 font-bold px-2">✕</button>
                     </div>
                 `).join('');
@@ -1453,13 +1557,13 @@
                     <div class="bg-input p-4 rounded-ios-lg border border-theme relative text-sm space-y-3">
                         <button onclick="window.remMeal(${idx})" class="absolute top-3 left-3 text-red-500 font-bold px-2 py-1 z-10">✕</button>
                         
-                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card px-3 py-2.5 rounded-lg font-bold text-primary pr-10" placeholder="اسم الوجبة">
+                        <input type="text" onchange="currentAdminMeals[${idx}].title=this.value" value="${m.title}" class="w-full bg-card px-3 py-2.5 rounded-lg font-bold text-primary pr-10" placeholder="اسم الوجبة">
                         
                         <div class="grid grid-cols-4 gap-2 bg-card p-2 rounded-lg border border-theme text-center">
-                            <div><label class="text-[10px] text-muted block mb-1">سعرات</label><input type="number" onchange="currentAdminMeals[idx].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent font-bold text-primary outline-none text-center"></div>
-                            <div><label class="text-[10px] text-muted block mb-1">بروتين</label><input type="number" onchange="currentAdminMeals[idx].pro=this.value" value="${m.pro||0}" class="w-full bg-transparent font-bold text-accent outline-none text-center"></div>
-                            <div><label class="text-[10px] text-muted block mb-1">كارب</label><input type="number" onchange="currentAdminMeals[idx].carb=this.value" value="${m.carb||0}" class="w-full bg-transparent font-bold text-blue-500 outline-none text-center"></div>
-                            <div><label class="text-[10px] text-muted block mb-1">دهون</label><input type="number" onchange="currentAdminMeals[idx].fat=this.value" value="${m.fat||0}" class="w-full bg-transparent font-bold text-yellow-500 outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">سعرات</label><input type="number" onchange="currentAdminMeals[${idx}].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent font-bold text-primary outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">بروتين</label><input type="number" onchange="currentAdminMeals[${idx}].pro=this.value" value="${m.pro||0}" class="w-full bg-transparent font-bold text-accent outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">كارب</label><input type="number" onchange="currentAdminMeals[${idx}].carb=this.value" value="${m.carb||0}" class="w-full bg-transparent font-bold text-blue-500 outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">دهون</label><input type="number" onchange="currentAdminMeals[${idx}].fat=this.value" value="${m.fat||0}" class="w-full bg-transparent font-bold text-yellow-500 outline-none text-center"></div>
                         </div>
 
                         <div class="p-2 border border-theme rounded-lg bg-card">
@@ -1468,9 +1572,9 @@
                             <button onclick="window.addIng(${idx})" class="w-full text-[11px] bg-input text-primary font-bold py-1.5 rounded mt-1 border border-theme">+ إضافة</button>
                         </div>
 
-                        <input type="text" onchange="currentAdminMeals[idx].image=this.value" value="${m.image||''}" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-accent" placeholder="رابط الصورة">
-                        <textarea onchange="currentAdminMeals[idx].recipe=this.value" rows="2" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-primary leading-relaxed" placeholder="طريقة التحضير...">${m.recipe||''}</textarea>
-                        <input type="text" onchange="currentAdminMeals[idx].media=this.value" value="${m.media||''}" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-accent" placeholder="رابط فيديو">
+                        <input type="text" onchange="currentAdminMeals[${idx}].image=this.value" value="${m.image||''}" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-accent" placeholder="رابط الصورة">
+                        <textarea onchange="currentAdminMeals[${idx}].recipe=this.value" rows="2" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-primary leading-relaxed" placeholder="طريقة التحضير...">${m.recipe||''}</textarea>
+                        <input type="text" onchange="currentAdminMeals[${idx}].media=this.value" value="${m.media||''}" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-accent" placeholder="رابط فيديو">
                     </div>`;
             });
         }
@@ -1491,6 +1595,7 @@
                 targets: targets,
                 'plan/exercises': currentAdminExercises, 
                 'plan/meals': currentAdminMeals,
+                'plan/timeline': currentAdminTimeline,
                 badges: currentAdminBadges
             });
             showMsg("تم الحفظ والنشر بنجاح!", false);

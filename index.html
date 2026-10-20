@@ -44,6 +44,10 @@
         .msg-me { background: var(--coach-green); color: #000; align-self: flex-start; border-bottom-right-radius: 4px; font-weight: 500; }
         .msg-other { background: var(--input-color); color: var(--text-color); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
         .chat-img { border-radius: 12px; max-width: 100%; margin-top: 6px; }
+
+        /* Course Set Buttons */
+        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid var(--border-color); background: var(--input-color); color: var(--text-color); transition: all 0.2s; cursor: pointer; }
+        .set-pill.done { border-color: var(--coach-green); background: var(--coach-green); color: #000; }
         
         .nav-btn.active { color: var(--coach-green); }
     </style>
@@ -137,7 +141,6 @@
                     </div>
                 </div>
 
-                <!-- خانة جسمي المحدثة (صورة الجسم التفاعلية، الطول، الوزن، زر سجل الأوزان التاريخي) -->
                 <div class="bg-card rounded-ios-lg p-6 border border-card shadow-lg space-y-4">
                     <h2 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-coach">💪</span> جسمي وسجل الأوزان</h2>
                     
@@ -145,7 +148,6 @@
                         ⚠️ انتبهي! وزنك زاد عن القياس السابق! وين الالتزام؟ يلا شدّي حيلك ورجعي للمسار الصحيح! 💪
                     </div>
 
-                    <!-- تمثيل بصري تفاعلي لشكل الجسم بناءً على الوزن والطول -->
                     <div class="bg-input p-4 rounded-2xl border border-border-color flex flex-col items-center justify-center text-center">
                         <div id="bodyVisualAvatar" class="w-20 h-20 rounded-full bg-coach/20 border-2 border-coach flex items-center justify-center text-3xl mb-2 shadow-inner transition-all duration-500">🧍‍♀️</div>
                         <span id="bodyVisualStatus" class="text-xs font-bold text-coach">أدخلي طولك ووزنك لعرض التحليل البصري</span>
@@ -167,7 +169,6 @@
                         <button onclick="openWeightHistoryModal()" class="bg-input border border-border-color text-coach font-bold px-4 py-3.5 rounded-ios text-xs hover:border-coach">📜 سجل الأوزان</button>
                     </div>
 
-                    <!-- بطاقة حالة الجسم وكتلة الجسم BMI -->
                     <div id="bmiResultCard" class="hidden bg-input p-4 rounded-xl border border-border-color space-y-1 text-xs">
                         <div class="flex justify-between items-center">
                             <span class="text-gray-400">مؤشر كتلة الجسم (BMI):</span>
@@ -202,7 +203,7 @@
                 </div>
             </div>
 
-            <!-- نافذة سجل الأوزان والقياسات التاريخية المنبثقة -->
+            <!-- نافذة سجل الأوزان التاريخية -->
             <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
                 <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-border-color my-auto space-y-4 shadow-2xl">
                     <div class="flex justify-between items-center border-b border-border-color pb-3">
@@ -210,9 +211,7 @@
                         <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="text-gray-400 font-bold text-lg">✕</button>
                     </div>
                     <p class="text-[11px] text-gray-400">هنا تظهر كافة قياساتك السابقة بالتواريخ والأوزان المسجلة:</p>
-                    <div id="modalWeightHistoryList" class="space-y-2 max-h-60 overflow-y-auto">
-                        <!-- يتم تعبئتها ديناميكياً -->
-                    </div>
+                    <div id="modalWeightHistoryList" class="space-y-2 max-h-60 overflow-y-auto"></div>
                     <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="w-full bg-coach text-black font-bold py-3 rounded-ios text-xs">إغلاق</button>
                 </div>
             </div>
@@ -635,7 +634,6 @@
             showSection('userDashboard');
         };
 
-        // تسجيل الوزن والقياس التاريخي وفحص السمنة وتحديث صورة الجسم
         document.getElementById('updateProgressBtn').onclick = async () => {
             const newW = parseFloat(document.getElementById('userCurrentWeight').value);
             const newH = parseFloat(document.getElementById('userHeightInput').value) || activeUserData.profile?.height || 160;
@@ -649,7 +647,6 @@
                 lastWeight = weightHistory[dates[dates.length - 1]];
             }
 
-            // تسجيل بختم التاريخ والوقت لتعدد القياسات بدقة
             const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
             weightHistory[timestamp] = newW;
 
@@ -752,9 +749,13 @@
             renderWeightHistory(data.progress?.weightHistory);
             loadLeaderboard();
 
-            renderUserNutritionCourse(data.plan?.meals, data.progress?.meals, data.progress?.swaps, data.targets);
-            renderUserWorkoutSummary(data.plan?.exercises, data.progress?.workouts);
-            checkWorkoutReminder(data.plan?.exercises, data.progress?.workouts);
+            // تصحيح مسارات قراءة التمارين والوجبات لتظهر فوراً للمتدربة
+            const mealsList = data.plan?.meals || data.meals || [];
+            const exercisesList = data.plan?.exercises || data.exercises || [];
+
+            renderUserNutritionCourse(mealsList, data.progress?.meals, data.progress?.swaps, data.targets);
+            renderUserWorkoutSummary(exercisesList, data.progress?.workouts);
+            checkWorkoutReminder(exercisesList, data.progress?.workouts);
         }
 
         function renderGoalTimeline(goalPlan, currentWeight) {
@@ -928,7 +929,7 @@
                     `;
                 });
             } else {
-                html = '<p class="text-xs text-gray-400">لا توجد وجبات مضافة اليوم.</p>';
+                html = '<p class="text-xs text-gray-400">لا توجد وجبات مضافة اليوم من قبل الكوتش.</p>';
             }
             area.innerHTML = html;
         }
@@ -942,11 +943,14 @@
             activeUserData.progress = activeUserData.progress || {};
             activeUserData.progress.meals = activeUserData.progress.meals || {};
             activeUserData.progress.meals[today] = doneMeals;
-            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
+            
+            const mealsList = activeUserData.plan?.meals || activeUserData.meals || [];
+            renderUserNutritionCourse(mealsList, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
         };
 
         window.openMealDetail = (idx) => {
-            const m = activeUserData.plan?.meals[idx];
+            const mealsList = activeUserData.plan?.meals || activeUserData.meals || [];
+            const m = mealsList[idx];
             document.getElementById('modalMealTitle').innerText = m.title;
             document.getElementById('modalMealBody').innerHTML = `
                 ${m.image ? `<img src="${m.image}" class="w-full rounded-xl mb-3 border border-border-color">` : ''}
@@ -976,14 +980,16 @@
 
             await update(ref(db, `users/${uid}/progress/swaps`), activeUserData.progress.swaps);
             document.getElementById('mealSwapModal').classList.add('hidden');
-            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
+            
+            const mealsList = activeUserData.plan?.meals || activeUserData.meals || [];
+            renderUserNutritionCourse(mealsList, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
             showMsg("تمت إضافة الوجبة البديلة لعجلة اليوم!", false);
         };
 
         function renderUserWorkoutSummary(exercises, progress) {
             const area = document.getElementById('userWorkoutCourseSummary');
             if(!exercises || exercises.length === 0) {
-                area.innerHTML = '<p class="text-xs text-gray-400">لا توجد تمارين مخصصة اليوم.</p>';
+                area.innerHTML = '<p class="text-xs text-gray-400">لا توجد تمارين مخصصة اليوم من قبل الكوتش.</p>';
                 return;
             }
             area.innerHTML = `
@@ -1000,7 +1006,7 @@
             playerActiveIndex = 0;
             const today = getTodayStr();
             const progress = activeUserData.progress?.workouts?.[today] || {};
-            const exercises = activeUserData.plan?.exercises || [];
+            const exercises = activeUserData.plan?.exercises || activeUserData.exercises || [];
             for(let i=0; i<exercises.length; i++) {
                 if(exercises[i].type === 'timer') {
                     if(!progress[i]?.completed) { playerActiveIndex = i; break; }
@@ -1029,7 +1035,7 @@
 
         window.playerNextStep = () => {
             if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
-            const exercises = activeUserData.plan?.exercises || [];
+            const exercises = activeUserData.plan?.exercises || activeUserData.exercises || [];
             if(playerActiveIndex < exercises.length - 1) {
                 playerActiveIndex++;
                 renderPlayerStep();
@@ -1042,7 +1048,7 @@
         function renderPlayerStep() {
             if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
             const area = document.getElementById('playerContentArea');
-            const exercises = activeUserData.plan?.exercises || [];
+            const exercises = activeUserData.plan?.exercises || activeUserData.exercises || [];
             const ex = exercises[playerActiveIndex];
             if(!ex) return;
 
@@ -1223,8 +1229,8 @@
             document.getElementById('targetCarbInput').value = targets.carb;
             document.getElementById('targetFatInput').value = targets.fat;
 
-            currentAdminExercises = d.plan?.exercises || [];
-            currentAdminMeals = d.plan?.meals || [];
+            currentAdminExercises = d.plan?.exercises || d.exercises || [];
+            currentAdminMeals = d.plan?.meals || d.meals || [];
             renderAdminExercises();
             renderAdminMeals();
             switchAdminTab('adminTabMacros');
@@ -1310,7 +1316,7 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        // زر الحفظ الموحد الشامل (المضمون 100%)
+        // زر الحفظ الشامل الموحد المحدث ليدعم حفظ plan/exercises و plan/meals بدقة مطلقة
         document.getElementById('adminSaveAllBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,

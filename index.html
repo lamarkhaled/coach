@@ -17,7 +17,7 @@
             --border-color: #2C2C2E;
             --txt-main: #FFFFFF;
             --txt-muted: #9CA3AF; 
-            --accent: #C6F432; /* ليموني رياضي واضح */
+            --accent: #C6F432; 
             --accent-text: #000000;
         }
         html.light {
@@ -28,7 +28,7 @@
             --border-color: #E5E7EB;
             --txt-main: #111827;
             --txt-muted: #6B7280;
-            --accent: #059669; /* أخضر زمردي غامق ليكون مقروءاً على الأبيض */
+            --accent: #059669; 
             --accent-text: #FFFFFF;
         }
         
@@ -39,7 +39,8 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* Classes مخصصة لضمان تغير الألوان صح مع الفاتح والليلي */
+        /* كلاسات مساعدة لضمان الألوان الصحيحة */
+        .bg-main-solid { background-color: var(--bg-main) !important; }
         .text-primary { color: var(--txt-main) !important; }
         .text-muted { color: var(--txt-muted) !important; }
         .bg-card { background-color: var(--bg-card) !important; }
@@ -67,12 +68,18 @@
         .rounded-ios { border-radius: 16px; }
         .rounded-ios-lg { border-radius: 20px; }
 
-        /* Chat Styles المحدثة */
+        /* Chat Styles المحدثة مع الوقت وإشارات القراءة */
         .chat-container { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
-        .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; font-weight: 500; word-wrap: break-word; }
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; font-weight: 500; word-wrap: break-word; min-width: 100px; display: flex; flex-direction: column; }
         .msg-me { background: var(--accent); color: var(--accent-text); align-self: flex-start; border-bottom-right-radius: 4px; }
         .msg-other { background: var(--bg-input); color: var(--txt-main); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
-        .chat-img { border-radius: 12px; max-width: 100%; margin-top: 8px; border: 1px solid var(--border-color); }
+        .chat-img { border-radius: 12px; max-width: 100%; margin-top: 4px; border: 1px solid var(--border-color); margin-bottom: 4px; }
+        
+        .chat-meta { display: flex; justify-content: flex-end; align-items: center; gap: 4px; font-size: 10px; margin-top: 4px; opacity: 0.8; }
+        .chat-ticks { color: #34B7F1; font-weight: 900; letter-spacing: -2px; font-size: 11px; } /* لون أزرق مثل الواتساب */
+        html.light .msg-me .chat-meta { color: #E0F2FE; } /* تباين أفضل للوقت في الوضع الفاتح */
+        html.dark .msg-me .chat-meta { color: #4B5563; }
+        html.light .msg-me .chat-ticks { color: #FFFFFF; } /* علامة صح بيضاء في الفاتح بسبب الخلفية الخضراء */
 
         /* أزرار جولات التمارين */
         .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; border: 2px solid var(--border-color); background: var(--bg-input); color: var(--txt-main); cursor: pointer; transition: all 0.2s; }
@@ -177,6 +184,12 @@
                     
                     <div id="weightRoastBanner" class="hidden bg-red-500 text-white p-3 rounded-lg text-xs font-bold">
                         ⚠️ وزنك زاد عن القياس السابق! شدي حيلك ورجعي للمسار.
+                    </div>
+
+                    <!-- تمت إعادة الأيقونة التفاعلية للجسم -->
+                    <div class="bg-input p-4 rounded-lg border border-theme flex flex-col items-center justify-center text-center">
+                        <div id="bodyVisualAvatar" class="w-20 h-20 rounded-full bg-card border-2 border-accent flex items-center justify-center text-4xl mb-2 transition-all duration-500">🧍‍♀️</div>
+                        <span id="bodyVisualStatus" class="text-xs font-bold text-accent">أدخلي طولك ووزنك للتحليل البصري</span>
                     </div>
 
                     <div class="flex gap-3">
@@ -289,8 +302,8 @@
                 </div>
             </div>
 
-            <!-- مشغل التمارين التفاعلي -->
-            <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-main flex flex-col p-5 overflow-y-auto">
+            <!-- مشغل التمارين التفاعلي (تم إصلاح الشفافية بجعله Solid) -->
+            <div id="coursePlayerView" class="hidden fixed inset-0 z-[100] bg-main-solid flex flex-col p-5 overflow-y-auto">
                 <div class="flex justify-between items-center mb-6 max-w-sm mx-auto w-full pt-2">
                     <button onclick="saveAndExitCoursePlayer()" class="text-primary text-xs font-bold bg-input px-4 py-2 rounded-lg border border-theme">💾 حفظ وخروج</button>
                     <span id="workoutTimerDisplay" class="text-xs font-bold text-accent bg-card px-3 py-1.5 rounded-md border border-theme">00:00</span>
@@ -336,7 +349,7 @@
                         <p class="text-[11px] font-bold text-accent">متاح للرد</p>
                     </div>
                 </div>
-                <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main"></div>
+                <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
                 <div class="p-3 border-t border-theme bg-card flex gap-2 items-center">
                     <label class="cursor-pointer text-muted bg-input p-2 rounded-lg border border-theme">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
@@ -448,7 +461,7 @@
                     <div class="bg-input px-5 py-4 border-b border-theme">
                         <h3 class="font-bold text-sm text-primary">شات المتدربة</h3>
                     </div>
-                    <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto bg-main"></div>
+                    <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
                     <div class="p-3 border-t border-theme bg-card flex gap-2 items-center">
                         <label class="cursor-pointer text-muted bg-input p-2 rounded-lg border border-theme">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
@@ -708,14 +721,17 @@
             const heightM = newH / 100;
             const bmi = (newW / (heightM * heightM)).toFixed(1);
             let bmiStatus = "";
-            if (bmi < 18.5) { bmiStatus = "نحافة"; }
-            else if (bmi >= 18.5 && bmi < 25) { bmiStatus = "وزن مثالي"; }
-            else if (bmi >= 25 && bmi < 30) { bmiStatus = "زيادة وزن"; }
-            else { bmiStatus = "سمنة"; }
+            let avatarEmoji = "🧍‍♀️";
+            if (bmi < 18.5) { bmiStatus = "نحافة"; avatarEmoji = "🏃‍♀️"; }
+            else if (bmi >= 18.5 && bmi < 25) { bmiStatus = "وزن مثالي"; avatarEmoji = "💃"; }
+            else if (bmi >= 25 && bmi < 30) { bmiStatus = "زيادة وزن"; avatarEmoji = "👩‍🦰"; }
+            else { bmiStatus = "سمنة"; avatarEmoji = "🧘‍♀️"; }
 
             document.getElementById('bmiResultCard').classList.remove('hidden');
             document.getElementById('bmiValueText').innerText = bmi;
             document.getElementById('bmiStatusText').innerText = bmiStatus;
+            document.getElementById('bodyVisualAvatar').innerText = avatarEmoji;
+            document.getElementById('bodyVisualStatus').innerText = `حالة الجسم: ${bmiStatus}`;
 
             await update(ref(db, `users/${uid}/progress`), activeUserData.progress);
             await update(ref(db, `users/${uid}/profile`), activeUserData.profile);
@@ -781,9 +797,12 @@
                     const hM = data.profile.height / 100;
                     const bmi = (data.progress.currentWeight / (hM * hM)).toFixed(1);
                     let bmiStatus = bmi < 18.5 ? "نحافة" : bmi < 25 ? "وزن مثالي" : bmi < 30 ? "زيادة وزن" : "سمنة";
+                    let avatarEmoji = bmi < 18.5 ? "🏃‍♀️" : bmi < 25 ? "💃" : bmi < 30 ? "👩‍🦰" : "🧘‍♀️";
                     document.getElementById('bmiResultCard').classList.remove('hidden');
                     document.getElementById('bmiValueText').innerText = bmi;
                     document.getElementById('bmiStatusText').innerText = bmiStatus;
+                    document.getElementById('bodyVisualAvatar').innerText = avatarEmoji;
+                    document.getElementById('bodyVisualStatus').innerText = `حالة الجسم: ${bmiStatus}`;
                 }
             }
 
@@ -1370,12 +1389,30 @@
             btn.innerText = 'حفظ ونشر الكل ✔️';
         };
 
-        // ================= CHAT SYSTEM =================
+        // ================= CHAT SYSTEM (مع التحديثات) =================
         function formatChatMsg(m, isAdminContext) {
             const isMe = isAdminContext ? (m.sender === 'admin') : (m.sender === 'user');
             const css = isMe ? 'msg-me' : 'msg-other';
             let content = m.type === 'image' ? `<img src="${m.text}" class="chat-img">` : m.text;
-            return `<div class="chat-bubble ${css}">${content}</div>`;
+            
+            // تنسيق الوقت
+            let timeStr = "";
+            if (m.time) {
+                const d = new Date(m.time);
+                timeStr = d.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            // إشارات القراءة الزرقاء إذا كانت الرسالة مرسلة مني
+            let ticks = isMe ? `<span class="chat-ticks">✔✔</span>` : '';
+
+            return `
+            <div class="chat-bubble ${css}">
+                <div>${content}</div>
+                <div class="chat-meta">
+                    <span>${timeStr}</span>
+                    ${ticks}
+                </div>
+            </div>`;
         }
 
         function loadChat(uid, areaId) {
@@ -1387,6 +1424,7 @@
                     snap.forEach(c => {
                         area.innerHTML += formatChatMsg(c.val(), isAdminContext);
                     });
+                    // نزول شريط التمرير تلقائياً للأسفل
                     area.scrollTop = area.scrollHeight;
                 }
             });

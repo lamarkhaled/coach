@@ -12,6 +12,7 @@
             --apple-input: #1C1C1E;
             --apple-border: #2C2C2E;
             --coach-green: #9DFF13;
+            --coach-red: #FF453A;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: var(--apple-bg); color: #FFF; -webkit-font-smoothing: antialiased; }
         .ios-glass { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(25px); border-bottom: 1px solid var(--apple-border); }
@@ -39,6 +40,10 @@
         /* Course Set Buttons */
         .set-pill { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 15px; border: 2px solid var(--apple-border); background: var(--apple-input); color: #FFF; transition: all 0.2s; }
         .set-pill.done { border-color: var(--coach-green); background: var(--coach-green); color: #000; }
+        
+        /* Macro Rings Styling */
+        .macro-ring { position: relative; width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: conic-gradient(var(--coach-green) 0deg, var(--apple-input) 0deg); }
+        .macro-ring-inner { width: 72px; height: 72px; border-radius: 50%; background: var(--apple-card); display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative pb-24 md:pb-0">
@@ -128,7 +133,7 @@
                 </div>
             </div>
 
-            <!-- البرنامج (دورات التمارين والتغذية التفاعلية) -->
+            <!-- البرنامج (التغذية المتقدمة بعجلة الماكروز + التمارين) -->
             <div id="tabPlan" class="user-tab hidden w-full">
                 <h1 class="text-2xl font-extrabold mb-5 px-1 text-white">برنامج اليوم</h1>
                 
@@ -137,35 +142,98 @@
                     <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="bg-card border border-apple-border text-white font-extrabold py-3 rounded-ios text-sm">🏋️‍♀️ التمارين</button>
                 </div>
 
-                <!-- محتوى التغذية (نظام دورات الوجبات) -->
-                <div id="subTabNutrition" class="plan-sub-tab block bg-card rounded-ios-lg p-5 border border-card">
-                    <h2 class="text-md font-extrabold text-white mb-4">وجبات اليوم</h2>
+                <!-- محتوى التغذية المتقدم -->
+                <div id="subTabNutrition" class="plan-sub-tab block space-y-5">
+                    
+                    <!-- لوحة عجلة الماكروز اليومية -->
+                    <div class="bg-card rounded-ios-lg p-5 border border-card shadow-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-sm font-bold text-white">ملخص الماكروز اليومي 📊</h3>
+                            <span id="macroWarningBadge" class="hidden text-[10px] bg-red-500 text-white px-2.5 py-1 rounded-full font-bold animate-pulse">⚠️ تجاوزت السعرات المحددة!</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                                <span class="text-[10px] text-gray-400 block mb-1">السعرات</span>
+                                <span id="macroCalVal" class="text-lg font-extrabold text-white">0</span>
+                                <span class="text-[10px] text-gray-500 block">من <span id="targetCalVal">2000</span></span>
+                            </div>
+                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                                <span class="text-[10px] text-gray-400 block mb-1">البروتين</span>
+                                <span id="macroProVal" class="text-lg font-extrabold text-coach">0g</span>
+                                <span class="text-[10px] text-gray-500 block">من <span id="targetProVal">150g</span></span>
+                            </div>
+                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                                <span class="text-[10px] text-gray-400 block mb-1">الكارب</span>
+                                <span id="macroCarbVal" class="text-lg font-extrabold text-blue-400">0g</span>
+                                <span class="text-[10px] text-gray-500 block">من <span id="targetCarbVal">200g</span></span>
+                            </div>
+                            <div class="bg-apple-input p-3 rounded-xl border border-apple-border">
+                                <span class="text-[10px] text-gray-400 block mb-1">الدهون</span>
+                                <span id="macroFatVal" class="text-lg font-extrabold text-yellow-400">0g</span>
+                                <span class="text-[10px] text-gray-500 block">من <span id="targetFatVal">60g</span></span>
+                            </div>
+                        </div>
+
+                        <!-- زر استبدال الوجبة بوجبة أخرى خارجية -->
+                        <button onclick="openSwapModal()" class="w-full mt-4 bg-apple-input border border-apple-border text-coach font-bold text-xs py-2.5 rounded-lg hover:bg-apple-border transition-colors">
+                            🔄 استبدلت وجبة بوجبة خارجية؟ (أدخل الماكروز البديل)
+                        </button>
+                    </div>
+
+                    <!-- قائمة الوجبات -->
                     <div id="userNutritionCourse" class="space-y-4">
                         <p class="text-xs text-gray-400">جاري تحميل الوجبات...</p>
                     </div>
                 </div>
 
-                <!-- محتوى التمارين (نظام الدورات التفاعلي) -->
+                <!-- محتوى التمارين -->
                 <div id="subTabWorkouts" class="plan-sub-tab hidden bg-card rounded-ios-lg p-5 border border-card">
                     <h2 class="text-md font-extrabold text-white mb-4">جلسة التمارين</h2>
-                    <div id="userWorkoutCourseSummary">
-                        <!-- ملخص أو زر بدء الدورة -->
-                    </div>
+                    <div id="userWorkoutCourseSummary"></div>
                 </div>
             </div>
 
-            <!-- شاشة مشغل التمرين أو الوجبة التفاعلي (Course Player Modal View) -->
+            <!-- مشغل التمارين التفاعلي -->
             <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-black flex flex-col p-5">
                 <div class="flex justify-between items-center mb-4">
                     <button onclick="closeCoursePlayer()" class="text-gray-400 text-xs font-bold bg-apple-input px-3 py-1.5 rounded-full">✕ خروج وحفظ التقدم</button>
                     <span id="playerProgressTitle" class="text-xs font-bold text-coach">التمرين 1 من 3</span>
                 </div>
-                <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-lg mx-auto w-full text-center">
-                    <!-- محتوى التمرين الديناميكي يظهر هنا -->
+                <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-lg mx-auto w-full text-center"></div>
+            </div>
+
+            <!-- مشغل تفاصيل الوجبة وطريقة التحضير -->
+            <div id="mealDetailModal" class="hidden fixed inset-0 z-50 modal-overlay bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
+                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-apple-border my-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="modalMealTitle" class="text-lg font-extrabold text-white">تفاصيل الوجبة</h3>
+                        <button onclick="document.getElementById('mealDetailModal').classList.add('hidden')" class="text-gray-400 font-bold">✕</button>
+                    </div>
+                    <div id="modalMealBody" class="space-y-4 text-xs"></div>
                 </div>
             </div>
 
-            <!-- الشات المصلح والجاهز -->
+            <!-- مودال استبدال الوجبة (Meal Swap Modal) -->
+            <div id="mealSwapModal" class="hidden fixed inset-0 z-50 modal-overlay bg-black/80 backdrop-blur-md flex flex-col p-5 overflow-y-auto">
+                <div class="max-w-md mx-auto w-full bg-card rounded-ios-lg p-6 border border-apple-border my-auto space-y-4 text-xs">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-md font-extrabold text-white">تسجيل وجبة بديلة</h3>
+                        <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="text-gray-400 font-bold">✕</button>
+                    </div>
+                    <p class="text-gray-400">إذا أكلت شيئاً آخر غير المجدول، أدخل الماكروز الخاص به ليتم إضافته للمجموع:</p>
+                    <input type="text" id="swapMealName" class="w-full p-2.5 rounded text-white" placeholder="اسم الوجبة البديلة (مثال: وجبة مطعم)">
+                    <div class="grid grid-cols-4 gap-2">
+                        <div><label class="text-[9px] text-gray-400">السعرات</label><input type="number" id="swapCal" class="w-full p-2 text-center rounded text-white" value="500"></div>
+                        <div><label class="text-[9px] text-gray-400">بروتين</label><input type="number" id="swapPro" class="w-full p-2 text-center rounded text-coach" value="30"></div>
+                        <div><label class="text-[9px] text-gray-400">كارب</label><input type="number" id="swapCarb" class="w-full p-2 text-center rounded text-blue-400" value="50"></div>
+                        <div><label class="text-[9px] text-gray-400">دهون</label><input type="number" id="swapFat" class="w-full p-2 text-center rounded text-yellow-400" value="15"></div>
+                    </div>
+                    <button onclick="saveSwapMeal()" class="w-full bg-coach text-black font-bold py-3 rounded text-sm">إضافة الوجبة البديلة لعجلة اليوم</button>
+                </div>
+            </div>
+
+            <!-- الشات -->
             <div id="tabChat" class="user-tab hidden w-full h-[65vh] flex flex-col bg-card rounded-ios-lg overflow-hidden border border-card">
                 <div class="bg-apple-input px-4 py-3 border-b border-apple-border flex items-center gap-3">
                     <img src="https://files.catbox.moe/v4smnw.png" class="w-9 h-9 object-contain bg-black rounded-full p-1 border border-gray-800">
@@ -231,12 +299,18 @@
                 
                 <div class="bg-card rounded-ios-lg p-5 border border-card">
                     <h2 class="text-lg font-extrabold text-white mb-3" id="detailUserEmail">user@mail.com</h2>
-                    <div class="grid grid-cols-2 gap-3 text-xs mb-3 bg-apple-input p-3 rounded-xl border border-apple-border">
-                        <div><span class="text-gray-500 block">الحالة</span><strong id="detailUserStatus">--</strong></div>
-                        <div><span class="text-gray-500 block">الكود</span><strong id="detailUserCode" class="text-coach">--</strong></div>
+                    
+                    <div class="bg-apple-input p-3 rounded-xl border border-apple-border mb-3">
+                        <span class="text-coach text-xs font-bold block mb-2">تحديد أهداف الماكروز للمتدربة:</span>
+                        <div class="grid grid-cols-4 gap-2 text-xs">
+                            <div><label class="text-[9px] text-gray-400 block">السعرات</label><input type="number" id="targetCalInput" class="w-full p-1.5 text-center rounded text-white" value="2000"></div>
+                            <div><label class="text-[9px] text-gray-400 block">بروتين</label><input type="number" id="targetProInput" class="w-full p-1.5 text-center rounded text-coach" value="150"></div>
+                            <div><label class="text-[9px] text-gray-400 block">كارب</label><input type="number" id="targetCarbInput" class="w-full p-1.5 text-center rounded text-blue-400" value="200"></div>
+                            <div><label class="text-[9px] text-gray-400 block">دهون</label><input type="number" id="targetFatInput" class="w-full p-1.5 text-center rounded text-yellow-400" value="60"></div>
+                        </div>
                     </div>
+
                     <p class="text-xs text-gray-300 mb-3 whitespace-pre-wrap" id="detailUserAnswers">البيانات...</p>
-                    <span class="bg-white text-black text-xs font-bold px-3 py-1 rounded" id="detailUserProgress">الوزن: --</span>
                 </div>
 
                 <div class="flex bg-apple-input rounded-ios p-1 border border-card">
@@ -245,19 +319,17 @@
                 </div>
 
                 <div id="adminTabPlan" class="admin-tab block space-y-4">
-                    <!-- لوحة تخطيط الوجبات (تغذية بنظام دورات) -->
                     <div class="bg-card p-5 rounded-ios-lg border border-card">
                         <div class="flex justify-between items-center mb-3">
-                            <label class="text-xs font-bold text-white">🍎 وجبات التغذية (نظام دورات)</label>
-                            <button id="addMealBtn" class="text-[10px] bg-coach text-black font-bold px-2.5 py-1 rounded-lg">+ وجبة</button>
+                            <label class="text-xs font-bold text-white">🍎 وجبات التغذية والمكونات والماكروز</label>
+                            <button id="addMealBtn" class="text-[10px] bg-coach text-black font-bold px-2.5 py-1 rounded-lg">+ وجبة جديدة</button>
                         </div>
-                        <div id="adminMealsList" class="space-y-3"></div>
+                        <div id="adminMealsList" class="space-y-4"></div>
                     </div>
 
-                    <!-- لوحة تخطيط التمارين (تمارين بنظام دورات) -->
                     <div class="bg-card p-5 rounded-ios-lg border border-card">
                         <div class="flex justify-between items-center mb-3">
-                            <label class="text-xs font-bold text-white">🏋️‍♀️ تمارين اليوم (نظام دورات)</label>
+                            <label class="text-xs font-bold text-white">🏋️‍♀️ تمارين اليوم</label>
                             <button id="addExerciseBtn" class="text-[10px] bg-coach text-black font-bold px-2.5 py-1 rounded-lg">+ تمرين</button>
                         </div>
                         <div id="adminExercisesList" class="space-y-3"></div>
@@ -307,7 +379,6 @@
         let currentAdminMeals = [];
         let activeUserData = null;
         let playerActiveIndex = 0;
-        let playerType = ''; // 'workout' or 'nutrition'
 
         window.showSection = (sectionId) => {
             ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -458,43 +529,120 @@
             return `<a href="${url}" target="_blank" class="block w-full bg-apple-input text-coach text-center py-2.5 rounded-lg text-xs font-bold mt-2 border border-apple-border">فتح المرفق 📎</a>`;
         }
 
-        // ================= USER COURSE PLAYERS (WORKOUTS & NUTRITION) =================
+        // ================= USER NUTRITION & MACROS WHEEL ENGINE =================
         function renderUserDashboard(data) {
             activeUserData = data;
             const end = new Date(data.endDate);
             const daysRem = Math.ceil((end - new Date())/(1000*60*60*24));
             document.getElementById('daysRemainingText').innerText = daysRem > 0 ? `باقي ${daysRem} يوم` : 'منتهي';
             
-            renderUserNutritionCourse(data.plan?.meals, data.progress?.meals);
+            renderUserNutritionCourse(data.plan?.meals, data.progress?.meals, data.progress?.swaps, data.targets);
             renderUserWorkoutSummary(data.plan?.exercises, data.progress?.workouts);
         }
 
-        function renderUserNutritionCourse(meals, progress) {
+        function renderUserNutritionCourse(meals, progress, swaps, targets) {
             const area = document.getElementById('userNutritionCourse');
             area.innerHTML = '';
-            if(!meals || meals.length === 0) {
-                area.innerHTML = '<p class="text-xs text-gray-400">لا توجد وجبات مضافة اليوم.</p>';
-                return;
-            }
             const today = getTodayStr();
             const doneMeals = progress?.[today] || {};
+            const todaySwaps = swaps?.[today] || [];
+            const userTargets = targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
 
-            meals.forEach((m, idx) => {
-                const isDone = doneMeals[idx];
-                area.innerHTML += `
-                    <div class="bg-apple-input p-4 rounded-xl border border-apple-border flex justify-between items-center">
-                        <div>
-                            <span class="text-[10px] text-coach font-bold block mb-1">وجبة ${idx+1}</span>
-                            <h3 class="text-white font-bold text-sm">${m.title}</h3>
-                            <p class="text-xs text-gray-300 mt-1">${m.desc || ''}</p>
-                            ${buildMediaHTML(m.media)}
-                        </div>
-                        <button onclick="window.toggleMealDone(${idx})" class="px-4 py-2 rounded-xl text-xs font-bold ${isDone ? 'bg-coach text-black' : 'bg-card border text-white'}">
-                            ${isDone ? 'تم تناولها ✔️' : 'تناولتها'}
-                        </button>
-                    </div>
-                `;
+            let totalCal = 0, totalPro = 0, totalCarb = 0, totalFat = 0;
+            
+            // حساب الوجبات الأصلية المأكولة
+            if(meals) {
+                meals.forEach((m, idx) => {
+                    if(doneMeals[idx]) {
+                        totalCal += Number(m.cal || 0);
+                        totalPro += Number(m.pro || 0);
+                        totalCarb += Number(m.carb || 0);
+                        totalFat += Number(m.fat || 0);
+                    }
+                });
+            }
+
+            // حساب الوجبات البديلة المسجلة
+            todaySwaps.forEach(sw => {
+                totalCal += Number(sw.cal || 0);
+                totalPro += Number(sw.pro || 0);
+                totalCarb += Number(sw.carb || 0);
+                totalFat += Number(sw.fat || 0);
             });
+
+            document.getElementById('targetCalVal').innerText = userTargets.cal;
+            document.getElementById('targetProVal').innerText = userTargets.pro + 'g';
+            document.getElementById('targetCarbVal').innerText = userTargets.carb + 'g';
+            document.getElementById('targetFatVal').innerText = userTargets.fat + 'g';
+
+            document.getElementById('macroCalVal').innerText = totalCal;
+            document.getElementById('macroProVal').innerText = totalPro + 'g';
+            document.getElementById('macroCarbVal').innerText = totalCarb + 'g';
+            document.getElementById('macroFatVal').innerText = totalFat + 'g';
+
+            const warningBadge = document.getElementById('macroWarningBadge');
+            if(totalCal > Number(userTargets.cal)) {
+                warningBadge.classList.remove('hidden');
+                warningBadge.innerText = `⚠️ هيه! تعديت السعرات (${totalCal} / ${userTargets.cal})! ركزي بوجباتك القادمة!`;
+            } else {
+                warningBadge.classList.add('hidden');
+            }
+
+            let html = '';
+            if(meals && meals.length > 0) {
+                meals.forEach((m, idx) => {
+                    const isDone = doneMeals[idx];
+                    let ingredientsHtml = '';
+                    if(m.ingredients && m.ingredients.length > 0) {
+                        ingredientsHtml = `<div class="mt-2 space-y-1 text-[11px] text-gray-300 bg-black/30 p-2.5 rounded-lg border border-apple-border">
+                            <strong class="text-coach block mb-1">المكونات:</strong>
+                            ${m.ingredients.map(ing => `<div class="flex justify-between"><span>• ${ing.name}</span> <span class="text-gray-400">${ing.amount}</span></div>`).join('')}
+                        </div>`;
+                    }
+
+                    html += `
+                        <div class="bg-apple-input p-4 rounded-xl border border-apple-border space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] text-coach font-bold block mb-0.5">وجبة ${idx+1}</span>
+                                    <h3 class="text-white font-bold text-sm">${m.title}</h3>
+                                </div>
+                                <button onclick="window.toggleMealDone(${idx})" class="px-4 py-2 rounded-xl text-xs font-bold ${isDone ? 'bg-coach text-black' : 'bg-card border text-white'}">
+                                    ${isDone ? 'تم تناولها ✔️' : 'تناولتها'}
+                                </button>
+                            </div>
+                            ${ingredientsHtml}
+                            <div class="flex gap-2 text-[10px] text-gray-400 bg-card p-2 rounded-lg border border-apple-border justify-between text-center">
+                                <div><strong class="text-white block">${m.cal || 0}</strong> سعرة</div>
+                                <div><strong class="text-coach block">${m.pro || 0}g</strong> بروتين</div>
+                                <div><strong class="text-blue-400 block">${m.carb || 0}g</strong> كارب</div>
+                                <div><strong class="text-yellow-400 block">${m.fat || 0}g</strong> دهون</div>
+                            </div>
+                            <button onclick="window.openMealDetail(${idx})" class="w-full bg-card hover:bg-apple-border text-white text-xs font-bold py-2 rounded-lg border border-apple-border transition-colors">
+                                📖 طريقة التحضير والوصف
+                            </button>
+                        </div>
+                    `;
+                });
+            } else {
+                html = '<p class="text-xs text-gray-400">لا توجد وجبات مضافة اليوم.</p>';
+            }
+
+            // عرض البدائل إن وجدت
+            if(todaySwaps.length > 0) {
+                html += `<div class="mt-4 border-t border-apple-border pt-3"><strong class="text-xs text-coach block mb-2">وجبات بديلة أكلتيها اليوم:</strong>`;
+                todaySwaps.forEach((sw, sIdx) => {
+                    html += `
+                        <div class="bg-apple-input p-3 rounded-lg border border-apple-border text-xs flex justify-between items-center mb-2">
+                            <div><strong>${sw.name}</strong> <span class="text-gray-400">(${sw.cal} سعرة | P:${sw.pro}g)</span></div>
+                            <button onclick="window.removeSwapMeal(${sIdx})" class="text-red-400 font-bold">حذف</button>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            area.innerHTML = html;
         }
 
         window.toggleMealDone = async (idx) => {
@@ -506,7 +654,50 @@
             activeUserData.progress = activeUserData.progress || {};
             activeUserData.progress.meals = activeUserData.progress.meals || {};
             activeUserData.progress.meals[today] = doneMeals;
-            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals);
+            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
+        };
+
+        window.openMealDetail = (idx) => {
+            const m = activeUserData.plan?.meals[idx];
+            document.getElementById('modalMealTitle').innerText = m.title;
+            document.getElementById('modalMealBody').innerHTML = `
+                ${m.image ? `<img src="${m.image}" class="w-full rounded-xl mb-3 border border-apple-border">` : ''}
+                <div>
+                    <strong class="text-coach block mb-1">طريقة التحضير والوصف:</strong>
+                    <p class="text-gray-300 leading-relaxed">${m.recipe || 'لا توجد تفاصيل مضافة.'}</p>
+                </div>
+                ${buildMediaHTML(m.media)}
+            `;
+            document.getElementById('mealDetailModal').classList.remove('hidden');
+        };
+
+        window.openSwapModal = () => { document.getElementById('mealSwapModal').classList.remove('hidden'); };
+        window.saveSwapMeal = async () => {
+            const name = document.getElementById('swapMealName').value.trim() || 'وجبة خارجية';
+            const cal = parseInt(document.getElementById('swapCal').value) || 0;
+            const pro = parseInt(document.getElementById('swapPro').value) || 0;
+            const carb = parseInt(document.getElementById('swapCarb').value) || 0;
+            const fat = parseInt(document.getElementById('swapFat').value) || 0;
+
+            const today = getTodayStr();
+            const uid = auth.currentUser.uid;
+            activeUserData.progress = activeUserData.progress || {};
+            activeUserData.progress.swaps = activeUserData.progress.swaps || {};
+            activeUserData.progress.swaps[today] = activeUserData.progress.swaps[today] || [];
+            activeUserData.progress.swaps[today].push({ name, cal, pro, carb, fat });
+
+            await update(ref(db, `users/${uid}/progress/swaps`), activeUserData.progress.swaps);
+            document.getElementById('mealSwapModal').classList.add('hidden');
+            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
+            showMsg("تمت إضافة الوجبة البديلة لعجلة اليوم!", false);
+        };
+
+        window.removeSwapMeal = async (sIdx) => {
+            const today = getTodayStr();
+            const uid = auth.currentUser.uid;
+            activeUserData.progress.swaps[today].splice(sIdx, 1);
+            await update(ref(db, `users/${uid}/progress/swaps`), activeUserData.progress.swaps);
+            renderUserNutritionCourse(activeUserData.plan?.meals, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
         };
 
         function renderUserWorkoutSummary(exercises, progress) {
@@ -526,13 +717,10 @@
         }
 
         window.startCoursePlayer = (type) => {
-            playerType = type;
             playerActiveIndex = 0;
-            // البحث عن أول تمرين لم يكتمل بالكامل لحفظ التقدم التلقائي
             const today = getTodayStr();
             const progress = activeUserData.progress?.workouts?.[today] || {};
             const exercises = activeUserData.plan?.exercises || [];
-            
             for(let i=0; i<exercises.length; i++) {
                 if((progress[i] || 0) < exercises[i].sets) {
                     playerActiveIndex = i;
@@ -543,9 +731,7 @@
             renderPlayerStep();
         };
 
-        window.closeCoursePlayer = () => {
-            document.getElementById('coursePlayerView').classList.add('hidden');
-        };
+        window.closeCoursePlayer = () => { document.getElementById('coursePlayerView').classList.add('hidden'); };
 
         function renderPlayerStep() {
             const area = document.getElementById('playerContentArea');
@@ -560,7 +746,6 @@
             }
 
             document.getElementById('playerProgressTitle').innerText = `التمرين ${playerActiveIndex + 1} من ${exercises.length}`;
-
             const today = getTodayStr();
             const doneSets = activeUserData.progress?.workouts?.[today]?.[playerActiveIndex] || 0;
 
@@ -617,7 +802,7 @@
                 const c = cSnap.val();
                 list.innerHTML += `
                     <div class="bg-apple-input p-2.5 rounded-lg border border-apple-border flex justify-between items-center text-xs">
-                        <div><strong class="text-coach">${c.code}</strong> <span class="text-gray-400">(${c.days}ي ${c.hours}س)</span></div>
+                        <div><strong class="text-coach">${c.code}</strong> <span class="text-gray-400">(${c.days}ي)</span></div>
                         <span class="${c.used ? 'text-red-400' : 'text-white'} font-bold">${c.used ? 'مستخدم' : 'متاح'}</span>
                     </div>`;
             });
@@ -647,11 +832,13 @@
             document.getElementById('adminMainView').classList.add('hidden');
             document.getElementById('adminUserDetailView').classList.remove('hidden');
             document.getElementById('detailUserEmail').innerText = d.email;
-            document.getElementById('detailUserStatus').innerText = new Date() < new Date(d.endDate) ? 'نشط' : 'منتهي';
-            document.getElementById('detailUserCode').innerText = d.usedCode || '--';
-            document.getElementById('detailUserAnswers').innerText = d.profile ? `الهدف: ${d.profile.goal} | الوزن: ${d.profile.weight}كج` : 'لم تكمل الأسئلة';
-            document.getElementById('detailUserProgress').innerText = `الوزن الحالي: ${d.progress?.currentWeight || '--'} كج`;
             
+            const targets = d.targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
+            document.getElementById('targetCalInput').value = targets.cal;
+            document.getElementById('targetProInput').value = targets.pro;
+            document.getElementById('targetCarbInput').value = targets.carb;
+            document.getElementById('targetFatInput').value = targets.fat;
+
             currentAdminExercises = d.plan?.exercises || [];
             currentAdminMeals = d.plan?.meals || [];
             renderAdminExercises();
@@ -666,9 +853,8 @@
             loadAdminUsers();
         };
 
-        // Admin Exercise & Meal Builders
         document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', sets:3}); renderAdminExercises(); };
-        document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', desc:'', media:''}); renderAdminMeals(); };
+        document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
 
         function renderAdminExercises() {
             const list = document.getElementById('adminExercisesList');
@@ -689,23 +875,58 @@
             const list = document.getElementById('adminMealsList');
             list.innerHTML = '';
             currentAdminMeals.forEach((m, idx) => {
+                let ingredientsHtml = (m.ingredients || []).map((ing, iIdx) => `
+                    <div class="flex gap-1 mb-1">
+                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="w-2/3 bg-card p-1.5 rounded text-white text-[11px]" placeholder="المكون (دجاج، أرز)">
+                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-1/3 bg-card p-1.5 rounded text-white text-[11px]" placeholder="المقدار (150جم)">
+                        <button onclick="window.remIng(${idx}, ${iIdx})" class="text-red-400 font-bold px-1">x</button>
+                    </div>
+                `).join('');
+
                 list.innerHTML += `
-                    <div class="bg-apple-input p-3 rounded-xl border border-apple-border relative text-xs">
+                    <div class="bg-apple-input p-3.5 rounded-xl border border-apple-border relative text-xs space-y-2">
                         <button onclick="window.remMeal(${idx})" class="absolute top-2 left-2 text-red-400 font-bold">✕</button>
-                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card p-2 rounded mb-2 text-white" placeholder="اسم الوجبة (مثال: وجبة الإفطار)">
-                        <input type="text" onchange="currentAdminMeals[idx].desc=this.value" value="${m.desc}" class="w-full bg-card p-2 rounded mb-2 text-gray-300" placeholder="مكونات الوجبة">
-                        <input type="text" onchange="currentAdminMeals[idx].media=this.value" value="${m.media}" class="w-full bg-card p-2 rounded text-coach" placeholder="رابط صورة الوجبة (اختياري)">
+                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card p-2 rounded text-white font-bold" placeholder="اسم الوجبة (مثال: وجبة الإفطار)">
+                        
+                        <div class="grid grid-cols-4 gap-1">
+                            <div><label class="text-[9px] text-gray-400">السعرات</label><input type="number" onchange="currentAdminMeals[idx].cal=this.value" value="${m.cal||0}" class="w-full bg-card p-1 text-center rounded text-white"></div>
+                            <div><label class="text-[9px] text-gray-400">بروتين</label><input type="number" onchange="currentAdminMeals[idx].pro=this.value" value="${m.pro||0}" class="w-full bg-card p-1 text-center rounded text-coach"></div>
+                            <div><label class="text-[9px] text-gray-400">كارب</label><input type="number" onchange="currentAdminMeals[idx].carb=this.value" value="${m.carb||0}" class="w-full bg-card p-1 text-center rounded text-blue-400"></div>
+                            <div><label class="text-[9px] text-gray-400">دهون</label><input type="number" onchange="currentAdminMeals[idx].fat=this.value" value="${m.fat||0}" class="w-full bg-card p-1 text-center rounded text-yellow-400"></div>
+                        </div>
+
+                        <div class="border-t border-apple-border pt-2">
+                            <span class="text-[10px] text-coach font-bold block mb-1">المكونات (مكون مكون مع مقداره):</span>
+                            ${ingredientsHtml}
+                            <button onclick="window.addIng(${idx})" class="text-[10px] bg-card text-coach border border-apple-border px-2 py-1 rounded mt-1">+ إضافة مكون</button>
+                        </div>
+
+                        <input type="text" onchange="currentAdminMeals[idx].image=this.value" value="${m.image||''}" class="w-full bg-card p-2 rounded text-coach" placeholder="رابط صورة الوجبة">
+                        <textarea onchange="currentAdminMeals[idx].recipe=this.value" rows="2" class="w-full bg-card p-2 rounded text-gray-300" placeholder="طريقة التحضير ووصف الوصفة...">${m.recipe||''}</textarea>
+                        <input type="text" onchange="currentAdminMeals[idx].media=this.value" value="${m.media||''}" class="w-full bg-card p-2 rounded text-coach" placeholder="رابط فيديو يوتيوب أو شرح التحضير">
                     </div>`;
             });
         }
         window.remMeal = (idx) => { currentAdminMeals.splice(idx, 1); renderAdminMeals(); };
+        window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
+        window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
         document.getElementById('adminSavePlanBtn').onclick = async () => {
-            await update(ref(db, `users/${currentAdminViewUid}/plan`), { exercises: currentAdminExercises, meals: currentAdminMeals });
-            showMsg("تم نشر البرنامج بنجاح!", false);
+            const targets = {
+                cal: parseInt(document.getElementById('targetCalInput').value) || 2000,
+                pro: parseInt(document.getElementById('targetProInput').value) || 150,
+                carb: parseInt(document.getElementById('targetCarbInput').value) || 200,
+                fat: parseInt(document.getElementById('targetFatInput').value) || 60
+            };
+            await update(ref(db, `users/${currentAdminViewUid}`), { 
+                targets: targets,
+                'plan/exercises': currentAdminExercises, 
+                'plan/meals': currentAdminMeals 
+            });
+            showMsg("تم حفظ النشر والماكروز للمتدربة بنجاح!", false);
         };
 
-        // ================= CHAT SYSTEM FIXED =================
+        // ================= CHAT SYSTEM =================
         function formatChatMsg(m, isAdminContext) {
             const isMe = isAdminContext ? (m.sender === 'admin') : (m.sender === 'user');
             const css = isMe ? 'msg-me' : 'msg-other';

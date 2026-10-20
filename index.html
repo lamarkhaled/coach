@@ -4,537 +4,458 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>كوتش صحة</title>
-    <!-- خطوط جوجل العصرية للغة العربية -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         :root {
-            /* وضع ليلي فخم جداً (رياضي/احترافي) */
-            --bg-color: #0A0C10;
-            --card-color: #13161C;
-            --input-color: #1A1F26;
-            --border-color: #262D36;
-            --text-color: #FFFFFF;
-            --text-muted: #8B949E;
-            --coach-green: #C6F432; /* نيون رياضي فخم */
-            --coach-text: #000000;
-            --coach-green-dim: rgba(198, 244, 50, 0.15);
-            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            /* وضع ليلي واضح وعالي التباين */
+            --bg-main: #000000;
+            --bg-card: #141416;
+            --bg-input: #1C1C1E;
+            --border-color: #2C2C2E;
+            --txt-main: #FFFFFF;
+            --txt-muted: #9CA3AF; 
+            --accent: #C6F432; /* ليموني رياضي واضح */
+            --accent-text: #000000;
         }
         html.light {
-            /* وضع فاتح نقي وعصري */
-            --bg-color: #F8FAFC;
-            --card-color: #FFFFFF;
-            --input-color: #F1F5F9;
-            --border-color: #E2E8F0;
-            --text-color: #0F172A;
-            --text-muted: #64748B;
-            --coach-green: #059669; /* زمردي صحي */
-            --coach-text: #FFFFFF;
-            --coach-green-dim: rgba(5, 150, 105, 0.15);
-            --card-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+            /* وضع فاتح نقي وعملي */
+            --bg-main: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --bg-input: #F9FAFB;
+            --border-color: #E5E7EB;
+            --txt-main: #111827;
+            --txt-muted: #6B7280;
+            --accent: #059669; /* أخضر زمردي غامق ليكون مقروءاً على الأبيض */
+            --accent-text: #FFFFFF;
         }
         
         body { 
             font-family: 'Alexandria', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
+            background-color: var(--bg-main); 
+            color: var(--txt-main); 
             -webkit-font-smoothing: antialiased; 
-            transition: background-color 0.4s ease, color 0.4s ease; 
         }
 
-        /* تأثيرات زجاجية عصرية (Glassmorphism) */
-        .ios-glass-top { 
-            background: rgba(var(--bg-color-rgb, 10, 12, 16), 0.7); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px); 
-            border-bottom: 1px solid var(--border-color); 
-        }
+        /* Classes مخصصة لضمان تغير الألوان صح مع الفاتح والليلي */
+        .text-primary { color: var(--txt-main) !important; }
+        .text-muted { color: var(--txt-muted) !important; }
+        .bg-card { background-color: var(--bg-card) !important; }
+        .bg-input { background-color: var(--bg-input) !important; }
+        .border-theme { border-color: var(--border-color) !important; }
+        .text-accent { color: var(--accent) !important; }
+        .bg-accent { background-color: var(--accent) !important; color: var(--accent-text) !important; }
         
-        .ios-glass-bottom {
-            background: rgba(var(--card-color-rgb, 19, 22, 28), 0.85); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px); 
-            border: 1px solid var(--border-color);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
-        }
-
         .hidden { display: none !important; }
-        
-        /* تصميم مخصص لشريط التمرير */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
         
         input, textarea, select { 
-            background-color: var(--input-color); 
+            background-color: var(--bg-input); 
             border: 1px solid var(--border-color); 
-            color: var(--text-color); 
+            color: var(--txt-main); 
             outline: none; 
-            transition: all 0.3s ease;
+            transition: border-color 0.2s;
         }
-        input:focus, textarea:focus { 
-            border-color: var(--coach-green); 
-            box-shadow: 0 0 0 3px var(--coach-green-dim);
+        input:focus, textarea:focus, select:focus { 
+            border-color: var(--accent); 
         }
-        
-        .bg-card { background-color: var(--card-color); box-shadow: var(--card-shadow); }
-        .bg-input { background-color: var(--input-color); }
-        .border-card { border-color: var(--border-color); }
-        .text-coach { color: var(--coach-green); }
-        .bg-coach { background-color: var(--coach-green); color: var(--coach-text); }
-        
-        .rounded-ios { border-radius: 20px; }
-        .rounded-ios-lg { border-radius: 28px; }
-        
-        /* تأثيرات الأزرار */
-        .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-hover:active { transform: scale(0.96); }
-        .shadow-glow { box-shadow: 0 8px 24px var(--coach-green-dim); }
 
-        /* Chat Styles */
-        .chat-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
-        .chat-bubble { max-width: 85%; padding: 14px 18px; border-radius: 22px; font-size: 13px; line-height: 1.6; word-wrap: break-word; font-weight: 500; }
-        .msg-me { background: var(--coach-green); color: var(--coach-text); align-self: flex-start; border-bottom-right-radius: 6px; box-shadow: 0 4px 15px var(--coach-green-dim); }
-        .msg-other { background: var(--input-color); color: var(--text-color); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .chat-img { border-radius: 14px; max-width: 100%; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .rounded-ios { border-radius: 16px; }
+        .rounded-ios-lg { border-radius: 20px; }
 
-        /* Course Set Buttons */
-        .set-pill { width: 54px; height: 54px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; border: 2px solid var(--border-color); background: var(--input-color); color: var(--text-color); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
-        .set-pill.done { border-color: var(--coach-green); background: var(--coach-green); color: var(--coach-text); box-shadow: 0 4px 15px var(--coach-green-dim); transform: scale(1.05); }
+        /* Chat Styles المحدثة */
+        .chat-container { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+        .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; font-weight: 500; word-wrap: break-word; }
+        .msg-me { background: var(--accent); color: var(--accent-text); align-self: flex-start; border-bottom-right-radius: 4px; }
+        .msg-other { background: var(--bg-input); color: var(--txt-main); border: 1px solid var(--border-color); align-self: flex-end; border-bottom-left-radius: 4px; }
+        .chat-img { border-radius: 12px; max-width: 100%; margin-top: 8px; border: 1px solid var(--border-color); }
+
+        /* أزرار جولات التمارين */
+        .set-pill { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; border: 2px solid var(--border-color); background: var(--bg-input); color: var(--txt-main); cursor: pointer; transition: all 0.2s; }
+        .set-pill.done { border-color: var(--accent); background: var(--accent); color: var(--accent-text); }
         
-        .nav-btn { color: var(--text-muted); transition: all 0.3s ease; }
-        .nav-btn.active { color: var(--coach-green); transform: translateY(-2px); }
-        .nav-btn.active span:last-child { color: var(--text-color); }
-
-        /* حركات الظهور */
-        .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-btn { color: var(--txt-muted); transition: color 0.2s; }
+        .nav-btn.active { color: var(--accent); }
+        .nav-btn.active span:last-child { color: var(--txt-main); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col relative pb-32">
+<body class="min-h-screen flex flex-col relative pb-20">
 
     <!-- Top Header -->
-    <nav class="ios-glass-top sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3 cursor-pointer btn-hover" onclick="location.reload()">
-            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-9 w-auto object-contain drop-shadow-md">
+    <nav class="bg-card border-b border-theme sticky top-0 z-40 px-5 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-input border border-border-color px-4 py-2 rounded-full font-bold text-coach btn-hover shadow-sm">☀️ فاتح</button>
-            <span id="userEmailDisplay" class="text-xs font-semibold text-gray-400 hidden md:block"></span>
-            <button id="logoutBtn" class="hidden text-xs bg-red-500/10 text-red-500 px-4 py-2 rounded-full font-bold border border-red-500/20 btn-hover">تسجيل خروج</button>
+            <button onclick="toggleThemeMode()" id="themeToggleBtn" class="text-xs bg-input border border-theme px-3 py-1.5 rounded-lg font-bold text-accent">☀️ فاتح</button>
+            <span id="userEmailDisplay" class="text-xs font-bold text-muted hidden md:block"></span>
+            <button id="logoutBtn" class="hidden text-xs bg-red-500 text-white px-3 py-1.5 rounded-lg font-bold">خروج</button>
         </div>
     </nav>
 
-    <!-- Global Message Toast -->
-    <div id="globalMessage" class="hidden fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3.5 rounded-full text-xs font-bold text-center shadow-2xl transition-all duration-300 w-max max-w-[90%] backdrop-blur-md border"></div>
+    <!-- Global Message -->
+    <div id="globalMessage" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-bold text-center shadow-lg transition-all duration-300 w-max max-w-[90%] border"></div>
 
-    <main class="flex-grow flex flex-col items-center justify-start p-5 w-full max-w-3xl mx-auto">
+    <main class="flex-grow flex flex-col items-center justify-start p-4 w-full max-w-3xl mx-auto">
         
         <!-- ================= AUTH ================= -->
-        <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-12 fade-in-up">
-            <div class="relative">
-                <div class="absolute inset-0 bg-coach-green rounded-full blur-[80px] opacity-20"></div>
-                <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-64 mb-10 object-contain drop-shadow-2xl relative z-10">
-            </div>
-            <h1 class="text-4xl font-black mb-4 text-white tracking-tight">منصة كوتش صحة</h1>
-            <p class="text-gray-400 text-sm mb-14 max-w-xs leading-relaxed font-medium">تدريب شخصي وبرامج تفاعلية متكاملة لإنجاز أهدافك بأسلوب علمي.</p>
-            <div class="w-full max-w-xs space-y-4">
-                <button id="showLoginBtn" class="w-full bg-coach font-black py-4.5 rounded-ios text-base shadow-glow btn-hover">تسجيل الدخول</button>
-                <button id="showRegisterBtn" class="w-full bg-card border border-border-color text-white font-bold py-4.5 rounded-ios text-base btn-hover shadow-sm">حساب جديد</button>
+        <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-10">
+            <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-48 mb-8 object-contain">
+            <h1 class="text-3xl font-black mb-3 text-primary">منصة كوتش صحة</h1>
+            <p class="text-muted text-sm mb-10 max-w-xs leading-relaxed font-medium">برامج تدريبية وتغذية مخصصة ومتابعة مباشرة لبناء أهدافك.</p>
+            <div class="w-full max-w-sm space-y-3">
+                <button id="showLoginBtn" class="w-full bg-accent font-bold py-4 rounded-ios text-base">تسجيل الدخول</button>
+                <button id="showRegisterBtn" class="w-full bg-card border border-theme text-primary font-bold py-4 rounded-ios text-base">حساب جديد</button>
             </div>
         </div>
 
-        <div id="authSection" class="hidden w-full max-w-md bg-card rounded-ios-lg p-8 border border-card shadow-2xl mt-8 fade-in-up">
-            <button id="backToWelcomeBtn" class="text-gray-400 text-xs mb-8 font-bold flex items-center gap-2 btn-hover hover:text-white">❮ العودة</button>
-            <h1 id="authTitle" class="text-3xl font-black mb-2 text-white">تسجيل الدخول</h1>
-            <p class="text-gray-400 mb-8 text-sm font-medium">أدخلي بياناتك للمتابعة بأمان</p>
-            <div class="space-y-5">
-                <input type="email" id="emailInput" class="w-full px-5 py-4 rounded-ios text-sm font-medium" placeholder="البريد الإلكتروني">
-                <input type="password" id="passwordInput" class="w-full px-5 py-4 rounded-ios text-sm font-medium" placeholder="كلمة المرور">
-                <button id="mainAuthBtn" class="w-full bg-coach text-coach-text font-black py-4.5 rounded-ios text-base mt-4 shadow-glow btn-hover">متابعة ➔</button>
+        <div id="authSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-6 border border-theme shadow-sm mt-6">
+            <button id="backToWelcomeBtn" class="text-muted text-sm mb-6 font-bold flex items-center gap-1">❮ رجوع</button>
+            <h1 id="authTitle" class="text-2xl font-black mb-1 text-primary">تسجيل الدخول</h1>
+            <p class="text-muted mb-6 text-xs font-medium">أدخلي الإيميل وكلمة المرور للمتابعة</p>
+            <div class="space-y-4">
+                <input type="email" id="emailInput" class="w-full px-4 py-3.5 rounded-lg text-sm" placeholder="البريد الإلكتروني">
+                <input type="password" id="passwordInput" class="w-full px-4 py-3.5 rounded-lg text-sm" placeholder="كلمة المرور">
+                <button id="mainAuthBtn" class="w-full bg-accent font-bold py-4 rounded-lg text-sm mt-2">متابعة</button>
             </div>
         </div>
 
-        <div id="activationSection" class="hidden w-full max-w-md bg-card rounded-ios-lg p-8 text-center border border-card shadow-2xl mt-8 fade-in-up">
-            <div class="w-16 h-16 bg-coach/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span class="text-3xl">🔑</span>
-            </div>
-            <h2 class="text-2xl font-black mb-3 text-white">تفعيل الاشتراك</h2>
-            <p class="text-gray-400 text-sm mb-8 font-medium leading-relaxed">أدخلي كود الاشتراك الخاص بك لفتح المنصة والبدء في رحلتك.</p>
-            <div class="space-y-5">
-                <input type="text" id="activationCodeInput" class="w-full px-5 py-5 rounded-ios text-2xl text-center font-black tracking-widest text-coach uppercase bg-input border-2 border-border-color focus:border-coach" placeholder="الكود هنا">
-                <button id="activateSubscriptionBtn" class="w-full bg-coach text-coach-text font-black py-4.5 rounded-ios text-base shadow-glow btn-hover">تفعيل الاشتراك</button>
+        <div id="activationSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-6 text-center border border-theme shadow-sm mt-6">
+            <h2 class="text-xl font-black mb-2 text-primary">تفعيل الاشتراك 🔑</h2>
+            <p class="text-muted text-xs mb-6 font-medium">أدخلي كود الاشتراك لفتح المنصة.</p>
+            <div class="space-y-4">
+                <input type="text" id="activationCodeInput" class="w-full px-4 py-4 rounded-lg text-xl text-center font-bold tracking-widest text-accent uppercase" placeholder="الكود">
+                <button id="activateSubscriptionBtn" class="w-full bg-accent font-bold py-4 rounded-lg text-sm">تفعيل الكود</button>
             </div>
         </div>
 
-        <div id="onboardingSection" class="hidden w-full max-w-md bg-card rounded-ios-lg p-8 border border-card shadow-2xl mt-8 fade-in-up">
-            <h2 class="text-2xl font-black mb-3 text-center text-white">بياناتك الشخصية 👋</h2>
-            <p class="text-gray-400 text-sm mb-8 text-center font-medium">أخبريني عن هدفك لتخصيص خطتك تماماً.</p>
-            <div class="space-y-5">
-                <input type="text" id="qGoal" class="w-full px-5 py-4 rounded-ios text-sm font-medium" placeholder="ما هدفك الأساسي؟ (مثال: بناء عضلي)">
-                <div class="flex gap-4">
-                    <input type="number" id="qWeight" class="w-1/2 px-5 py-4 rounded-ios text-sm font-medium" placeholder="الوزن (كج)">
-                    <input type="number" id="qHeight" class="w-1/2 px-5 py-4 rounded-ios text-sm font-medium" placeholder="الطول (سم)">
+        <div id="onboardingSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-6 border border-theme shadow-sm mt-6">
+            <h2 class="text-xl font-black mb-2 text-center text-primary">بياناتك الشخصية 👋</h2>
+            <p class="text-muted text-xs mb-6 text-center font-medium">خطوة واحدة لبناء ملفك.</p>
+            <div class="space-y-4">
+                <input type="text" id="qGoal" class="w-full px-4 py-3.5 rounded-lg text-sm" placeholder="هدفك الأساسي (نزول دهون، بناء عضل)">
+                <div class="flex gap-3">
+                    <input type="number" id="qWeight" class="w-1/2 px-4 py-3.5 rounded-lg text-sm" placeholder="الوزن (كج)">
+                    <input type="number" id="qHeight" class="w-1/2 px-4 py-3.5 rounded-lg text-sm" placeholder="الطول (سم)">
                 </div>
-                <div class="bg-input p-4 rounded-ios border border-border-color">
-                    <label class="text-xs text-coach font-bold block mb-3">الهدف المطلوب والمدة</label>
-                    <div class="flex gap-3">
-                        <input type="number" id="qTargetKg" class="w-1/2 p-3 rounded-xl text-sm font-bold text-white bg-card border border-border-color focus:border-coach" placeholder="الهدف (كج)">
-                        <input type="number" id="qTargetDays" class="w-1/2 p-3 rounded-xl text-sm font-bold text-white bg-card border border-border-color focus:border-coach" placeholder="المدة (أيام)">
+                <div class="bg-input p-4 rounded-lg border border-theme">
+                    <label class="text-xs text-accent font-bold block mb-2">الهدف المطلوب</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="qTargetKg" class="w-1/2 p-3 rounded-md text-sm" placeholder="الوزن الهدف">
+                        <input type="number" id="qTargetDays" class="w-1/2 p-3 rounded-md text-sm" placeholder="المدة (أيام)">
                     </div>
                 </div>
-                <textarea id="qNotes" rows="3" class="w-full px-5 py-4 rounded-ios text-sm font-medium" placeholder="إصابات أو أمراض؟ (اختياري)"></textarea>
-                <button id="saveOnboardingBtn" class="w-full bg-coach text-coach-text font-black py-4.5 rounded-ios text-base mt-4 shadow-glow btn-hover">حفظ والبدء 🚀</button>
+                <textarea id="qNotes" rows="2" class="w-full px-4 py-3.5 rounded-lg text-sm" placeholder="ملاحظات صحية (اختياري)"></textarea>
+                <button id="saveOnboardingBtn" class="w-full bg-accent font-bold py-4 rounded-lg text-sm mt-2">حفظ والبدء</button>
             </div>
         </div>
 
         <!-- ================= USER DASHBOARD ================= -->
-        <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl pb-10 fade-in-up">
+        <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl">
             
             <!-- الخلاصة -->
-            <div id="tabHome" class="user-tab block w-full space-y-6">
-                <div class="flex justify-between items-end px-2">
-                    <div>
-                        <p class="text-coach font-bold text-sm mb-1">أهلاً بكِ في</p>
-                        <h1 class="text-3xl font-black text-white tracking-tight">الخلاصة</h1>
-                    </div>
-                </div>
+            <div id="tabHome" class="user-tab block w-full space-y-5">
+                <h1 class="text-2xl font-black px-1 text-primary">الخلاصة</h1>
                 
-                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-7 border border-card space-y-4">
+                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-5 border border-theme space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-base font-black text-white flex items-center gap-2">🎯 هدف التغيير</span>
-                        <span id="goalStatusBadge" class="text-xs bg-coach text-coach-text px-3 py-1.5 rounded-full font-bold shadow-sm">جاري العمل</span>
+                        <span class="text-sm font-bold text-primary">🎯 تقدم الهدف</span>
+                        <span id="goalStatusBadge" class="text-[11px] bg-accent px-2 py-1 rounded-md font-bold text-primary">نشط</span>
                     </div>
-                    <p id="goalDescriptionText" class="text-sm text-gray-400 font-medium leading-relaxed">لا يوجد هدف محدد حالياً.</p>
-                    <div class="w-full bg-input rounded-full h-3.5 shadow-inner overflow-hidden border border-border-color">
-                        <div id="goalTimelineBar" class="bg-coach h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(var(--coach-green-rgb),0.5)]" style="width: 0%;"></div>
+                    <p id="goalDescriptionText" class="text-xs text-muted font-medium">لا يوجد هدف محدد حالياً.</p>
+                    <div class="w-full bg-input rounded-full h-2.5 border border-theme">
+                        <div id="goalTimelineBar" class="bg-accent h-full rounded-full" style="width: 0%;"></div>
                     </div>
                 </div>
 
-                <div class="bg-card rounded-ios-lg p-7 border border-card space-y-5">
-                    <h2 class="text-base font-black text-white flex items-center gap-2"><span class="text-coach text-xl">💪</span> جسمي وسجل الأوزان</h2>
+                <div class="bg-card rounded-ios-lg p-5 border border-theme space-y-4">
+                    <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> القياسات وسجل الوزن</h2>
                     
-                    <div id="weightRoastBanner" class="hidden bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-sm text-red-500 font-bold flex items-start gap-3">
-                        <span class="text-xl">⚠️</span>
-                        <span>انتبهي! وزنك زاد عن القياس السابق! وين الالتزام؟ يلا شدّي حيلك ورجعي للمسار الصحيح! 💪</span>
+                    <div id="weightRoastBanner" class="hidden bg-red-500 text-white p-3 rounded-lg text-xs font-bold">
+                        ⚠️ وزنك زاد عن القياس السابق! شدي حيلك ورجعي للمسار.
                     </div>
 
-                    <div class="bg-input p-6 rounded-[24px] border border-border-color flex flex-col items-center justify-center text-center shadow-sm">
-                        <div id="bodyVisualAvatar" class="w-24 h-24 rounded-full bg-coach/10 border-4 border-coach flex items-center justify-center text-4xl mb-4 shadow-inner transition-all duration-500">🧍‍♀️</div>
-                        <span id="bodyVisualStatus" class="text-sm font-bold text-coach">أدخلي طولك ووزنك لعرض التحليل البصري</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-400 block mb-2">الطول الحالي (سم)</label>
-                            <input type="number" id="userHeightInput" class="w-full px-4 py-3.5 rounded-2xl text-sm font-bold bg-input" placeholder="165">
+                    <div class="flex gap-3">
+                        <div class="w-1/2">
+                            <label class="text-[11px] font-bold text-muted block mb-1">الطول (سم)</label>
+                            <input type="number" id="userHeightInput" class="w-full px-3 py-3 rounded-lg text-sm bg-input font-bold" placeholder="165">
                         </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-400 block mb-2">الوزن الحالي (كج)</label>
-                            <input type="number" id="userCurrentWeight" class="w-full px-4 py-3.5 rounded-2xl text-sm font-bold bg-input" placeholder="65">
+                        <div class="w-1/2">
+                            <label class="text-[11px] font-bold text-muted block mb-1">الوزن الحالي (كج)</label>
+                            <input type="number" id="userCurrentWeight" class="w-full px-3 py-3 rounded-lg text-sm bg-input font-bold" placeholder="65">
                         </div>
                     </div>
                     
-                    <div class="flex gap-3 pt-2">
-                        <button id="updateProgressBtn" class="flex-grow bg-coach text-coach-text font-black py-4 rounded-2xl text-sm shadow-glow btn-hover">حفظ القياس 📌</button>
-                        <button onclick="openWeightHistoryModal()" class="bg-card border-2 border-border-color text-coach font-bold px-5 py-4 rounded-2xl text-sm hover:border-coach btn-hover">📜 السجل</button>
+                    <div class="flex gap-2 pt-1">
+                        <button id="updateProgressBtn" class="flex-grow bg-accent font-bold py-3.5 rounded-lg text-xs">تسجيل قياس جديد</button>
+                        <button onclick="openWeightHistoryModal()" class="bg-card border border-theme text-primary font-bold px-4 py-3.5 rounded-lg text-xs">سجل الأوزان</button>
                     </div>
 
-                    <div id="bmiResultCard" class="hidden bg-input p-5 rounded-2xl border border-border-color space-y-2 mt-4 shadow-sm">
-                        <div class="flex justify-between items-center border-b border-border-color pb-2">
-                            <span class="text-gray-400 text-sm font-medium">مؤشر كتلة الجسم (BMI):</span>
-                            <span id="bmiValueText" class="font-black text-coach text-lg">--</span>
+                    <div id="bmiResultCard" class="hidden bg-input p-4 rounded-lg border border-theme space-y-2 mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-muted text-xs font-bold">مؤشر الكتلة (BMI):</span>
+                            <span id="bmiValueText" class="font-black text-accent text-base">--</span>
                         </div>
-                        <div class="flex justify-between items-center pt-1">
-                            <span class="text-gray-400 text-sm font-medium">حالة الجسم:</span>
-                            <span id="bmiStatusText" class="font-bold text-white text-sm">--</span>
+                        <div class="flex justify-between items-center border-t border-theme pt-2">
+                            <span class="text-muted text-xs font-bold">حالة الجسم:</span>
+                            <span id="bmiStatusText" class="font-bold text-primary text-xs">--</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-card rounded-ios-lg p-7 border border-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-base font-black text-white flex items-center gap-2"><span class="text-coach text-xl">🏆</span> لوحة الصدارة</h2>
-                        <span class="text-[10px] bg-input text-gray-400 px-2 py-1 rounded-md border border-border-color">تحديث يومي</span>
-                    </div>
-                    <p class="text-xs text-gray-400 mb-5 font-medium leading-relaxed">الالتزام بالجدول والتمارين يرفع نقاطك. كوني في القمة!</p>
-                    <div id="leaderboardContainer" class="space-y-3"></div>
+                <div class="bg-card rounded-ios-lg p-5 border border-theme">
+                    <h2 class="text-sm font-bold text-primary mb-3">🏆 لوحة الصدارة</h2>
+                    <div id="leaderboardContainer" class="space-y-2"></div>
                 </div>
 
-                <div id="workoutReminderBanner" class="hidden bg-coach/10 border border-coach/30 p-5 rounded-ios-lg text-sm text-coach font-bold flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-                    <span class="flex items-center gap-2">🔥 <span>تنبيه: باقي لك تمارين اليوم لم تنهها بعد!</span></span>
-                    <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-coach text-coach-text px-5 py-2.5 rounded-xl text-xs font-black shadow-glow btn-hover w-full sm:w-auto">أكملي الآن</button>
+                <div id="workoutReminderBanner" class="hidden bg-accent text-black p-4 rounded-lg text-xs font-bold flex justify-between items-center">
+                    <span>🔥 لديك تمارين لم تنجزيها اليوم!</span>
+                    <button onclick="switchTab('tabPlan'); switchPlanSubTab('workouts');" class="bg-black text-white px-3 py-1.5 rounded-md">الذهاب للتمرين</button>
                 </div>
 
-                <div class="bg-card rounded-ios-lg p-7 border border-card flex flex-col justify-center">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-bold text-gray-400">حالة الاشتراك الحالي</span>
-                        <span id="daysRemainingText" class="font-black text-xs bg-coach text-coach-text px-4 py-1.5 rounded-full shadow-sm">--</span>
+                <div class="bg-card rounded-ios-lg p-5 border border-theme">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-muted">حالة الاشتراك</span>
+                        <span id="daysRemainingText" class="font-bold text-xs bg-input text-primary border border-theme px-3 py-1 rounded-md">--</span>
                     </div>
                     <div class="w-full bg-input rounded-full h-2">
-                        <div id="timelineBar" class="bg-coach h-full rounded-full transition-all duration-1000" style="width: 0%;"></div>
+                        <div id="timelineBar" class="bg-accent h-full rounded-full" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- نافذة سجل الأوزان التاريخية -->
-            <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex flex-col p-5 overflow-y-auto fade-in-up">
-                <div class="max-w-md mx-auto w-full bg-card rounded-[32px] p-7 border border-border-color my-auto space-y-5 shadow-2xl">
-                    <div class="flex justify-between items-center border-b border-border-color pb-4">
-                        <h3 class="text-base font-black text-white flex items-center gap-2">📜 سجل القياسات</h3>
-                        <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="bg-input text-gray-400 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors">✕</button>
+            <!-- سجل الأوزان التاريخية -->
+            <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col p-4 justify-center">
+                <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-6 border border-theme space-y-4 shadow-lg">
+                    <div class="flex justify-between items-center border-b border-theme pb-3">
+                        <h3 class="text-base font-bold text-primary">سجل القياسات</h3>
+                        <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="text-muted font-bold px-2">✕</button>
                     </div>
-                    <div id="modalWeightHistoryList" class="space-y-3 max-h-[50vh] overflow-y-auto pr-2"></div>
-                    <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="w-full bg-coach text-coach-text font-black py-4 rounded-2xl text-sm shadow-glow btn-hover mt-2">إغلاق السجل</button>
+                    <div id="modalWeightHistoryList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                    <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="w-full bg-input border border-theme text-primary font-bold py-3 rounded-lg text-sm">إغلاق</button>
                 </div>
             </div>
 
             <!-- البرنامج -->
-            <div id="tabPlan" class="user-tab hidden w-full space-y-6">
-                <div class="flex justify-between items-end px-2">
-                    <div>
-                        <p class="text-coach font-bold text-sm mb-1">جدولك المخصص</p>
-                        <h1 class="text-3xl font-black text-white tracking-tight">برنامج اليوم</h1>
-                    </div>
-                </div>
+            <div id="tabPlan" class="user-tab hidden w-full space-y-5">
+                <h1 class="text-2xl font-black px-1 text-primary">برنامج اليوم</h1>
                 
-                <div class="flex bg-input p-1.5 rounded-[20px] border border-border-color shadow-sm">
-                    <button onclick="switchPlanSubTab('nutrition')" id="btnSubNut" class="flex-1 bg-coach text-coach-text font-black py-3.5 rounded-[16px] text-sm shadow-glow btn-hover transition-all">🍎 التغذية</button>
-                    <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 text-gray-400 font-bold py-3.5 rounded-[16px] text-sm hover:text-white transition-all">🏋️‍♀️ التمارين</button>
+                <div class="flex gap-2">
+                    <button onclick="switchPlanSubTab('nutrition')" id="btnSubNut" class="flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent">🍎 التغذية</button>
+                    <button onclick="switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors">🏋️‍♀️ التمارين</button>
                 </div>
 
-                <div id="subTabNutrition" class="plan-sub-tab block space-y-6">
-                    <div class="bg-card rounded-ios-lg p-6 border border-card space-y-5">
-                        <div class="flex justify-between items-center border-b border-border-color pb-4">
-                            <h3 class="text-base font-black text-white">📊 ملخص الماكروز</h3>
-                            <span id="macroWarningBadge" class="hidden text-[10px] bg-red-500/20 border border-red-500 text-red-500 px-3 py-1.5 rounded-full font-bold animate-pulse">⚠️ تجاوزت السعرات!</span>
+                <div id="subTabNutrition" class="plan-sub-tab block space-y-5">
+                    <div class="bg-card rounded-ios-lg p-5 border border-theme space-y-4">
+                        <div class="flex justify-between items-center border-b border-theme pb-3">
+                            <h3 class="text-sm font-bold text-primary">ملخص الماكروز (الاحتياج)</h3>
+                            <span id="macroWarningBadge" class="hidden text-[10px] bg-red-500 text-white px-2 py-1 rounded-md font-bold">⚠️ تجاوز</span>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                            <div class="bg-input p-4 rounded-2xl border border-border-color flex flex-col justify-center">
-                                <span class="text-[11px] text-gray-400 font-bold mb-1">السعرات</span>
-                                <span id="macroCalVal" class="text-xl font-black text-white mb-0.5">0</span>
-                                <span class="text-[10px] text-gray-500 font-medium">الهدف <span id="targetCalVal">2000</span></span>
+                        <div class="grid grid-cols-4 gap-2 text-center">
+                            <div class="bg-input p-2.5 rounded-lg border border-theme">
+                                <span class="text-[10px] text-muted font-bold block mb-1">سعرات</span>
+                                <span id="macroCalVal" class="text-sm font-black text-primary block">0</span>
+                                <span class="text-[9px] text-muted">من <span id="targetCalVal">2000</span></span>
                             </div>
-                            <div class="bg-input p-4 rounded-2xl border border-border-color flex flex-col justify-center relative overflow-hidden">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-coach opacity-50"></div>
-                                <span class="text-[11px] text-gray-400 font-bold mb-1">بروتين</span>
-                                <span id="macroProVal" class="text-xl font-black text-coach mb-0.5">0g</span>
-                                <span class="text-[10px] text-gray-500 font-medium">الهدف <span id="targetProVal">150g</span></span>
+                            <div class="bg-input p-2.5 rounded-lg border border-theme">
+                                <span class="text-[10px] text-muted font-bold block mb-1">بروتين</span>
+                                <span id="macroProVal" class="text-sm font-black text-accent block">0g</span>
+                                <span class="text-[9px] text-muted">من <span id="targetProVal">150g</span></span>
                             </div>
-                            <div class="bg-input p-4 rounded-2xl border border-border-color flex flex-col justify-center relative overflow-hidden">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 opacity-50"></div>
-                                <span class="text-[11px] text-gray-400 font-bold mb-1">كارب</span>
-                                <span id="macroCarbVal" class="text-xl font-black text-blue-400 mb-0.5">0g</span>
-                                <span class="text-[10px] text-gray-500 font-medium">الهدف <span id="targetCarbVal">200g</span></span>
+                            <div class="bg-input p-2.5 rounded-lg border border-theme">
+                                <span class="text-[10px] text-muted font-bold block mb-1">كارب</span>
+                                <span id="macroCarbVal" class="text-sm font-black text-blue-500 block">0g</span>
+                                <span class="text-[9px] text-muted">من <span id="targetCarbVal">200g</span></span>
                             </div>
-                            <div class="bg-input p-4 rounded-2xl border border-border-color flex flex-col justify-center relative overflow-hidden">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-yellow-400 opacity-50"></div>
-                                <span class="text-[11px] text-gray-400 font-bold mb-1">دهون</span>
-                                <span id="macroFatVal" class="text-xl font-black text-yellow-400 mb-0.5">0g</span>
-                                <span class="text-[10px] text-gray-500 font-medium">الهدف <span id="targetFatVal">60g</span></span>
+                            <div class="bg-input p-2.5 rounded-lg border border-theme">
+                                <span class="text-[10px] text-muted font-bold block mb-1">دهون</span>
+                                <span id="macroFatVal" class="text-sm font-black text-yellow-500 block">0g</span>
+                                <span class="text-[9px] text-muted">من <span id="targetFatVal">60g</span></span>
                             </div>
                         </div>
-                        <button onclick="openSwapModal()" class="w-full bg-input border border-border-color text-coach font-bold text-xs py-4 rounded-2xl hover:border-coach btn-hover transition-colors flex justify-center items-center gap-2">
-                            <span>🔄</span> استبدلتِ وجبة بأخرى خارجية؟ أدخليها هنا
+                        <button onclick="openSwapModal()" class="w-full bg-input border border-theme text-primary font-bold text-xs py-3 rounded-lg mt-2">
+                            🔄 تسجيل وجبة خارجية بديلة
                         </button>
                     </div>
-                    <div id="userNutritionCourse" class="space-y-5"></div>
+                    <div id="userNutritionCourse" class="space-y-4"></div>
                 </div>
 
-                <div id="subTabWorkouts" class="plan-sub-tab hidden bg-card rounded-ios-lg p-6 border border-card min-h-[400px] flex flex-col justify-center">
+                <div id="subTabWorkouts" class="plan-sub-tab hidden bg-card rounded-ios-lg p-5 border border-theme min-h-[300px] flex flex-col justify-center">
                     <div id="userWorkoutCourseSummary"></div>
                 </div>
             </div>
 
             <!-- مشغل التمارين التفاعلي -->
-            <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-bg-color/95 backdrop-blur-xl flex flex-col p-6 overflow-y-auto fade-in-up">
-                <div class="flex justify-between items-center mb-8 max-w-md mx-auto w-full pt-4 border-b border-border-color pb-4">
-                    <button onclick="saveAndExitCoursePlayer()" class="text-gray-400 hover:text-white text-xs font-bold bg-input px-4 py-2.5 rounded-full border border-border-color transition-colors">💾 حفظ ومتابعة لاحقاً</button>
-                    <div class="flex items-center gap-3">
-                        <span id="workoutTimerDisplay" class="text-xs font-black text-coach bg-coach/10 px-4 py-2 rounded-xl border border-coach/30 shadow-sm">⏱️ 00:00</span>
-                    </div>
+            <div id="coursePlayerView" class="hidden fixed inset-0 z-50 bg-main flex flex-col p-5 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6 max-w-sm mx-auto w-full pt-2">
+                    <button onclick="saveAndExitCoursePlayer()" class="text-primary text-xs font-bold bg-input px-4 py-2 rounded-lg border border-theme">💾 حفظ وخروج</button>
+                    <span id="workoutTimerDisplay" class="text-xs font-bold text-accent bg-card px-3 py-1.5 rounded-md border border-theme">00:00</span>
                 </div>
-                <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full text-center pb-10"></div>
+                <div id="playerContentArea" class="flex-grow flex flex-col justify-center max-w-sm mx-auto w-full text-center pb-10"></div>
             </div>
 
             <!-- تفاصيل الوجبة -->
-            <div id="mealDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex flex-col p-5 overflow-y-auto fade-in-up">
-                <div class="max-w-md mx-auto w-full bg-card rounded-[32px] p-7 border border-border-color my-auto space-y-5 shadow-2xl">
-                    <div class="flex justify-between items-center border-b border-border-color pb-4">
-                        <h3 id="modalMealTitle" class="text-lg font-black text-white">تفاصيل الوجبة</h3>
-                        <button onclick="document.getElementById('mealDetailModal').classList.add('hidden')" class="bg-input text-gray-400 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors">✕</button>
+            <div id="mealDetailModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col p-4 justify-center">
+                <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-6 border border-theme space-y-4">
+                    <div class="flex justify-between items-center border-b border-theme pb-3">
+                        <h3 id="modalMealTitle" class="text-base font-bold text-primary">التفاصيل</h3>
+                        <button onclick="document.getElementById('mealDetailModal').classList.add('hidden')" class="text-muted font-bold px-2">✕</button>
                     </div>
-                    <div id="modalMealBody" class="space-y-5 text-sm"></div>
+                    <div id="modalMealBody" class="space-y-4 text-sm text-primary"></div>
                 </div>
             </div>
 
             <!-- استبدال الوجبة -->
-            <div id="mealSwapModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex flex-col p-5 overflow-y-auto fade-in-up">
-                <div class="max-w-md mx-auto w-full bg-card rounded-[32px] p-7 border border-border-color my-auto space-y-5 text-sm shadow-2xl">
-                    <div class="flex justify-between items-center border-b border-border-color pb-4">
-                        <h3 class="text-base font-black text-white">تسجيل وجبة بديلة</h3>
-                        <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="bg-input text-gray-400 hover:text-white w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors">✕</button>
+            <div id="mealSwapModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col p-4 justify-center">
+                <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-6 border border-theme space-y-4 text-sm">
+                    <div class="flex justify-between items-center border-b border-theme pb-3">
+                        <h3 class="text-base font-bold text-primary">تسجيل وجبة بديلة</h3>
+                        <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="text-muted font-bold px-2">✕</button>
                     </div>
-                    <p class="text-gray-400 text-xs font-medium">أدخلي القيم الغذائية للوجبة ليتم خصمها من احتياجك اليومي:</p>
-                    <input type="text" id="swapMealName" class="w-full px-4 py-3.5 bg-input border border-border-color rounded-2xl text-sm font-bold text-white focus:border-coach" placeholder="اسم الوجبة (مثال: شاورما)">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-input p-3 rounded-2xl border border-border-color"><label class="text-[10px] text-gray-400 font-bold block mb-1">السعرات</label><input type="number" id="swapCal" class="w-full bg-transparent text-lg font-black text-white outline-none" value="500"></div>
-                        <div class="bg-input p-3 rounded-2xl border border-border-color"><label class="text-[10px] text-gray-400 font-bold block mb-1">بروتين</label><input type="number" id="swapPro" class="w-full bg-transparent text-lg font-black text-coach outline-none" value="30"></div>
-                        <div class="bg-input p-3 rounded-2xl border border-border-color"><label class="text-[10px] text-gray-400 font-bold block mb-1">كارب</label><input type="number" id="swapCarb" class="w-full bg-transparent text-lg font-black text-blue-400 outline-none" value="50"></div>
-                        <div class="bg-input p-3 rounded-2xl border border-border-color"><label class="text-[10px] text-gray-400 font-bold block mb-1">دهون</label><input type="number" id="swapFat" class="w-full bg-transparent text-lg font-black text-yellow-400 outline-none" value="15"></div>
+                    <input type="text" id="swapMealName" class="w-full px-3 py-3 bg-input border border-theme rounded-lg text-sm text-primary" placeholder="اسم الوجبة">
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">سعرات</label><input type="number" id="swapCal" class="w-full p-2 bg-input border border-theme rounded text-primary text-center font-bold" value="500"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">بروتين</label><input type="number" id="swapPro" class="w-full p-2 bg-input border border-theme rounded text-accent text-center font-bold" value="30"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">كارب</label><input type="number" id="swapCarb" class="w-full p-2 bg-input border border-theme rounded text-blue-500 text-center font-bold" value="50"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">دهون</label><input type="number" id="swapFat" class="w-full p-2 bg-input border border-theme rounded text-yellow-500 text-center font-bold" value="15"></div>
                     </div>
-                    <button onclick="saveSwapMeal()" class="w-full bg-coach text-coach-text font-black py-4.5 rounded-2xl text-sm shadow-glow btn-hover mt-2">إضافة الوجبة لعجلة اليوم ✔️</button>
+                    <button onclick="saveSwapMeal()" class="w-full bg-accent font-bold py-3.5 rounded-lg text-sm mt-2">إضافة الوجبة</button>
                 </div>
             </div>
 
             <!-- الشات -->
-            <div id="tabChat" class="user-tab hidden w-full h-[70vh] flex flex-col bg-card rounded-[32px] overflow-hidden border border-card shadow-2xl fade-in-up">
-                <div class="bg-input/50 backdrop-blur-md px-6 py-5 border-b border-border-color flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <div class="w-12 h-12 rounded-full bg-coach flex items-center justify-center font-black text-coach-text text-lg shadow-glow">ص</div>
-                            <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-card rounded-full"></div>
-                        </div>
-                        <div>
-                            <h3 class="font-black text-sm text-white">كوتش صحة</h3>
-                            <p class="text-[11px] font-bold text-coach mt-0.5">متاح للرد الآن</p>
-                        </div>
+            <div id="tabChat" class="user-tab hidden w-full h-[65vh] flex flex-col bg-card rounded-ios-lg border border-theme overflow-hidden">
+                <div class="bg-input px-5 py-4 border-b border-theme flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center font-bold text-primary text-lg">ص</div>
+                    <div>
+                        <h3 class="font-bold text-sm text-primary">كوتش صحة</h3>
+                        <p class="text-[11px] font-bold text-accent">متاح للرد</p>
                     </div>
                 </div>
-                <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-bg-color/30"></div>
-                <div class="p-4 border-t border-border-color bg-card flex gap-3 items-center">
-                    <label class="cursor-pointer text-gray-400 hover:text-coach transition-colors bg-input w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
+                <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main"></div>
+                <div class="p-3 border-t border-theme bg-card flex gap-2 items-center">
+                    <label class="cursor-pointer text-muted bg-input p-2 rounded-lg border border-theme">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                         <input type="file" id="userChatFile" accept="image/*" class="hidden">
                     </label>
-                    <input type="text" id="userChatInput" class="flex-grow bg-input border border-border-color px-5 py-3.5 rounded-full text-sm font-medium text-white focus:border-coach" placeholder="اكتبي رسالتك هنا...">
-                    <button id="userSendChatBtn" class="bg-coach text-coach-text w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 shadow-glow btn-hover">
-                        <svg class="w-5 h-5 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                    </button>
+                    <input type="text" id="userChatInput" class="flex-grow bg-input border border-theme px-4 py-3 rounded-lg text-sm text-primary" placeholder="اكتبي رسالتك...">
+                    <button id="userSendChatBtn" class="bg-accent px-5 py-3 rounded-lg text-sm font-bold">إرسال</button>
                 </div>
             </div>
 
-            <!-- Bottom Navigation Bar (Floating Island) -->
-            <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm ios-glass-bottom flex justify-around items-center py-2 px-2 z-40 rounded-full">
-                <button onclick="switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1.5 py-2 px-5 rounded-2xl">
-                    <span class="text-xl">📊</span><span class="text-[10px] font-extrabold">الخلاصة</span>
+            <!-- الشريط السفلي الثابت -->
+            <div class="fixed bottom-0 left-0 w-full bg-card border-t border-theme flex justify-around items-center py-2 z-40 pb-safe">
+                <button onclick="switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1 py-1 px-4">
+                    <span class="text-lg">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
                 </button>
-                <button onclick="switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1.5 py-2 px-5 rounded-2xl">
-                    <span class="text-xl">📋</span><span class="text-[10px] font-extrabold">البرنامج</span>
+                <button onclick="switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1 py-1 px-4">
+                    <span class="text-lg">📋</span><span class="text-[11px] font-bold">البرنامج</span>
                 </button>
-                <button onclick="switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1.5 py-2 px-5 rounded-2xl">
-                    <span class="text-xl">💬</span><span class="text-[10px] font-extrabold">المحادثة</span>
+                <button onclick="switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1 py-1 px-4">
+                    <span class="text-lg">💬</span><span class="text-[11px] font-bold">المحادثة</span>
                 </button>
             </div>
         </div>
 
         <!-- ================= ADMIN DASHBOARD ================= -->
-        <div id="adminDashboard" class="hidden w-full max-w-5xl pb-16 fade-in-up">
+        <div id="adminDashboard" class="hidden w-full max-w-4xl pb-10">
             <div id="adminMainView">
-                <div class="flex justify-between items-end mb-8 border-b border-border-color pb-4">
-                    <div>
-                        <p class="text-coach font-bold text-sm mb-1">لوحة التحكم</p>
-                        <h1 class="text-3xl font-black text-white tracking-tight">الإدارة المركزية</h1>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-card rounded-[32px] p-7 border border-card shadow-lg h-fit">
-                        <h3 class="text-base font-black text-white mb-5 flex items-center gap-2"><span class="text-coach text-xl">🔑</span> إدارة التراخيص (الأكواد)</h3>
-                        <div class="space-y-4">
-                            <input type="text" id="adminNewCode" class="w-full px-5 py-4 bg-input border border-border-color rounded-2xl text-sm uppercase text-coach font-black tracking-widest focus:border-coach" placeholder="أدخلي الكود (مثال: LAMAR26)">
-                            <div class="grid grid-cols-3 gap-3">
-                                <div class="bg-input p-3 rounded-2xl border border-border-color text-center"><label class="text-[10px] text-gray-400 font-bold block mb-1">أيام</label><input type="number" id="codeDays" class="w-full bg-transparent text-lg font-black text-white outline-none text-center" value="30"></div>
-                                <div class="bg-input p-3 rounded-2xl border border-border-color text-center"><label class="text-[10px] text-gray-400 font-bold block mb-1">ساعات</label><input type="number" id="codeHours" class="w-full bg-transparent text-lg font-black text-white outline-none text-center" value="0"></div>
-                                <div class="bg-input p-3 rounded-2xl border border-border-color text-center"><label class="text-[10px] text-gray-400 font-bold block mb-1">دقائق</label><input type="number" id="codeMins" class="w-full bg-transparent text-lg font-black text-white outline-none text-center" value="0"></div>
+                <h1 class="text-2xl font-black mb-6 text-primary">لوحة الإدارة المركزية</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    <div class="bg-card rounded-ios-lg p-6 border border-theme">
+                        <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">🔑</span> إدارة الأكواد</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="adminNewCode" class="w-full px-4 py-3 bg-input border border-theme rounded-lg text-sm uppercase text-accent font-bold" placeholder="أدخلي الكود">
+                            <div class="grid grid-cols-3 gap-2">
+                                <div><label class="text-[11px] text-muted font-bold block mb-1">أيام</label><input type="number" id="codeDays" class="w-full p-2 bg-input border border-theme rounded-md text-center text-primary text-sm font-bold" value="30"></div>
+                                <div><label class="text-[11px] text-muted font-bold block mb-1">ساعات</label><input type="number" id="codeHours" class="w-full p-2 bg-input border border-theme rounded-md text-center text-primary text-sm font-bold" value="0"></div>
+                                <div><label class="text-[11px] text-muted font-bold block mb-1">دقائق</label><input type="number" id="codeMins" class="w-full p-2 bg-input border border-theme rounded-md text-center text-primary text-sm font-bold" value="0"></div>
                             </div>
-                            <button id="generateCodeBtn" class="w-full bg-coach text-coach-text font-black py-4.5 rounded-2xl text-sm mt-2 shadow-glow btn-hover flex justify-center items-center gap-2"><span class="text-lg">+</span> توليد وحفظ الكود</button>
+                            <button id="generateCodeBtn" class="w-full bg-accent font-bold py-3.5 rounded-lg text-sm mt-1">حفظ الكود</button>
                         </div>
-                        <div class="mt-8 border-t border-border-color pt-5">
-                            <h4 class="text-xs font-bold text-gray-400 mb-3">الأكواد المُصدرة مؤخراً:</h4>
-                            <div id="adminCodesList" class="space-y-2 max-h-56 overflow-y-auto pr-2"></div>
+                        <div class="mt-6 pt-4 border-t border-theme">
+                            <div id="adminCodesList" class="space-y-2 max-h-48 overflow-y-auto"></div>
                         </div>
                     </div>
 
-                    <div class="bg-card rounded-[32px] overflow-hidden border border-card flex flex-col h-[600px] shadow-lg">
-                        <div class="flex justify-between items-center p-6 border-b border-border-color bg-input/50 backdrop-blur-sm">
-                            <h3 class="text-base font-black text-white flex items-center gap-2"><span class="text-coach text-xl">👥</span> المتدربات المشتركات</h3>
-                            <button id="refreshUsersBtn" class="text-xs bg-card px-4 py-2 rounded-full text-coach font-bold border border-border-color btn-hover hover:border-coach">تحديث القائمة 🔄</button>
+                    <div class="bg-card rounded-ios-lg overflow-hidden border border-theme flex flex-col h-[500px]">
+                        <div class="flex justify-between items-center p-4 border-b border-theme bg-input">
+                            <h3 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">👥</span> المتدربات</h3>
+                            <button id="refreshUsersBtn" class="text-xs bg-card px-3 py-1.5 rounded-md border border-theme font-bold text-primary">تحديث</button>
                         </div>
-                        <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow p-3"></div>
+                        <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow p-2"></div>
                     </div>
                 </div>
             </div>
 
             <!-- ملف المتدربة المفصل للأدمن -->
-            <div id="adminUserDetailView" class="hidden flex flex-col gap-6 fade-in-up">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-card p-6 rounded-[32px] border border-card shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <button id="backToAdminMainBtn" class="bg-input w-12 h-12 rounded-full flex items-center justify-center border border-border-color hover:border-coach btn-hover text-gray-300">❮</button>
-                        <div>
-                            <h2 class="text-lg font-black text-white" id="detailUserEmail">user@mail.com</h2>
-                            <span class="text-xs text-coach font-bold bg-coach/10 px-2.5 py-1 rounded-md border border-coach/20 inline-block mt-1.5">لوحة تحكم المتدربة</span>
-                        </div>
+            <div id="adminUserDetailView" class="hidden flex flex-col gap-5">
+                <div class="flex justify-between items-center bg-card p-5 rounded-ios-lg border border-theme">
+                    <button id="backToAdminMainBtn" class="bg-input border border-theme text-primary text-sm font-bold px-4 py-2 rounded-lg">❮ رجوع</button>
+                    <div class="text-left">
+                        <h2 class="text-base font-black text-primary" id="detailUserEmail">user@mail.com</h2>
+                        <span class="text-[11px] text-accent font-bold">تعديل خطة المتدربة</span>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-r from-coach to-[#84cc16] text-black p-5 rounded-[24px] shadow-glow flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-20 z-30">
+                <div class="bg-card p-4 rounded-ios-lg border border-theme flex justify-between items-center sticky top-16 z-30 shadow-md">
                     <div>
-                        <h4 class="font-black text-base">منصة النشر المباشر 🔥</h4>
-                        <p class="text-xs font-bold opacity-80 mt-1">أي تعديل تقومين به في الأقسام السفلية، يجب الضغط على "حفظ ونشر" ليظهر للمتدربة.</p>
+                        <h4 class="font-bold text-sm text-primary">تفعيل التعديلات</h4>
+                        <p class="text-[11px] text-muted">اضغطي حفظ بعد إنهاء أي تعديل تحت.</p>
                     </div>
-                    <button id="adminSaveAllBtn" class="bg-black text-white font-black px-8 py-4 rounded-2xl text-sm shadow-xl btn-hover w-full sm:w-auto">حفظ ونشر الكل ✔️</button>
+                    <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-3 rounded-lg text-sm">حفظ ونشر الكل ✔️</button>
                 </div>
 
-                <div class="flex flex-wrap sm:flex-nowrap gap-2 bg-input rounded-[24px] p-2 border border-border-color shadow-sm">
-                    <button onclick="switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 py-3.5 px-2 text-[11px] sm:text-xs font-bold rounded-xl bg-card text-white shadow-sm border border-border-color transition-all">1. الماكروز</button>
-                    <button onclick="switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 py-3.5 px-2 text-[11px] sm:text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all">2. الوجبات</button>
-                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 py-3.5 px-2 text-[11px] sm:text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all">3. التمارين</button>
-                    <button onclick="switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 py-3.5 px-2 text-[11px] sm:text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all">4. الشات</button>
+                <div class="flex bg-input rounded-lg p-1 border border-theme">
+                    <button onclick="switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 py-3 text-xs font-bold rounded-md bg-card text-primary shadow-sm border border-theme">1. الماكروز</button>
+                    <button onclick="switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent">2. الوجبات</button>
+                    <button onclick="switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent">3. التمارين</button>
+                    <button onclick="switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent">4. الشات</button>
                 </div>
 
-                <div id="adminTabMacros" class="admin-tab block bg-card p-7 rounded-[32px] border border-card shadow-lg space-y-5 fade-in-up">
-                    <h3 class="text-base font-black text-white border-b border-border-color pb-3">تحديد احتياج المتدربة اليومي</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div class="bg-input p-4 rounded-2xl border border-border-color text-center"><label class="text-[11px] text-gray-400 font-bold block mb-2">السعرات</label><input type="number" id="targetCalInput" class="w-full bg-transparent text-xl font-black text-white text-center outline-none border-b border-border-color focus:border-coach pb-1 transition-colors" value="2000"></div>
-                        <div class="bg-input p-4 rounded-2xl border border-border-color text-center"><label class="text-[11px] text-gray-400 font-bold block mb-2">البروتين (g)</label><input type="number" id="targetProInput" class="w-full bg-transparent text-xl font-black text-coach text-center outline-none border-b border-border-color focus:border-coach pb-1 transition-colors" value="150"></div>
-                        <div class="bg-input p-4 rounded-2xl border border-border-color text-center"><label class="text-[11px] text-gray-400 font-bold block mb-2">الكارب (g)</label><input type="number" id="targetCarbInput" class="w-full bg-transparent text-xl font-black text-blue-400 text-center outline-none border-b border-border-color focus:border-coach pb-1 transition-colors" value="200"></div>
-                        <div class="bg-input p-4 rounded-2xl border border-border-color text-center"><label class="text-[11px] text-gray-400 font-bold block mb-2">الدهون (g)</label><input type="number" id="targetFatInput" class="w-full bg-transparent text-xl font-black text-yellow-400 text-center outline-none border-b border-border-color focus:border-coach pb-1 transition-colors" value="60"></div>
+                <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-theme space-y-4">
+                    <h3 class="text-sm font-bold text-primary mb-2">أهداف السعرات اليومية</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">سعرات</label><input type="number" id="targetCalInput" class="w-full p-3 bg-input border border-theme rounded-lg text-primary font-bold text-center" value="2000"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">بروتين (g)</label><input type="number" id="targetProInput" class="w-full p-3 bg-input border border-theme rounded-lg text-accent font-bold text-center" value="150"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">كارب (g)</label><input type="number" id="targetCarbInput" class="w-full p-3 bg-input border border-theme rounded-lg text-blue-500 font-bold text-center" value="200"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-1">دهون (g)</label><input type="number" id="targetFatInput" class="w-full p-3 bg-input border border-theme rounded-lg text-yellow-500 font-bold text-center" value="60"></div>
                     </div>
                 </div>
 
-                <div id="adminTabMeals" class="admin-tab hidden bg-card p-7 rounded-[32px] border border-card shadow-lg space-y-5 fade-in-up">
-                    <div class="flex justify-between items-center border-b border-border-color pb-4">
-                        <label class="text-base font-black text-white">🍎 نظام التغذية</label>
-                        <button id="addMealBtn" class="text-xs bg-input border-2 border-border-color hover:border-coach text-coach font-bold px-5 py-2.5 rounded-xl btn-hover transition-colors">+ إضافة وجبة</button>
+                <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-bold text-primary">🍎 التغذية</label>
+                        <button id="addMealBtn" class="text-xs bg-input border border-theme text-primary font-bold px-4 py-2 rounded-lg">+ إضافة وجبة</button>
                     </div>
-                    <div id="adminMealsList" class="space-y-5"></div>
+                    <div id="adminMealsList" class="space-y-4"></div>
                 </div>
 
-                <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-7 rounded-[32px] border border-card shadow-lg space-y-5 fade-in-up">
-                    <div class="flex justify-between items-center border-b border-border-color pb-4">
-                        <label class="text-base font-black text-white">🏋️‍♀️ جدول التمارين</label>
-                        <button id="addExerciseBtn" class="text-xs bg-input border-2 border-border-color hover:border-coach text-coach font-bold px-5 py-2.5 rounded-xl btn-hover transition-colors">+ إضافة تمرين</button>
+                <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-bold text-primary">🏋️‍♀️ التمارين</label>
+                        <button id="addExerciseBtn" class="text-xs bg-input border border-theme text-primary font-bold px-4 py-2 rounded-lg">+ إضافة تمرين</button>
                     </div>
-                    <div id="adminExercisesList" class="space-y-4"></div>
+                    <div id="adminExercisesList" class="space-y-3"></div>
                 </div>
 
-                <div id="adminTabChat" class="admin-tab hidden bg-card rounded-[32px] border border-card h-[65vh] flex flex-col overflow-hidden shadow-lg fade-in-up">
-                    <div class="bg-input/50 backdrop-blur-md px-6 py-4 border-b border-border-color">
-                        <h3 class="font-black text-sm text-white">المحادثة المباشرة مع المتدربة</h3>
+                <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-theme h-[60vh] flex flex-col overflow-hidden">
+                    <div class="bg-input px-5 py-4 border-b border-theme">
+                        <h3 class="font-bold text-sm text-primary">شات المتدربة</h3>
                     </div>
-                    <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto bg-bg-color/30"></div>
-                    <div class="p-4 border-t border-border-color bg-card flex gap-3 items-center">
-                        <label class="cursor-pointer text-gray-400 hover:text-coach transition-colors bg-input w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto bg-main"></div>
+                    <div class="p-3 border-t border-theme bg-card flex gap-2 items-center">
+                        <label class="cursor-pointer text-muted bg-input p-2 rounded-lg border border-theme">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                             <input type="file" id="adminChatFile" accept="image/*" class="hidden">
                         </label>
-                        <input type="text" id="adminChatInput" class="flex-grow bg-input border border-border-color px-5 py-3.5 rounded-full text-sm font-medium text-white focus:border-coach" placeholder="اكتب رسالتك وتوجيهاتك...">
-                        <button id="adminSendChatBtn" class="bg-coach text-coach-text w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 shadow-glow btn-hover">
-                            <svg class="w-5 h-5 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                        </button>
+                        <input type="text" id="adminChatInput" class="flex-grow bg-input border border-theme px-4 py-3 rounded-lg text-sm text-primary" placeholder="رسالتك...">
+                        <button id="adminSendChatBtn" class="bg-accent px-5 py-3 rounded-lg text-sm font-bold">إرسال</button>
                     </div>
                 </div>
             </div>
@@ -542,7 +463,7 @@
 
     </main>
 
-    <!-- Firebase SDK Logic (Untouched Logic, Only CSS strings upgraded) -->
+    <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -592,11 +513,10 @@
             document.getElementById('logoutBtn').classList.toggle('hidden', sectionId === 'welcomeSection' || sectionId === 'authSection');
         };
         
-        // Updated styling strings inside JS
         window.showMsg = (text, isError=true) => {
             const m = document.getElementById('globalMessage');
             m.textContent = text;
-            m.className = `fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3.5 rounded-full text-xs font-black text-center shadow-2xl block w-max max-w-[90%] backdrop-blur-md border ${isError ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-coach text-coach-text border-coach/50 shadow-glow'}`;
+            m.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-bold text-center shadow-lg block w-max max-w-[90%] border ${isError ? 'bg-red-500 text-white border-red-600' : 'bg-card text-primary border-theme'}`;
             setTimeout(() => m.classList.add('hidden'), 4000);
         };
         
@@ -616,31 +536,23 @@
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
             
-            // Update Tab styles for Admin
             ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabChat'].forEach(id => {
                 const btn = document.getElementById(id);
-                if(btn) {
-                    btn.className = 'flex-1 py-3.5 px-2 text-[11px] sm:text-xs font-bold rounded-xl text-gray-400 hover:text-white transition-all';
-                }
+                if(btn) btn.className = 'flex-1 py-3 text-xs font-bold rounded-md text-muted border border-transparent';
             });
             
-            const activeMap = {
-                'adminTabMacros': 'btnAdmTabMacros',
-                'adminTabMeals': 'btnAdmTabMeals',
-                'adminTabWorkouts': 'btnAdmTabWorkouts',
-                'adminTabChat': 'btnAdmTabChat'
-            };
+            const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabChat': 'btnAdmTabChat' };
             if(activeMap[tabId]) {
-                document.getElementById(activeMap[tabId]).className = 'flex-1 py-3.5 px-2 text-[11px] sm:text-xs font-bold rounded-xl bg-card text-white shadow-sm border border-border-color transition-all';
+                document.getElementById(activeMap[tabId]).className = 'flex-1 py-3 text-xs font-bold rounded-md bg-card text-primary shadow-sm border border-theme';
             }
         };
         
         window.switchPlanSubTab = (sub) => {
             document.querySelectorAll('.plan-sub-tab').forEach(t => t.classList.add('hidden'));
             document.getElementById('subTab' + (sub === 'nutrition' ? 'Nutrition' : 'Workouts')).classList.remove('hidden');
-            // Upgraded dynamically injected classes
-            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'flex-1 bg-coach text-coach-text font-black py-3.5 rounded-[16px] text-sm shadow-glow btn-hover transition-all' : 'flex-1 text-gray-400 font-bold py-3.5 rounded-[16px] text-sm hover:text-white transition-all';
-            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'flex-1 bg-coach text-coach-text font-black py-3.5 rounded-[16px] text-sm shadow-glow btn-hover transition-all' : 'flex-1 text-gray-400 font-bold py-3.5 rounded-[16px] text-sm hover:text-white transition-all';
+            
+            document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent' : 'flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors';
+            document.getElementById('btnSubWork').className = sub === 'workouts' ? 'flex-1 bg-accent font-bold py-3 rounded-lg text-sm transition-colors border border-transparent' : 'flex-1 bg-card border border-theme text-primary font-bold py-3 rounded-lg text-sm transition-colors';
         };
 
         function getTodayStr() { return new Date().toISOString().split('T')[0]; }
@@ -683,7 +595,7 @@
                 else await signInWithEmailAndPassword(auth, email, pass);
             } catch(e) { 
                 showMsg(e.message); 
-                document.getElementById('mainAuthBtn').innerText = 'متابعة ➔';
+                document.getElementById('mainAuthBtn').innerText = 'متابعة';
             }
         };
 
@@ -773,7 +685,7 @@
         document.getElementById('updateProgressBtn').onclick = async () => {
             const newW = parseFloat(document.getElementById('userCurrentWeight').value);
             const newH = parseFloat(document.getElementById('userHeightInput').value) || activeUserData.profile?.height || 160;
-            if(isNaN(newW)) return showMsg("أدخلي الوزن الحالي بشكل صحيح");
+            if(isNaN(newW)) return showMsg("أدخلي الوزن بشكل صحيح");
 
             const uid = auth.currentUser.uid;
             const weightHistory = activeUserData.progress?.weightHistory || {};
@@ -796,17 +708,14 @@
             const heightM = newH / 100;
             const bmi = (newW / (heightM * heightM)).toFixed(1);
             let bmiStatus = "";
-            let avatarEmoji = "🧍‍♀️";
-            if (bmi < 18.5) { bmiStatus = "نحافة (تحتاجين لزيادة الوزن قليلاً)"; avatarEmoji = "🏃‍♀️"; }
-            else if (bmi >= 18.5 && bmi < 25) { bmiStatus = "وزن مثالي ورائع! 🌟"; avatarEmoji = "💃"; }
-            else if (bmi >= 25 && bmi < 30) { bmiStatus = "زيادة وزن (فوق المثالي)"; avatarEmoji = "👩‍🦰"; }
-            else { bmiStatus = "سمنة (تستدعي الالتزام بالخطة للنزول)"; avatarEmoji = "🧘‍♀️"; }
+            if (bmi < 18.5) { bmiStatus = "نحافة"; }
+            else if (bmi >= 18.5 && bmi < 25) { bmiStatus = "وزن مثالي"; }
+            else if (bmi >= 25 && bmi < 30) { bmiStatus = "زيادة وزن"; }
+            else { bmiStatus = "سمنة"; }
 
             document.getElementById('bmiResultCard').classList.remove('hidden');
             document.getElementById('bmiValueText').innerText = bmi;
             document.getElementById('bmiStatusText').innerText = bmiStatus;
-            document.getElementById('bodyVisualAvatar').innerText = avatarEmoji;
-            document.getElementById('bodyVisualStatus').innerText = `حالة الجسم الحالية: ${bmiStatus}`;
 
             await update(ref(db, `users/${uid}/progress`), activeUserData.progress);
             await update(ref(db, `users/${uid}/profile`), activeUserData.profile);
@@ -814,10 +723,10 @@
             const roastBanner = document.getElementById('weightRoastBanner');
             if(newW > lastWeight) {
                 roastBanner.classList.remove('hidden');
-                showMsg("وزنك زاد! شوفي التنبيه فوق 💪", true);
+                showMsg("الوزن زاد! انتبهي ⚠️", true);
             } else {
                 roastBanner.classList.add('hidden');
-                showMsg("ممتاز! تم تسجيل القياس وحفظه في السجل التاريخي 🌟", false);
+                showMsg("تم حفظ القياس بنجاح 🌟", false);
             }
             renderUserDashboard(activeUserData);
         };
@@ -827,13 +736,13 @@
             const history = activeUserData.progress?.weightHistory || {};
             listContainer.innerHTML = '';
             if(Object.keys(history).length === 0) {
-                listContainer.innerHTML = '<p class="text-sm text-gray-400 text-center py-6 font-medium">لا توجد قياسات مسجلة بعد.</p>';
+                listContainer.innerHTML = '<p class="text-sm text-muted text-center py-4">لا يوجد قياسات.</p>';
             } else {
                 Object.entries(history).reverse().forEach(([timeTag, weightVal]) => {
                     listContainer.innerHTML += `
-                        <div class="bg-input p-4 rounded-2xl border border-border-color flex justify-between items-center text-sm shadow-sm transition-transform hover:scale-[1.02]">
-                            <span class="text-gray-300 font-bold">📅 ${timeTag}</span>
-                            <span class="bg-coach text-coach-text font-black px-4 py-1.5 rounded-xl shadow-glow">${weightVal} كج</span>
+                        <div class="bg-input p-3 rounded-lg border border-theme flex justify-between items-center text-sm">
+                            <span class="text-primary font-bold">${timeTag}</span>
+                            <span class="bg-accent px-3 py-1 rounded-md font-bold">${weightVal} كج</span>
                         </div>
                     `;
                 });
@@ -845,16 +754,16 @@
             if(!url) return '';
             const lower = url.toLowerCase();
             if(lower.match(/\.(mp4|webm|mov)$/)) {
-                return `<video src="${url}" controls playsinline preload="metadata" class="w-full rounded-2xl my-4 border border-border-color shadow-lg max-h-72 object-cover bg-black"></video>`;
+                return `<video src="${url}" controls playsinline class="w-full rounded-lg my-3 border border-theme bg-black"></video>`;
             }
             if(lower.includes('youtube.com/watch?v=') || lower.includes('youtu.be/')) {
                 let vidId = lower.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1].split('&')[0];
-                return `<iframe src="https://www.youtube.com/embed/${vidId}?rel=0" class="w-full rounded-2xl my-4 h-64 border border-border-color shadow-lg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                return `<iframe src="https://www.youtube.com/embed/${vidId}?rel=0" class="w-full rounded-lg my-3 h-48 border border-theme" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             }
             if(lower.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
-                return `<img src="${url}" class="w-full rounded-2xl my-4 border border-border-color shadow-lg max-h-72 object-cover">`;
+                return `<img src="${url}" class="w-full rounded-lg my-3 border border-theme">`;
             }
-            return `<a href="${url}" target="_blank" class="block w-full bg-input text-coach text-center py-4 rounded-2xl text-sm font-bold my-4 border border-border-color hover:border-coach transition-colors">فتح الرابط المرفق 📎</a>`;
+            return `<a href="${url}" target="_blank" class="block w-full bg-input text-accent text-center py-3 rounded-lg text-sm font-bold my-3 border border-theme">فتح الرابط المرفق</a>`;
         }
 
         function renderUserDashboard(data) {
@@ -871,13 +780,10 @@
                 if(data.profile?.height) {
                     const hM = data.profile.height / 100;
                     const bmi = (data.progress.currentWeight / (hM * hM)).toFixed(1);
-                    let bmiStatus = bmi < 18.5 ? "نحافة" : bmi < 25 ? "وزن مثالي ورائع! 🌟" : bmi < 30 ? "زيادة وزن" : "سمنة";
-                    let avatarEmoji = bmi < 18.5 ? "🏃‍♀️" : bmi < 25 ? "💃" : bmi < 30 ? "👩‍🦰" : "🧘‍♀️";
+                    let bmiStatus = bmi < 18.5 ? "نحافة" : bmi < 25 ? "وزن مثالي" : bmi < 30 ? "زيادة وزن" : "سمنة";
                     document.getElementById('bmiResultCard').classList.remove('hidden');
                     document.getElementById('bmiValueText').innerText = bmi;
                     document.getElementById('bmiStatusText').innerText = bmiStatus;
-                    document.getElementById('bodyVisualAvatar').innerText = avatarEmoji;
-                    document.getElementById('bodyVisualStatus').innerText = `حالة الجسم الحالية: ${bmiStatus}`;
                 }
             }
 
@@ -912,14 +818,12 @@
             const bar = document.getElementById('goalTimelineBar');
 
             if(curW <= targetW && startW > targetW) {
-                badge.className = 'text-xs bg-coach text-coach-text px-3 py-1.5 rounded-full font-bold shadow-sm';
-                badge.innerText = 'أتممت الهدف! شطورة 🌟';
-                desc.innerText = `حققتِ الهدف بنجاح (${curW} كج)! أثبتي جدارتكِ كبطلة حقيقية.`;
+                badge.innerText = 'الهدف مكتمل ✔️';
+                desc.innerText = `تم تحقيق الهدف (${curW} كج)!`;
                 percent = 100;
             } else {
-                badge.className = 'text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1.5 rounded-full font-bold shadow-sm';
-                badge.innerText = 'الخط الزمني للهدف';
-                desc.innerText = `الهدف: الوصول إلى ${targetW} كج بحلول ${targetDate.toLocaleDateString('en-GB')}. وزنك الحالي: ${curW} كج.`;
+                badge.innerText = 'نشط';
+                desc.innerText = `الهدف: ${targetW} كج بحلول ${targetDate.toLocaleDateString('en-GB')}. الحالي: ${curW} كج.`;
             }
             setTimeout(() => bar.style.width = percent + '%', 100);
         }
@@ -927,7 +831,7 @@
         async function loadLeaderboard() {
             const container = document.getElementById('leaderboardContainer');
             const snap = await get(child(ref(db), 'users'));
-            if(!snap.exists()) { container.innerHTML = '<p class="text-sm font-medium text-gray-500">لا توجد منافسة نشطة بعد.</p>'; return; }
+            if(!snap.exists()) { container.innerHTML = '<p class="text-sm text-muted">لا توجد منافسة.</p>'; return; }
             
             let usersArr = [];
             snap.forEach(u => {
@@ -943,14 +847,13 @@
             usersArr.sort((a,b) => b.score - a.score);
             container.innerHTML = '';
             usersArr.slice(0, 5).forEach((usr, idx) => {
-                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-input px-4 py-3.5 rounded-2xl text-sm border border-border-color shadow-sm transition-transform hover:scale-[1.02]">
-                        <div class="flex items-center gap-3">
-                            <span class="font-black text-coach text-lg w-6 text-center">${medal}</span>
-                            <span class="font-bold text-white">${usr.email}</span>
+                    <div class="flex justify-between items-center bg-input px-3 py-2.5 rounded-lg text-sm border border-theme">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-accent">#${idx+1}</span>
+                            <span class="font-bold text-primary">${usr.email}</span>
                         </div>
-                        <span class="bg-card border border-border-color px-3 py-1.5 rounded-xl text-coach font-black shadow-inner">${usr.score} نقطة</span>
+                        <span class="bg-card border border-theme px-2 py-1 rounded text-primary text-xs font-bold">${usr.score} نقطة</span>
                     </div>
                 `;
             });
@@ -1012,7 +915,6 @@
             const warningBadge = document.getElementById('macroWarningBadge');
             if(totalCal > Number(userTargets.cal)) {
                 warningBadge.classList.remove('hidden');
-                warningBadge.innerText = `⚠️ تنبيه: تعديت السعرات (${totalCal} / ${userTargets.cal})!`;
             } else {
                 warningBadge.classList.add('hidden');
             }
@@ -1023,38 +925,38 @@
                     const isDone = doneMeals[idx];
                     let ingredientsHtml = '';
                     if(m.ingredients && m.ingredients.length > 0) {
-                        ingredientsHtml = `<div class="mt-3 space-y-1.5 text-[12px] opacity-90 bg-bg-color/50 p-4 rounded-xl border border-border-color">
-                            <strong class="text-coach block mb-2 text-xs">المكونات:</strong>
-                            ${m.ingredients.map(ing => `<div class="flex justify-between font-medium"><span>• ${ing.name}</span> <span class="opacity-75">${ing.amount}</span></div>`).join('')}
+                        ingredientsHtml = `<div class="mt-3 space-y-1 text-xs bg-input p-3 rounded-lg border border-theme">
+                            <strong class="text-primary block mb-1">المكونات:</strong>
+                            ${m.ingredients.map(ing => `<div class="flex justify-between text-muted"><span>• ${ing.name}</span> <span>${ing.amount}</span></div>`).join('')}
                         </div>`;
                     }
 
                     html += `
-                        <div class="bg-input p-6 rounded-[28px] border border-border-color space-y-4 shadow-sm transition-transform hover:-translate-y-1 duration-300">
-                            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div class="bg-card p-5 rounded-ios-lg border border-theme space-y-3">
+                            <div class="flex flex-col gap-3">
                                 <div>
-                                    <span class="text-[11px] bg-coach/10 text-coach px-2.5 py-1 rounded-md font-bold block mb-2 w-fit border border-coach/20">وجبة ${idx+1}</span>
-                                    <h3 class="font-black text-lg text-white leading-tight">${m.title}</h3>
+                                    <span class="text-[11px] text-accent font-bold block mb-1">وجبة ${idx+1}</span>
+                                    <h3 class="font-bold text-base text-primary">${m.title}</h3>
                                 </div>
-                                <button onclick="window.toggleMealDone(${idx})" class="px-5 py-2.5 rounded-xl text-sm font-black transition-all w-full sm:w-auto ${isDone ? 'bg-coach text-coach-text shadow-glow scale-105' : 'bg-card border-2 border-border-color hover:border-coach text-white'}">
-                                    ${isDone ? 'تم تناولها ✔️' : 'سجل تناولها'}
+                                <button onclick="window.toggleMealDone(${idx})" class="w-full py-2.5 rounded-lg text-sm font-bold border border-theme ${isDone ? 'bg-accent text-accent-text' : 'bg-input text-primary'}">
+                                    ${isDone ? 'تم تناولها ✔️' : 'تسجيل التناول'}
                                 </button>
                             </div>
                             ${ingredientsHtml}
-                            <div class="grid grid-cols-4 gap-2 text-[11px] font-bold bg-card p-3 rounded-xl border border-border-color text-center shadow-inner">
-                                <div class="flex flex-col"><strong class="text-base font-black text-white">${m.cal || 0}</strong> <span class="text-gray-400">سعرة</span></div>
-                                <div class="flex flex-col border-r border-border-color"><strong class="text-base font-black text-coach">${m.pro || 0}g</strong> <span class="text-gray-400">برو</span></div>
-                                <div class="flex flex-col border-r border-border-color"><strong class="text-base font-black text-blue-400">${m.carb || 0}g</strong> <span class="text-gray-400">كارب</span></div>
-                                <div class="flex flex-col border-r border-border-color"><strong class="text-base font-black text-yellow-400">${m.fat || 0}g</strong> <span class="text-gray-400">دهون</span></div>
+                            <div class="grid grid-cols-4 gap-1 text-[11px] font-bold bg-input p-2 rounded-lg border border-theme text-center">
+                                <div><strong class="text-sm text-primary block">${m.cal || 0}</strong> سعرة</div>
+                                <div><strong class="text-sm text-accent block">${m.pro || 0}g</strong> برو</div>
+                                <div><strong class="text-sm text-blue-500 block">${m.carb || 0}g</strong> كارب</div>
+                                <div><strong class="text-sm text-yellow-500 block">${m.fat || 0}g</strong> دهون</div>
                             </div>
-                            <button onclick="window.openMealDetail(${idx})" class="w-full bg-card hover:bg-border-color text-sm font-bold py-3.5 rounded-xl border border-border-color transition-colors flex justify-center items-center gap-2">
-                                📖 طريقة التحضير والوصف الكامل
+                            <button onclick="window.openMealDetail(${idx})" class="w-full bg-input text-primary text-xs font-bold py-3 rounded-lg border border-theme">
+                                📖 عرض الوصفة والتحضير
                             </button>
                         </div>
                     `;
                 });
             } else {
-                html = '<p class="text-sm font-medium text-gray-400 bg-input p-6 rounded-2xl text-center border border-border-color">لا توجد وجبات مضافة اليوم من قبل الكوتش.</p>';
+                html = '<p class="text-sm text-muted bg-input p-4 rounded-lg text-center border border-theme">لا توجد وجبات مضافة اليوم.</p>';
             }
             area.innerHTML = html;
         }
@@ -1078,10 +980,10 @@
             const m = mealsList[idx];
             document.getElementById('modalMealTitle').innerText = m.title;
             document.getElementById('modalMealBody').innerHTML = `
-                ${m.image ? `<img src="${m.image}" class="w-full rounded-2xl mb-4 border border-border-color shadow-md object-cover max-h-56">` : ''}
-                <div class="bg-input p-5 rounded-2xl border border-border-color">
-                    <strong class="text-coach text-sm block mb-2 font-black">طريقة التحضير والوصف:</strong>
-                    <p class="opacity-90 leading-loose text-sm font-medium text-gray-300">${m.recipe || 'لا توجد تفاصيل مضافة لهذه الوجبة.'}</p>
+                ${m.image ? `<img src="${m.image}" class="w-full rounded-lg mb-3 border border-theme">` : ''}
+                <div class="bg-input p-4 rounded-lg border border-theme">
+                    <strong class="text-primary text-sm block mb-2 font-bold">طريقة التحضير:</strong>
+                    <p class="text-muted text-sm leading-relaxed">${m.recipe || 'لا يوجد وصف.'}</p>
                 </div>
                 ${buildNativeVideoPlayer(m.media)}
             `;
@@ -1090,7 +992,7 @@
 
         window.openSwapModal = () => { document.getElementById('mealSwapModal').classList.remove('hidden'); };
         window.saveSwapMeal = async () => {
-            const name = document.getElementById('swapMealName').value.trim() || 'وجبة خارجية';
+            const name = document.getElementById('swapMealName').value.trim() || 'وجبة بديلة';
             const cal = parseInt(document.getElementById('swapCal').value) || 0;
             const pro = parseInt(document.getElementById('swapPro').value) || 0;
             const carb = parseInt(document.getElementById('swapCarb').value) || 0;
@@ -1108,21 +1010,19 @@
             
             const mealsList = activeUserData.plan?.meals || activeUserData.meals || [];
             renderUserNutritionCourse(mealsList, activeUserData.progress.meals, activeUserData.progress.swaps, activeUserData.targets);
-            showMsg("تمت إضافة الوجبة البديلة لعجلة اليوم بنجاح!", false);
         };
 
         function renderUserWorkoutSummary(exercises, progress) {
             const area = document.getElementById('userWorkoutCourseSummary');
             if(!exercises || exercises.length === 0) {
-                area.innerHTML = '<p class="text-sm font-medium text-gray-400 text-center py-10">لا توجد تمارين مخصصة اليوم في جدولك.</p>';
+                area.innerHTML = '<p class="text-sm text-muted text-center py-6">لا توجد تمارين مخصصة اليوم.</p>';
                 return;
             }
             area.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="w-24 h-24 bg-coach/10 border-4 border-coach text-coach rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-[0_0_30px_rgba(var(--coach-green-rgb),0.3)]">🏋️‍♀️</div>
-                    <h3 class="font-black text-2xl mb-3 text-white tracking-tight">جلسة اليوم جاهزة للانطلاق</h3>
-                    <p class="text-sm text-gray-400 font-medium mb-8 leading-relaxed max-w-xs mx-auto">تتضمن الجلسة <strong class="text-white">${exercises.length}</strong> تمارين مخصصة مع نظام التتبع الذكي والتايمر.</p>
-                    <button onclick="startCoursePlayer()" class="w-full bg-coach text-coach-text font-black py-4.5 rounded-2xl text-base shadow-glow btn-hover">بدء التمرين الآن 🚀</button>
+                <div class="text-center py-4">
+                    <h3 class="font-black text-xl mb-2 text-primary">جلسة التمارين جاهزة</h3>
+                    <p class="text-sm text-muted mb-6">الجلسة تتضمن ${exercises.length} تمارين مخصصة.</p>
+                    <button onclick="startCoursePlayer()" class="w-full bg-accent text-accent-text font-bold py-4 rounded-lg text-base">بدء التمرين</button>
                 </div>
             `;
         }
@@ -1146,7 +1046,6 @@
         window.saveAndExitCoursePlayer = () => {
             if(exerciseTimerInterval) clearInterval(exerciseTimerInterval);
             document.getElementById('coursePlayerView').classList.add('hidden');
-            showMsg("تم حفظ تقدمك بنجاح! 💾", false);
             renderUserDashboard(activeUserData);
         };
 
@@ -1166,7 +1065,7 @@
                 renderPlayerStep();
             } else {
                 saveAndExitCoursePlayer();
-                showMsg("عمل رائع! أتممتِ جلسة التمارين بنجاح بطلة! 🎉", false);
+                showMsg("أتممتِ جلسة التمارين بنجاح! 🎉", false);
             }
         };
 
@@ -1177,7 +1076,7 @@
             const ex = exercises[playerActiveIndex];
             if(!ex) return;
 
-            document.getElementById('workoutTimerDisplay').innerText = `التمرين ${playerActiveIndex + 1} / ${exercises.length}`;
+            document.getElementById('workoutTimerDisplay').innerText = `تمرين ${playerActiveIndex + 1} / ${exercises.length}`;
             const today = getTodayStr();
             const todayProg = activeUserData.progress?.workouts?.[today] || {};
 
@@ -1186,22 +1085,22 @@
                 exerciseRemainingSeconds = todayProg[playerActiveIndex]?.secondsLeft !== undefined ? todayProg[playerActiveIndex].secondsLeft : totalSecs;
 
                 area.innerHTML = `
-                    <div class="fade-in-up">
-                        <span class="bg-card text-coach border border-border-color px-3 py-1 rounded-md text-[10px] font-bold mb-3 inline-block">نظام مؤقت (كرري الحركة طوال المدة)</span>
-                        <h2 class="text-3xl font-black mb-6 text-white">${ex.title}</h2>
-                        <div class="mb-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-card">${buildNativeVideoPlayer(ex.media)}</div>
+                    <div>
+                        <span class="text-xs bg-input border border-theme text-primary px-3 py-1 rounded-md font-bold mb-3 inline-block">نظام مؤقت</span>
+                        <h2 class="text-2xl font-black mb-4 text-primary">${ex.title}</h2>
+                        ${buildNativeVideoPlayer(ex.media)}
                         
-                        <div class="bg-card p-8 rounded-[32px] border border-card mb-6 shadow-lg">
-                            <div id="exerciseCountdown" class="text-6xl font-black text-coach mb-6 tracking-widest font-mono">--:--</div>
-                            <div class="flex gap-4 justify-center">
-                                <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="flex-grow bg-coach text-coach-text font-black px-6 py-4 rounded-2xl text-base shadow-glow btn-hover transition-colors">بدء التايمر ⏱️</button>
-                                <button onclick="window.resetExerciseTimer(${totalSecs})" class="bg-input border-2 border-border-color hover:border-gray-500 px-5 py-4 rounded-2xl text-sm font-bold transition-colors">إعادة</button>
+                        <div class="bg-card p-6 rounded-ios-lg border border-theme mb-6 mt-4">
+                            <div id="exerciseCountdown" class="text-5xl font-black text-accent mb-6">--:--</div>
+                            <div class="flex gap-3 justify-center">
+                                <button onclick="window.toggleExerciseTimer(${totalSecs})" id="timerToggleBtn" class="flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm">بدء التايمر</button>
+                                <button onclick="window.resetExerciseTimer(${totalSecs})" class="bg-input border border-theme text-primary px-4 py-3 rounded-lg text-sm font-bold">إعادة</button>
                             </div>
                         </div>
 
-                        <div class="flex gap-4 w-full">
-                            <button onclick="window.playerPrevStep()" class="w-1/3 bg-input border border-border-color py-4 rounded-2xl text-sm font-bold ${playerActiveIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-card'}">السابق</button>
-                            <button onclick="window.playerNextStep()" class="w-2/3 bg-white text-black py-4 rounded-2xl text-sm font-black shadow-lg btn-hover">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
+                        <div class="flex gap-3 w-full">
+                            <button onclick="window.playerPrevStep()" class="w-1/3 bg-input border border-theme text-primary py-3 rounded-lg text-sm font-bold">السابق</button>
+                            <button onclick="window.playerNextStep()" class="w-2/3 bg-primary text-black bg-white py-3 rounded-lg text-sm font-bold">${playerActiveIndex === exercises.length - 1 ? 'إنهاء ✔️' : 'التالي ➔'}</button>
                         </div>
                     </div>
                 `;
@@ -1215,19 +1114,19 @@
                 }
 
                 area.innerHTML = `
-                    <div class="fade-in-up">
-                        <span class="bg-card text-gray-400 border border-border-color px-3 py-1 rounded-md text-[10px] font-bold mb-3 inline-block">نظام جولات وعدات</span>
-                        <h2 class="text-3xl font-black mb-6 text-white">${ex.title}</h2>
-                        <div class="mb-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-card">${buildNativeVideoPlayer(ex.media)}</div>
+                    <div>
+                        <span class="text-xs bg-input border border-theme text-primary px-3 py-1 rounded-md font-bold mb-3 inline-block">نظام جولات</span>
+                        <h2 class="text-2xl font-black mb-4 text-primary">${ex.title}</h2>
+                        ${buildNativeVideoPlayer(ex.media)}
                         
-                        <div class="bg-card p-6 rounded-[32px] border border-card mb-6 shadow-lg">
-                            <p class="text-sm text-gray-400 mb-5 font-bold">عند انتهائك من الجولة، اضغطي على رقمها لتسجيلها:</p>
+                        <div class="bg-card p-5 rounded-ios-lg border border-theme mb-6 mt-4">
+                            <p class="text-xs text-muted mb-4 font-bold">اضغطي على رقم الجولة بعد إتمامها:</p>
                             <div class="flex gap-3 justify-center flex-wrap">${setsHtml}</div>
                         </div>
                         
-                        <div class="flex gap-4 w-full">
-                            <button onclick="window.playerPrevStep()" class="w-1/3 bg-input border border-border-color py-4 rounded-2xl text-sm font-bold ${playerActiveIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-card'}">السابق</button>
-                            <button onclick="window.playerNextStep()" class="w-2/3 bg-white text-black py-4 rounded-2xl text-sm font-black shadow-lg btn-hover">${playerActiveIndex === exercises.length - 1 ? 'إنهاء الجلسة ✔️' : 'التالي ➔'}</button>
+                        <div class="flex gap-3 w-full">
+                            <button onclick="window.playerPrevStep()" class="w-1/3 bg-input border border-theme text-primary py-3 rounded-lg text-sm font-bold">السابق</button>
+                            <button onclick="window.playerNextStep()" class="w-2/3 bg-primary text-black bg-white py-3 rounded-lg text-sm font-bold">${playerActiveIndex === exercises.length - 1 ? 'إنهاء ✔️' : 'التالي ➔'}</button>
                         </div>
                     </div>
                 `;
@@ -1246,12 +1145,12 @@
             if(isTimerRunning) {
                 clearInterval(exerciseTimerInterval);
                 isTimerRunning = false;
-                btn.innerText = 'استئناف التايمر ▶️';
-                btn.className = 'flex-grow bg-coach text-coach-text font-black px-6 py-4 rounded-2xl text-base shadow-glow btn-hover transition-colors';
+                btn.innerText = 'استئناف التايمر';
+                btn.className = 'flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm';
             } else {
                 isTimerRunning = true;
-                btn.innerText = 'إيقاف مؤقت ⏸️';
-                btn.className = 'flex-grow bg-red-500/20 text-red-500 border border-red-500/50 font-black px-6 py-4 rounded-2xl text-base btn-hover transition-colors';
+                btn.innerText = 'إيقاف مؤقت';
+                btn.className = 'flex-grow bg-red-500 text-white font-bold px-4 py-3 rounded-lg text-sm';
                 exerciseTimerInterval = setInterval(async () => {
                     if(exerciseRemainingSeconds > 0) {
                         exerciseRemainingSeconds--;
@@ -1260,10 +1159,9 @@
                     } else {
                         clearInterval(exerciseTimerInterval);
                         isTimerRunning = false;
-                        btn.innerText = 'انتهى الوقت! ✔️';
-                        btn.className = 'flex-grow bg-card border border-coach text-coach font-black px-6 py-4 rounded-2xl text-base transition-colors';
+                        btn.innerText = 'انتهى الوقت';
+                        btn.className = 'flex-grow bg-card border border-theme text-primary font-bold px-4 py-3 rounded-lg text-sm';
                         saveTimerProgress(true);
-                        showMsg("ممتاز! أتممتِ مدة التمرين بنجاح!", false);
                     }
                 }, 1000);
             }
@@ -1275,7 +1173,7 @@
             exerciseRemainingSeconds = defaultSecs;
             updateTimerDisplay();
             const btn = document.getElementById('timerToggleBtn');
-            if(btn) { btn.innerText = 'بدء التايمر ⏱️'; btn.className = 'flex-grow bg-coach text-coach-text font-black px-6 py-4 rounded-2xl text-base shadow-glow btn-hover transition-colors'; }
+            if(btn) { btn.innerText = 'بدء التايمر'; btn.className = 'flex-grow bg-accent font-bold px-4 py-3 rounded-lg text-sm'; }
             saveTimerProgress(false);
         };
 
@@ -1312,7 +1210,7 @@
             const mins = parseInt(document.getElementById('codeMins').value) || 0;
             if(code && (days||hours||mins)) {
                 await set(ref(db, `codes/${code}`), { code, days, hours, mins, used: false });
-                showMsg("تم إصدار وحفظ الكود بنجاح", false);
+                showMsg("تم حفظ الكود", false);
                 document.getElementById('adminNewCode').value = '';
                 loadAdminCodes();
             }
@@ -1322,13 +1220,13 @@
             const list = document.getElementById('adminCodesList');
             const snap = await get(child(ref(db), 'codes'));
             list.innerHTML = '';
-            if(!snap.exists()) return list.innerHTML = '<p class="text-xs text-gray-500">لا توجد أكواد مسجلة</p>';
+            if(!snap.exists()) return list.innerHTML = '<p class="text-xs text-muted">لا يوجد أكواد</p>';
             snap.forEach(cSnap => {
                 const c = cSnap.val();
                 list.innerHTML += `
-                    <div class="bg-input p-4 rounded-xl border border-border-color flex justify-between items-center text-sm shadow-sm transition-transform hover:scale-[1.01]">
-                        <div><strong class="text-white tracking-widest bg-card px-2 py-1 rounded border border-border-color">${c.code}</strong> <span class="opacity-75 text-xs text-gray-400 mr-2">(${c.days} يوم)</span></div>
-                        <span class="${c.used ? 'text-red-500 bg-red-500/10' : 'text-coach bg-coach/10 border-coach/20'} border border-transparent px-3 py-1 rounded-lg text-xs font-bold">${c.used ? 'مُستخدم 🔒' : 'متاح 🔓'}</span>
+                    <div class="bg-input p-3 rounded-lg border border-theme flex justify-between items-center text-sm">
+                        <div><strong class="text-primary">${c.code}</strong> <span class="text-xs text-muted">(${c.days} يوم)</span></div>
+                        <span class="text-xs font-bold ${c.used ? 'text-red-500' : 'text-accent'}">${c.used ? 'مُستخدم' : 'متاح'}</span>
                     </div>`;
             });
         }
@@ -1337,20 +1235,17 @@
             const list = document.getElementById('usersList');
             const snap = await get(child(ref(db), 'users'));
             list.innerHTML = '';
-            if(!snap.exists()) return list.innerHTML = '<p class="text-center py-10 text-sm font-medium text-gray-500">لا يوجد متدربات حالياً</p>';
+            if(!snap.exists()) return list.innerHTML = '<p class="text-center py-6 text-sm text-muted">لا يوجد متدربات</p>';
             snap.forEach(uSnap => {
                 const uid = uSnap.key;
                 const d = uSnap.val();
                 list.innerHTML += `
-                    <div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input transition-colors text-sm border-b border-border-color last:border-none group" onclick="window.openUserDetail('${uid}')">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-card border border-border-color flex items-center justify-center font-bold text-gray-400 group-hover:text-coach group-hover:border-coach transition-colors">👤</div>
-                            <div>
-                                <p class="font-black text-white text-base">${d.email}</p>
-                                <span class="text-[11px] font-bold text-coach bg-coach/10 px-2 py-0.5 rounded border border-coach/20 inline-block mt-1">${d.usedCode || 'بدون كود'}</span>
-                            </div>
+                    <div class="p-4 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme" onclick="window.openUserDetail('${uid}')">
+                        <div>
+                            <p class="font-bold text-primary text-sm">${d.email}</p>
+                            <span class="text-[11px] text-accent font-bold">${d.usedCode || 'بدون كود'}</span>
                         </div>
-                        <span class="text-2xl text-gray-500 group-hover:text-white transition-colors transform group-hover:-translate-x-1">›</span>
+                        <span class="text-lg text-muted">›</span>
                     </div>`;
             });
         }
@@ -1393,22 +1288,21 @@
             currentAdminExercises.forEach((ex, idx) => {
                 const isTimer = ex.type === 'timer';
                 list.innerHTML += `
-                    <div class="bg-input p-6 rounded-[24px] border border-border-color relative text-sm space-y-4 shadow-sm transition-transform hover:-translate-y-1">
-                        <button onclick="window.remEx(${idx})" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white transition-colors">✕</button>
-                        <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card px-4 py-3.5 rounded-xl font-black text-white focus:border-coach border border-transparent transition-colors pr-10" placeholder="اسم التمرين">
-                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card px-4 py-3.5 rounded-xl text-coach font-medium border border-transparent focus:border-coach transition-colors" placeholder="رابط فيديو أو صورة توضيحية للتمرين">
+                    <div class="bg-input p-4 rounded-ios-lg border border-theme relative text-sm space-y-3">
+                        <button onclick="window.remEx(${idx})" class="absolute top-3 left-3 text-red-500 font-bold px-2 py-1">✕</button>
+                        <input type="text" onchange="currentAdminExercises[idx].title=this.value" value="${ex.title}" class="w-full bg-card px-3 py-2.5 rounded-lg font-bold text-primary" placeholder="اسم التمرين">
+                        <input type="text" onchange="currentAdminExercises[idx].media=this.value" value="${ex.media}" class="w-full bg-card px-3 py-2.5 rounded-lg text-accent font-medium text-xs" placeholder="رابط فيديو">
                         
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-card p-3 rounded-xl border border-border-color">
-                            <span class="text-xs font-bold text-gray-400">نظام التمرين:</span>
-                            <select onchange="window.toggleExType(${idx}, this.value)" class="bg-input px-3 py-2 rounded-lg text-white font-bold border border-border-color focus:border-coach outline-none text-xs">
-                                <option value="sets" ${!isTimer?'selected':''}>جولات وعدات</option>
-                                <option value="timer" ${isTimer?'selected':''}>مؤقت زمني (تايمر)</option>
+                        <div class="flex items-center gap-3 bg-card p-2 rounded-lg border border-theme">
+                            <select onchange="window.toggleExType(${idx}, this.value)" class="bg-input px-2 py-1.5 rounded text-primary font-bold text-xs border border-theme">
+                                <option value="sets" ${!isTimer?'selected':''}>جولات</option>
+                                <option value="timer" ${isTimer?'selected':''}>مؤقت زمني</option>
                             </select>
 
                             ${isTimer ? `
-                                <div class="flex items-center gap-2 pr-4 sm:border-r border-border-color"><span class="text-xs text-gray-400 font-bold">المدة بالدقائق:</span><input type="number" onchange="currentAdminExercises[idx].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-16 bg-input px-2 py-1.5 text-center rounded-lg font-black text-white border border-border-color" min="1" max="120"></div>
+                                <div class="flex items-center gap-2 border-r border-theme pr-3"><span class="text-[11px] text-muted font-bold">دقائق:</span><input type="number" onchange="currentAdminExercises[idx].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-14 bg-input px-1 py-1 text-center rounded text-primary font-bold border border-theme"></div>
                             ` : `
-                                <div class="flex items-center gap-2 pr-4 sm:border-r border-border-color"><span class="text-xs text-gray-400 font-bold">عدد الجولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-16 bg-input px-2 py-1.5 text-center rounded-lg font-black text-white border border-border-color" min="1" max="10"></div>
+                                <div class="flex items-center gap-2 border-r border-theme pr-3"><span class="text-[11px] text-muted font-bold">جولات:</span><input type="number" onchange="currentAdminExercises[idx].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-14 bg-input px-1 py-1 text-center rounded text-primary font-bold border border-theme"></div>
                             `}
                         </div>
                     </div>`;
@@ -1423,36 +1317,34 @@
             currentAdminMeals.forEach((m, idx) => {
                 let ingredientsHtml = (m.ingredients || []).map((ing, iIdx) => `
                     <div class="flex gap-2 mb-2">
-                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="flex-grow bg-card px-3 py-2 rounded-lg text-xs border border-transparent focus:border-coach text-white font-medium" placeholder="المكون (مثال: صدر دجاج)">
-                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-24 bg-card px-3 py-2 rounded-lg text-xs border border-transparent focus:border-coach text-gray-300 text-center font-medium" placeholder="الكمية">
-                        <button onclick="window.remIng(${idx}, ${iIdx})" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 font-bold flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">x</button>
+                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="flex-grow bg-card px-2 py-1.5 rounded-md text-xs text-primary" placeholder="المكون">
+                        <input type="text" onchange="currentAdminMeals[idx].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-20 bg-card px-2 py-1.5 rounded-md text-xs text-center text-primary" placeholder="الكمية">
+                        <button onclick="window.remIng(${idx}, ${iIdx})" class="text-red-500 font-bold px-2">✕</button>
                     </div>
                 `).join('');
 
                 list.innerHTML += `
-                    <div class="bg-input p-6 rounded-[24px] border border-border-color relative text-sm space-y-4 shadow-sm transition-transform hover:-translate-y-1">
-                        <button onclick="window.remMeal(${idx})" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white transition-colors z-10">✕</button>
+                    <div class="bg-input p-4 rounded-ios-lg border border-theme relative text-sm space-y-3">
+                        <button onclick="window.remMeal(${idx})" class="absolute top-3 left-3 text-red-500 font-bold px-2 py-1 z-10">✕</button>
                         
-                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card px-4 py-3.5 rounded-xl font-black text-white focus:border-coach border border-transparent pr-12 transition-colors" placeholder="اسم الوجبة (مثال: الفطور الأساسي)">
+                        <input type="text" onchange="currentAdminMeals[idx].title=this.value" value="${m.title}" class="w-full bg-card px-3 py-2.5 rounded-lg font-bold text-primary pr-10" placeholder="اسم الوجبة">
                         
-                        <div class="grid grid-cols-4 gap-3 bg-card p-3 rounded-xl border border-border-color">
-                            <div class="flex flex-col"><label class="text-[10px] text-gray-400 font-bold mb-1 text-center">سعرة</label><input type="number" onchange="currentAdminMeals[idx].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent text-center font-black text-white text-base outline-none"></div>
-                            <div class="flex flex-col border-r border-border-color"><label class="text-[10px] text-gray-400 font-bold mb-1 text-center">بروتين</label><input type="number" onchange="currentAdminMeals[idx].pro=this.value" value="${m.pro||0}" class="w-full bg-transparent text-center font-black text-coach text-base outline-none"></div>
-                            <div class="flex flex-col border-r border-border-color"><label class="text-[10px] text-gray-400 font-bold mb-1 text-center">كارب</label><input type="number" onchange="currentAdminMeals[idx].carb=this.value" value="${m.carb||0}" class="w-full bg-transparent text-center font-black text-blue-400 text-base outline-none"></div>
-                            <div class="flex flex-col border-r border-border-color"><label class="text-[10px] text-gray-400 font-bold mb-1 text-center">دهون</label><input type="number" onchange="currentAdminMeals[idx].fat=this.value" value="${m.fat||0}" class="w-full bg-transparent text-center font-black text-yellow-400 text-base outline-none"></div>
+                        <div class="grid grid-cols-4 gap-2 bg-card p-2 rounded-lg border border-theme text-center">
+                            <div><label class="text-[10px] text-muted block mb-1">سعرات</label><input type="number" onchange="currentAdminMeals[idx].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent font-bold text-primary outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">بروتين</label><input type="number" onchange="currentAdminMeals[idx].pro=this.value" value="${m.pro||0}" class="w-full bg-transparent font-bold text-accent outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">كارب</label><input type="number" onchange="currentAdminMeals[idx].carb=this.value" value="${m.carb||0}" class="w-full bg-transparent font-bold text-blue-500 outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-1">دهون</label><input type="number" onchange="currentAdminMeals[idx].fat=this.value" value="${m.fat||0}" class="w-full bg-transparent font-bold text-yellow-500 outline-none text-center"></div>
                         </div>
 
-                        <div class="bg-bg-color/30 p-4 rounded-xl border border-border-color">
-                            <span class="text-xs text-coach font-black block mb-3">تفصيل المكونات:</span>
+                        <div class="p-2 border border-theme rounded-lg bg-card">
+                            <span class="text-xs text-primary font-bold block mb-2">المكونات:</span>
                             ${ingredientsHtml}
-                            <button onclick="window.addIng(${idx})" class="w-full text-xs bg-card hover:bg-border-color text-gray-300 font-bold py-2.5 rounded-lg mt-2 transition-colors border border-border-color">+ إضافة مكون جديد</button>
+                            <button onclick="window.addIng(${idx})" class="w-full text-[11px] bg-input text-primary font-bold py-1.5 rounded mt-1 border border-theme">+ إضافة</button>
                         </div>
 
-                        <div class="space-y-3">
-                            <input type="text" onchange="currentAdminMeals[idx].image=this.value" value="${m.image||''}" class="w-full bg-card px-4 py-3 rounded-lg text-sm text-coach border border-transparent focus:border-coach transition-colors" placeholder="رابط صورة الوجبة (اختياري)">
-                            <textarea onchange="currentAdminMeals[idx].recipe=this.value" rows="3" class="w-full bg-card px-4 py-3 rounded-lg text-sm text-gray-300 border border-transparent focus:border-coach transition-colors font-medium leading-relaxed" placeholder="اكتبي طريقة التحضير الدقيقة هنا...">${m.recipe||''}</textarea>
-                            <input type="text" onchange="currentAdminMeals[idx].media=this.value" value="${m.media||''}" class="w-full bg-card px-4 py-3 rounded-lg text-sm text-coach border border-transparent focus:border-coach transition-colors" placeholder="رابط فيديو شرح التحضير (اختياري)">
-                        </div>
+                        <input type="text" onchange="currentAdminMeals[idx].image=this.value" value="${m.image||''}" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-accent" placeholder="رابط الصورة">
+                        <textarea onchange="currentAdminMeals[idx].recipe=this.value" rows="2" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-primary leading-relaxed" placeholder="طريقة التحضير...">${m.recipe||''}</textarea>
+                        <input type="text" onchange="currentAdminMeals[idx].media=this.value" value="${m.media||''}" class="w-full bg-card px-3 py-2 rounded-lg text-xs text-accent" placeholder="رابط فيديو">
                     </div>`;
             });
         }
@@ -1468,13 +1360,13 @@
                 fat: parseInt(document.getElementById('targetFatInput').value) || 60
             };
             const btn = document.getElementById('adminSaveAllBtn');
-            btn.innerText = 'جاري النشر...';
+            btn.innerText = 'جاري الحفظ...';
             await update(ref(db, `users/${currentAdminViewUid}`), { 
                 targets: targets,
                 'plan/exercises': currentAdminExercises, 
                 'plan/meals': currentAdminMeals 
             });
-            showMsg("تم حفظ ونشر الخطة بنجاح على شاشة المتدربة فوراً! ✔️", false);
+            showMsg("تم الحفظ والنشر بنجاح!", false);
             btn.innerText = 'حفظ ونشر الكل ✔️';
         };
 
@@ -1482,8 +1374,8 @@
         function formatChatMsg(m, isAdminContext) {
             const isMe = isAdminContext ? (m.sender === 'admin') : (m.sender === 'user');
             const css = isMe ? 'msg-me' : 'msg-other';
-            let content = m.type === 'image' ? `<img src="${m.text}" class="chat-img shadow-sm">` : m.text;
-            return `<div class="chat-bubble ${css} fade-in-up">${content}</div>`;
+            let content = m.type === 'image' ? `<img src="${m.text}" class="chat-img">` : m.text;
+            return `<div class="chat-bubble ${css}">${content}</div>`;
         }
 
         function loadChat(uid, areaId) {
@@ -1496,8 +1388,6 @@
                         area.innerHTML += formatChatMsg(c.val(), isAdminContext);
                     });
                     area.scrollTop = area.scrollHeight;
-                } else {
-                    area.innerHTML = `<div class="flex h-full items-center justify-center text-xs text-gray-500 font-bold opacity-60">بداية المحادثة المشفرة والآمنة 🔒</div>`;
                 }
             });
         }
@@ -1510,7 +1400,7 @@
             const inp = document.getElementById('adminChatInput');
             if(inp.value.trim() && currentAdminViewUid){ push(ref(db, `chats/${currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; }
         };
-        // دعم الإرسال بزر الإدخال (Enter)
+
         document.getElementById('userChatInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') document.getElementById('userSendChatBtn').click();
         });

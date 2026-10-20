@@ -12,187 +12,249 @@
                     colors: {
                         'apple-bg': '#F2F2F7',
                         'apple-card': '#FFFFFF',
-                        'apple-text': '#000000',
                         'apple-gray': '#8E8E93',
                         'apple-input': '#7676801F',
                         'apple-blue': '#007AFF',
                         'coach-green': '#9DFF13',
                         'coach-dark': '#000000'
                     },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Arabic"', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                    },
-                    borderRadius: {
-                        'ios': '14px',
-                        'ios-lg': '20px',
-                        'ios-xl': '32px',
-                    }
+                    fontFamily: { sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Arabic"', 'sans-serif'] },
+                    borderRadius: { 'ios': '14px', 'ios-lg': '20px', 'ios-xl': '32px' }
                 }
             }
         }
     </script>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #F2F2F7; 
-            color: #000;
-            -webkit-font-smoothing: antialiased;
-        }
-        .ios-glass { 
-            background: rgba(255, 255, 255, 0.7); 
-            backdrop-filter: blur(20px) saturate(180%); 
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Arabic", sans-serif; background-color: #F2F2F7; color: #000; -webkit-font-smoothing: antialiased; }
+        .ios-glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); }
         .hidden { display: none !important; }
-        .timeline-progress { transition: width 1s cubic-bezier(0.25, 0.1, 0.25, 1); }
         ::-webkit-scrollbar { display: none; }
-        input { appearance: none; -webkit-appearance: none; }
-        input:focus { outline: none; }
+        input, textarea { appearance: none; -webkit-appearance: none; outline: none; }
+        /* تصميم فقاعات الشات */
+        .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; margin-bottom: 8px; font-size: 15px; line-height: 1.4; }
+        .msg-me { background: #9DFF13; color: #000; align-self: flex-start; border-bottom-right-radius: 4px; }
+        .msg-admin { background: #000; color: #fff; align-self: flex-start; border-bottom-right-radius: 4px; }
+        .msg-other { background: #E5E5EA; color: #000; align-self: flex-end; border-bottom-left-radius: 4px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col relative">
+<body class="min-h-screen flex flex-col relative pb-20 md:pb-0">
 
-    <!-- شريط التنقل -->
-    <nav class="ios-glass sticky top-0 z-50 px-5 py-3 flex justify-between items-center border-b border-gray-200 shadow-sm">
+    <!-- شريط التنقل العلوي -->
+    <nav class="ios-glass sticky top-0 z-40 px-5 py-3 flex justify-between items-center border-b border-gray-200 shadow-sm">
         <div class="flex items-center gap-2 cursor-pointer" id="homeLogoBtn">
             <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-coach-green font-bold text-sm">صحة</div>
+            <span class="font-bold tracking-tight">كوتش صحة</span>
         </div>
         <div class="flex items-center gap-4">
             <span id="userEmailDisplay" class="text-[13px] font-medium text-apple-gray hidden md:block"></span>
-            <button id="logoutBtn" class="hidden text-[15px] text-red-500 font-medium hover:opacity-70 transition">تسجيل الخروج</button>
+            <button id="logoutBtn" class="hidden text-[15px] text-red-500 font-medium">خروج</button>
         </div>
     </nav>
 
     <!-- رسائل النظام -->
-    <div id="globalMessage" class="hidden absolute top-16 left-4 right-4 z-50 p-3 rounded-ios text-sm font-medium text-center shadow-lg transition-all duration-300"></div>
+    <div id="globalMessage" class="hidden fixed top-16 left-4 right-4 z-50 p-3 rounded-ios text-sm font-medium text-center shadow-lg transition-all duration-300 mx-auto max-w-md"></div>
 
     <main class="flex-grow flex flex-col items-center justify-center p-4 w-full max-w-3xl mx-auto">
         
         <!-- 0. الواجهة الترحيبية -->
-        <div id="welcomeSection" class="w-full flex flex-col items-center text-center fade-in">
+        <div id="welcomeSection" class="w-full flex flex-col items-center text-center">
             <div class="w-24 h-24 bg-black rounded-ios-xl flex items-center justify-center text-coach-green font-bold text-3xl mb-6 shadow-xl">صحة</div>
-            <h1 class="text-4xl font-bold mb-3 tracking-tight text-black">كوتش صحة</h1>
-            <p class="text-apple-gray text-[17px] mb-10 max-w-sm leading-relaxed">تدريب شخصي متكامل لرحلتك الصحية. سجلي الدخول أو أنشئي حسابك للبدء.</p>
-            
+            <h1 class="text-4xl font-bold mb-3 tracking-tight">كوتش صحة</h1>
+            <p class="text-apple-gray text-[17px] mb-10 max-w-sm leading-relaxed">تدريب شخصي متكامل لرحلتك الصحية.</p>
             <div class="w-full max-w-xs space-y-3">
-                <button id="showLoginBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px] shadow-md hover:scale-[1.02] transition-transform">تسجيل الدخول</button>
-                <button id="showRegisterBtn" class="w-full bg-apple-card text-black font-semibold py-3.5 rounded-ios text-[17px] shadow-sm hover:bg-gray-50 transition-colors border border-gray-100">حساب جديد</button>
+                <button id="showLoginBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px]">تسجيل الدخول</button>
+                <button id="showRegisterBtn" class="w-full bg-apple-card border border-gray-200 text-black font-semibold py-3.5 rounded-ios text-[17px]">حساب جديد</button>
             </div>
         </div>
 
-        <!-- 1. واجهة الدخول / التسجيل (بدون كود) -->
+        <!-- 1. واجهة الدخول / التسجيل -->
         <div id="authSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-6 sm:p-8">
-            <button id="backToWelcomeBtn" class="text-apple-blue text-[15px] mb-4 flex items-center gap-1 font-medium">
-                <span>❮</span> تراجع
-            </button>
-            
-            <h1 id="authTitle" class="text-3xl font-bold mb-1 text-center tracking-tight">تسجيل الدخول</h1>
+            <button id="backToWelcomeBtn" class="text-apple-blue text-[15px] mb-4 font-medium">❮ تراجع</button>
+            <h1 id="authTitle" class="text-3xl font-bold mb-1 text-center">تسجيل الدخول</h1>
             <p id="authSubtitle" class="text-apple-gray text-center mb-8 text-[15px]">أدخلي الإيميل وكلمة المرور</p>
-            
             <div class="space-y-4">
                 <input type="email" id="emailInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px]" placeholder="كلمة المرور">
-                
                 <button id="mainAuthBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px] mt-2">دخول</button>
             </div>
-
-            <div class="mt-6 text-center">
-                <button id="forgotPasswordBtn" class="text-[15px] text-apple-blue font-medium">نسيت كلمة المرور؟</button>
-            </div>
+            <div class="mt-6 text-center"><button id="forgotPasswordBtn" class="text-[15px] text-apple-blue font-medium">نسيت كلمة المرور؟</button></div>
         </div>
 
-        <!-- 2. واجهة تفعيل الإيميل -->
+        <!-- 2. تفعيل الإيميل -->
         <div id="verifyEmailSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-8 text-center">
-            <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✉️</div>
-            <h2 class="text-2xl font-bold mb-2 tracking-tight">تفعيل الحساب</h2>
-            <p class="text-apple-gray text-[15px] mb-8">لقد أرسلنا رابط التفعيل إلى بريدك الإلكتروني. يرجى الضغط عليه ثم تحديث الصفحة.</p>
-            <button id="resendVerificationBtn" class="w-full bg-apple-blue text-white font-semibold py-3.5 rounded-ios text-[17px]">إرسال الرسالة مجدداً</button>
+            <h2 class="text-2xl font-bold mb-2">تفعيل الحساب ✉️</h2>
+            <p class="text-apple-gray text-[15px] mb-8">أرسلنا رابط التفعيل لإيميلك، اضغطي عليه وحدثي الصفحة.</p>
+            <button id="resendVerificationBtn" class="w-full bg-apple-blue text-white py-3.5 rounded-ios font-semibold">إرسال مجدداً</button>
         </div>
 
-        <!-- 3. واجهة تفعيل الاشتراك بالكود (تظهر بعد الدخول إذا لم يكن هناك اشتراك فعال) -->
+        <!-- 3. تفعيل الكود -->
         <div id="activationSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-6 sm:p-8 text-center">
-            <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🔑</div>
-            <h2 id="activationTitle" class="text-2xl font-bold mb-2 tracking-tight">تفعيل الاشتراك</h2>
-            <p id="activationSubtitle" class="text-apple-gray text-[15px] mb-6">أدخلي كود الاشتراك الخاص بك للبدء في برنامجك التدريبي.</p>
-            
+            <h2 class="text-2xl font-bold mb-2">تفعيل الاشتراك 🔑</h2>
+            <p class="text-apple-gray text-[15px] mb-6">أدخلي كود الاشتراك الخاص بك للبدء.</p>
             <div class="space-y-4">
-                <input type="text" id="activationCodeInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px] text-center font-bold tracking-widest" placeholder="أدخلي الكود هنا">
-                <button id="activateSubscriptionBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px]">تفعيل الحساب</button>
+                <input type="text" id="activationCodeInput" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[17px] text-center font-bold tracking-widest" placeholder="الكود هنا">
+                <button id="activateSubscriptionBtn" class="w-full bg-black text-coach-green font-semibold py-3.5 rounded-ios text-[17px]">تفعيل الكود</button>
             </div>
+            <a href="https://salla.sa/YOUR_STORE_LINK" target="_blank" class="block w-full bg-apple-bg text-black font-semibold py-3 rounded-ios text-[15px] mt-6">شراء اشتراك من المتجر</a>
+        </div>
 
-            <div class="mt-8 pt-6 border-t border-gray-100">
-                <p class="text-apple-gray text-[13px] mb-3">ليس لديك كود اشتراك؟</p>
-                <a href="https://salla.sa/YOUR_STORE_LINK" target="_blank" class="block w-full bg-apple-bg text-black font-semibold py-3 rounded-ios text-[15px]">شراء اشتراك من المتجر</a>
+        <!-- 4. الأسئلة المبدئية (Onboarding) -->
+        <div id="onboardingSection" class="hidden w-full bg-apple-card rounded-ios-lg shadow-sm p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-2 text-center">مرحباً بكِ 👋</h2>
+            <p class="text-apple-gray text-[15px] mb-6 text-center">لأصمم خطتك بأفضل شكل، شاركيني هذه التفاصيل:</p>
+            <div class="space-y-4">
+                <input type="text" id="qGoal" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="ما هو هدفك الأساسي؟ (نزول وزن، لياقة...)">
+                <div class="flex gap-3">
+                    <input type="number" id="qWeight" class="w-1/2 bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="الوزن (كج)">
+                    <input type="number" id="qHeight" class="w-1/2 bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="الطول (سم)">
+                </div>
+                <textarea id="qNotes" rows="3" class="w-full bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="هل تعانين من إصابات أو أمراض؟ (اختياري)"></textarea>
+                <button id="saveOnboardingBtn" class="w-full bg-coach-green text-black font-bold py-3.5 rounded-ios text-[17px] shadow-sm">حفظ والبدء</button>
             </div>
         </div>
 
-        <!-- 4. لوحة المشتركة (التايم لاين) -->
-        <div id="userDashboard" class="hidden w-full">
-            <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">الخلاصة</h1>
-            
-            <div class="bg-apple-card rounded-ios-lg shadow-sm p-6 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold">اشتراك التدريب</h2>
-                    <span id="daysRemainingText" class="text-coach-dark font-bold text-lg bg-coach-green px-3 py-1 rounded-full text-sm">--</span>
+        <!-- ==================== لوحة المشتركة (User Dashboard) ==================== -->
+        <div id="userDashboard" class="hidden w-full h-full flex-col">
+            <!-- تبويب الخلاصة -->
+            <div id="tabHome" class="user-tab block w-full">
+                <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">الخلاصة</h1>
+                <div class="bg-apple-card rounded-ios-lg shadow-sm p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">اشتراك التدريب</h2>
+                        <span id="daysRemainingText" class="text-coach-dark font-bold text-lg bg-coach-green px-3 py-1 rounded-full text-sm">--</span>
+                    </div>
+                    <div class="relative pt-2">
+                        <div class="w-full bg-apple-input rounded-full h-2.5 mb-3"><div id="timelineBar" class="bg-black h-2.5 rounded-full timeline-progress" style="width: 0%;"></div></div>
+                    </div>
                 </div>
                 
-                <div class="relative pt-2">
-                    <div class="w-full bg-apple-input rounded-full h-2.5 mb-3">
-                        <div id="timelineBar" class="bg-black h-2.5 rounded-full timeline-progress" style="width: 0%;"></div>
-                    </div>
-                    <div class="flex justify-between text-[13px] font-medium text-apple-gray">
-                        <span id="startDateText">--/--/----</span>
-                        <span id="endDateText">--/--/----</span>
+                <!-- تحديث التقدم -->
+                <div class="bg-apple-card rounded-ios-lg shadow-sm p-6 mb-6">
+                    <h2 class="text-[17px] font-semibold mb-4">تحديث تقدمك</h2>
+                    <div class="flex gap-3">
+                        <input type="number" id="userCurrentWeight" class="w-2/3 bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="وزنك الحالي؟">
+                        <button id="updateProgressBtn" class="w-1/3 bg-apple-blue text-white font-semibold rounded-ios">تحديث</button>
                     </div>
                 </div>
             </div>
-            
-            <div class="px-2">
-                <button id="changePasswordBtn" class="text-[15px] text-apple-blue font-medium">تغيير كلمة المرور</button>
+
+            <!-- تبويب الخطة -->
+            <div id="tabPlan" class="user-tab hidden w-full">
+                <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">خطتي</h1>
+                <div class="bg-apple-card rounded-ios-lg shadow-sm p-6 mb-4">
+                    <h2 class="text-[17px] font-bold text-coach-green bg-black inline-block px-3 py-1 rounded-lg mb-3">التغذية 🍎</h2>
+                    <p id="userNutritionPlan" class="text-[15px] whitespace-pre-wrap text-gray-700 leading-relaxed">لم يتم إضافة الخطة بعد، سيتم تحديثها قريباً.</p>
+                </div>
+                <div class="bg-apple-card rounded-ios-lg shadow-sm p-6">
+                    <h2 class="text-[17px] font-bold text-black bg-gray-100 inline-block px-3 py-1 rounded-lg mb-3">التمارين 🏋️‍♀️</h2>
+                    <p id="userWorkoutPlan" class="text-[15px] whitespace-pre-wrap text-gray-700 leading-relaxed">لم يتم إضافة الخطة بعد.</p>
+                </div>
+            </div>
+
+            <!-- تبويب المحادثة -->
+            <div id="tabChat" class="user-tab hidden w-full h-[60vh] flex flex-col bg-apple-card rounded-ios-lg shadow-sm overflow-hidden border border-gray-100">
+                <div class="bg-gray-50 px-4 py-3 border-b flex items-center gap-3">
+                    <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center text-coach-green font-bold">ص</div>
+                    <div><h3 class="font-bold text-[15px]">الكوتش لمار</h3><p class="text-xs text-green-600">متصل</p></div>
+                </div>
+                <div id="userChatArea" class="flex-grow p-4 overflow-y-auto flex flex-col"></div>
+                <div class="p-3 border-t bg-white flex gap-2">
+                    <input type="text" id="userChatInput" class="flex-grow bg-apple-input px-4 py-3 rounded-full text-[15px]" placeholder="اكتبي رسالتك...">
+                    <button id="userSendChatBtn" class="bg-apple-blue text-white px-5 rounded-full font-bold">إرسال</button>
+                </div>
+            </div>
+
+            <!-- شريط التنقل السفلي iOS (للمشتركة فقط) -->
+            <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-200 flex justify-around py-3 pb-6 md:pb-3 z-40 md:static md:bg-transparent md:border-none md:mt-8">
+                <button onclick="switchTab('tabHome')" class="flex flex-col items-center gap-1 text-gray-400 focus:text-black">
+                    <span class="text-xl">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
+                </button>
+                <button onclick="switchTab('tabPlan')" class="flex flex-col items-center gap-1 text-gray-400 focus:text-black">
+                    <span class="text-xl">📋</span><span class="text-[11px] font-bold">خطتي</span>
+                </button>
+                <button onclick="switchTab('tabChat')" class="flex flex-col items-center gap-1 text-gray-400 focus:text-black">
+                    <span class="text-xl">💬</span><span class="text-[11px] font-bold">الكوتش</span>
+                </button>
             </div>
         </div>
 
-        <!-- 5. لوحة الإدارة (Settings Style) -->
+        <!-- ==================== لوحة الإدارة (Admin Dashboard) ==================== -->
         <div id="adminDashboard" class="hidden w-full">
-            <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">الإدارة</h1>
+            
+            <!-- الشاشة الرئيسية للإدارة -->
+            <div id="adminMainView">
+                <h1 class="text-3xl font-bold mb-6 px-2 tracking-tight">الإدارة</h1>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-apple-card rounded-ios-lg shadow-sm p-6">
+                        <h3 class="text-[17px] font-semibold mb-4">إنشاء كود</h3>
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="adminNewCode" class="w-2/3 bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="الكود (LAMAR26)">
+                            <input type="number" id="adminDays" class="w-1/3 bg-apple-input px-4 py-3 rounded-ios text-[15px]" placeholder="الأيام" value="30">
+                        </div>
+                        <button id="generateCodeBtn" class="w-full bg-black text-coach-green font-semibold py-3 rounded-ios text-[17px]">حفظ الكود</button>
+                    </div>
 
-            <div class="flex flex-col gap-6">
-                <div class="bg-apple-card rounded-ios-lg shadow-sm p-6">
-                    <h3 class="text-[17px] font-semibold mb-4">إنشاء كود جديد</h3>
-                    <div class="space-y-4">
-                        <input type="text" id="adminNewCode" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="مثال: LAMAR26">
-                        <input type="number" id="adminDays" class="w-full bg-apple-input px-4 py-3.5 rounded-ios text-[15px]" placeholder="عدد الأيام" value="30">
-                        <button id="generateCodeBtn" class="w-full bg-apple-blue text-white font-semibold py-3.5 rounded-ios text-[17px]">إنشاء وحفظ</button>
+                    <div class="bg-apple-card rounded-ios-lg shadow-sm overflow-hidden">
+                        <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                            <h3 class="text-[17px] font-semibold">قائمة المشتركات</h3>
+                            <button id="refreshUsersBtn" class="text-[15px] text-apple-blue font-medium">تحديث</button>
+                        </div>
+                        <div id="usersList" class="divide-y divide-gray-100 max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شاشة تفاصيل المشتركة (تظهر عند النقر على المشتركة) -->
+            <div id="adminUserDetailView" class="hidden flex flex-col gap-4">
+                <button id="backToAdminMainBtn" class="text-apple-blue text-[15px] font-medium flex items-center self-start">❮ العودة للقائمة</button>
+                
+                <div class="bg-apple-card rounded-ios-lg p-6 shadow-sm">
+                    <h2 class="text-xl font-bold mb-1" id="detailUserEmail">user@mail.com</h2>
+                    <p class="text-sm text-gray-500 mb-4" id="detailUserAnswers">لم تكمل الأسئلة بعد.</p>
+                    <p class="text-sm font-bold text-coach-green bg-black inline-block px-3 py-1 rounded" id="detailUserProgress">أحدث وزن: --</p>
+                </div>
+
+                <!-- أزرار التبديل في ملف المشتركة -->
+                <div class="flex bg-gray-200 rounded-ios p-1">
+                    <button onclick="switchAdminTab('adminTabPlan')" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white shadow-sm">إرسال الخطة</button>
+                    <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-500">المحادثة</button>
+                </div>
+
+                <div id="adminTabPlan" class="admin-tab block space-y-4">
+                    <div class="bg-apple-card p-5 rounded-ios-lg shadow-sm">
+                        <label class="block text-sm font-bold mb-2">خطة التغذية 🍎</label>
+                        <textarea id="adminPlanNutrition" rows="4" class="w-full bg-apple-input p-3 rounded-ios text-sm"></textarea>
+                    </div>
+                    <div class="bg-apple-card p-5 rounded-ios-lg shadow-sm">
+                        <label class="block text-sm font-bold mb-2">خطة التمارين 🏋️‍♀️</label>
+                        <textarea id="adminPlanWorkout" rows="4" class="w-full bg-apple-input p-3 rounded-ios text-sm"></textarea>
+                    </div>
+                    <button id="adminSavePlanBtn" class="w-full bg-coach-green text-black font-bold py-3.5 rounded-ios shadow-sm">تحديث الخطة</button>
+                </div>
+
+                <div id="adminTabChat" class="admin-tab hidden bg-apple-card rounded-ios-lg shadow-sm h-[50vh] flex flex-col overflow-hidden">
+                    <div id="adminChatArea" class="flex-grow p-4 overflow-y-auto flex flex-col"></div>
+                    <div class="p-3 border-t bg-gray-50 flex gap-2">
+                        <input type="text" id="adminChatInput" class="flex-grow bg-white border px-4 py-3 rounded-full text-[15px]" placeholder="رسالتك للمشتركة...">
+                        <button id="adminSendChatBtn" class="bg-black text-coach-green px-5 rounded-full font-bold">إرسال</button>
                     </div>
                 </div>
 
-                <div class="bg-apple-card rounded-ios-lg shadow-sm overflow-hidden">
-                    <div class="flex justify-between items-center p-6 border-b border-gray-100">
-                        <h3 class="text-[17px] font-semibold">المشتركات</h3>
-                        <button id="refreshUsersBtn" class="text-[15px] text-apple-blue font-medium">تحديث</button>
-                    </div>
-                    <div id="usersList" class="divide-y divide-gray-100 max-h-96 overflow-y-auto">
-                        <p class="text-[15px] text-apple-gray text-center py-6">جاري التحميل...</p>
-                    </div>
-                </div>
             </div>
         </div>
 
     </main>
 
+    <!-- الأكواد البرمجية (Firebase 13.0.0 Realtime DB) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, child, update, remove } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, child, update, onValue, push } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM",
             authDomain: "helth-c7e42.firebaseapp.com",
             projectId: "helth-c7e42",
-            storageBucket: "helth-c7e42.firebasestorage.app",
-            messagingSenderId: "308704396481",
-            appId: "1:308704396481:web:d0c8ad6598342bfbad8040",
-            measurementId: "G-PK0JP2KRSR",
             databaseURL: "https://helth-c7e42-default-rtdb.firebaseio.com"
         };
 
@@ -200,312 +262,262 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // إيميل الإدارة الخاص بك
         const adminEmail = "lm6p12@gmail.com";
         let isRegisterMode = false;
+        let currentAdminViewUid = null; // للمشتركة التي يفتحها الأدمن
 
-        const ui = {
-            sections: ['welcomeSection', 'authSection', 'verifyEmailSection', 'activationSection', 'userDashboard', 'adminDashboard'],
-            email: document.getElementById('emailInput'),
-            password: document.getElementById('passwordInput'),
-            mainBtn: document.getElementById('mainAuthBtn'),
-            logoutBtn: document.getElementById('logoutBtn'),
-            userEmailDisplay: document.getElementById('userEmailDisplay'),
-            msgBox: document.getElementById('globalMessage')
+        // دوال مساعدة للواجهة
+        window.showSection = (sectionId) => {
+            ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.toggle('hidden', sectionId === 'welcomeSection' || sectionId === 'authSection');
+        };
+        window.showMsg = (text, isError=true) => {
+            const m = document.getElementById('globalMessage');
+            m.textContent = text;
+            m.className = `fixed top-16 left-4 right-4 z-50 p-3 rounded-ios text-[15px] font-medium text-center shadow-lg block mx-auto max-w-md ${isError ? 'bg-[#FF3B30] text-white' : 'bg-black text-coach-green'}`;
+            setTimeout(() => m.classList.add('hidden'), 4000);
+        };
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.user-tab').forEach(t => t.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            if(tabId === 'tabChat' && auth.currentUser) loadUserChat(auth.currentUser.uid);
+        };
+        window.switchAdminTab = (tabId) => {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
         };
 
-        function showSection(sectionId) {
-            ui.sections.forEach(id => document.getElementById(id).classList.add('hidden'));
-            if(sectionId) document.getElementById(sectionId).classList.remove('hidden');
-            
-            if(sectionId !== 'welcomeSection' && sectionId !== 'authSection' && sectionId) {
-                ui.logoutBtn.classList.remove('hidden');
-                ui.userEmailDisplay.textContent = auth.currentUser?.email || '';
-            } else {
-                ui.logoutBtn.classList.add('hidden');
-                ui.userEmailDisplay.textContent = '';
-            }
-        }
+        // مسارات الدخول
+        document.getElementById('showLoginBtn').onclick = () => { isRegisterMode = false; document.getElementById('authTitle').innerText = 'تسجيل الدخول'; showSection('authSection'); };
+        document.getElementById('showRegisterBtn').onclick = () => { isRegisterMode = true; document.getElementById('authTitle').innerText = 'حساب جديد'; showSection('authSection'); };
+        document.getElementById('backToWelcomeBtn').onclick = () => showSection('welcomeSection');
+        document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-        function showMsg(text, isError = true) {
-            ui.msgBox.textContent = text;
-            ui.msgBox.className = `absolute top-16 left-4 right-4 z-50 p-3 rounded-ios text-[15px] font-medium text-center shadow-lg block ${isError ? 'bg-[#FF3B30] text-white' : 'bg-[#34C759] text-white'}`;
-            ui.msgBox.classList.remove('hidden');
-            setTimeout(() => ui.msgBox.classList.add('hidden'), 4000);
-        }
-
-        // واجهة الدخول
-        document.getElementById('showLoginBtn').addEventListener('click', () => {
-            isRegisterMode = false;
-            document.getElementById('authTitle').textContent = 'تسجيل الدخول';
-            document.getElementById('authSubtitle').textContent = 'أدخلي الإيميل وكلمة المرور';
-            ui.mainBtn.textContent = 'دخول';
-            document.getElementById('forgotPasswordBtn').classList.remove('hidden');
-            showSection('authSection');
-        });
-
-        // واجهة التسجيل (بدون كود)
-        document.getElementById('showRegisterBtn').addEventListener('click', () => {
-            isRegisterMode = true;
-            document.getElementById('authTitle').textContent = 'حساب جديد';
-            document.getElementById('authSubtitle').textContent = 'أنشئي حسابك باستخدام إيميلك';
-            ui.mainBtn.textContent = 'إنشاء حساب';
-            document.getElementById('forgotPasswordBtn').classList.add('hidden');
-            showSection('authSection');
-        });
-
-        document.getElementById('backToWelcomeBtn').addEventListener('click', () => {
-            showSection('welcomeSection');
-            ui.email.value = ''; ui.password.value = '';
-        });
-
-        document.getElementById('homeLogoBtn').addEventListener('click', () => {
-            if(!auth.currentUser) showSection('welcomeSection');
-        });
-
-        // عملية الدخول / التسجيل
-        ui.mainBtn.addEventListener('click', async () => {
-            const email = ui.email.value.trim();
-            const pass = ui.password.value.trim();
-
-            if (!email || !pass) return showMsg("يرجى إدخال الإيميل وكلمة المرور");
-
+        // التنفيذ (دخول/تسجيل)
+        document.getElementById('mainAuthBtn').onclick = async () => {
+            const email = document.getElementById('emailInput').value.trim();
+            const pass = document.getElementById('passwordInput').value.trim();
+            if(!email || !pass) return showMsg("أكملي البيانات");
             try {
-                ui.mainBtn.textContent = "جاري التحميل...";
-                ui.mainBtn.disabled = true;
+                if(isRegisterMode) await createUserWithEmailAndPassword(auth, email, pass);
+                else await signInWithEmailAndPassword(auth, email, pass);
+            } catch(e) { showMsg(e.message); }
+        };
 
-                if (isRegisterMode) {
-                    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-                    await sendEmailVerification(userCred.user);
-                    showMsg("تم إنشاء الحساب! يرجى تفعيل إيميلك", false);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                }
-            } catch (error) {
-                let errorMsg = "حدث خطأ غير متوقع";
-                if (error.code === 'auth/invalid-credential') errorMsg = "الإيميل أو كلمة المرور غير صحيحة";
-                if (error.code === 'auth/email-already-in-use') errorMsg = "الإيميل مسجل مسبقاً";
-                if (error.code === 'auth/weak-password') errorMsg = "كلمة المرور ضعيفة جداً (6 أحرف على الأقل)";
-                showMsg(errorMsg);
-            } finally {
-                ui.mainBtn.textContent = isRegisterMode ? 'إنشاء حساب' : 'دخول';
-                ui.mainBtn.disabled = false;
-            }
-        });
-
-        // التحقق من حالة المستخدم (المسار الذكي)
+        // مراقبة حالة المستخدم المركزية
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                if (user.email === adminEmail) {
-                    showSection('adminDashboard');
-                    loadAdminUsers();
+            if (!user) return showSection('welcomeSection');
+            
+            // 1. إذا كان الأدمن
+            if (user.email === adminEmail) {
+                showSection('adminDashboard');
+                document.getElementById('adminMainView').classList.remove('hidden');
+                document.getElementById('adminUserDetailView').classList.add('hidden');
+                loadAdminUsers();
+                return;
+            }
+
+            // 2. مستخدم عادي
+            const snap = await get(child(ref(db), `users/${user.uid}`));
+            if (snap.exists()) {
+                const data = snap.val();
+                if (new Date() > new Date(data.endDate)) {
+                    showSection('activationSection'); // انتهى الاشتراك
+                } else if (!data.onboardingCompleted) {
+                    showSection('onboardingSection'); // لم تكمل الأسئلة
                 } else {
-                    if (!user.emailVerified) {
-                        showSection('verifyEmailSection');
-                    } else {
-                        // جلب بيانات الاشتراك من القاعدة
-                        const dbRef = ref(db);
-                        const userSnapshot = await get(child(dbRef, `users/${user.uid}`));
-                        
-                        if (userSnapshot.exists()) {
-                            const data = userSnapshot.val();
-                            const end = new Date(data.endDate);
-                            const now = new Date();
-                            
-                            if (now > end) {
-                                // إذا انتهى الاشتراك
-                                document.getElementById('activationTitle').textContent = "انتهى اشتراكك ⏳";
-                                document.getElementById('activationSubtitle').textContent = "لتجديد رحلتك ومواصلة التدريب، أدخلي كود الاشتراك الجديد.";
-                                showSection('activationSection');
-                            } else {
-                                // إذا كان الاشتراك فعالاً
-                                showSection('userDashboard');
-                                renderTimeline(data.startDate, data.endDate);
-                            }
-                        } else {
-                            // مستخدمة جديدة ليس لديها أي اشتراك سابق
-                            document.getElementById('activationTitle').textContent = "تفعيل الاشتراك 🌿";
-                            document.getElementById('activationSubtitle').textContent = "أدخلي كود الاشتراك الخاص بك للبدء في برنامجك التدريبي.";
-                            showSection('activationSection');
-                        }
-                    }
+                    showSection('userDashboard'); // اشتراك فعال وكامل
+                    renderUserDashboard(data);
                 }
             } else {
-                showSection('welcomeSection');
+                showSection('activationSection'); // مستخدم جديد، يحتاج كود
             }
         });
 
-        // عملية إدخال كود التفعيل
-        document.getElementById('activateSubscriptionBtn').addEventListener('click', async () => {
-            const codeInput = document.getElementById('activationCodeInput');
-            const codeVal = codeInput.value.trim();
-            const btn = document.getElementById('activateSubscriptionBtn');
-
-            if(!codeVal) return showMsg("يرجى إدخال الكود أولاً");
-
+        // تفعيل الكود
+        document.getElementById('activateSubscriptionBtn').onclick = async () => {
+            const code = document.getElementById('activationCodeInput').value.trim();
+            if(!code) return showMsg("أدخلي الكود");
             try {
-                btn.textContent = "جاري التحقق...";
-                btn.disabled = true;
-
-                const dbRef = ref(db);
-                const codeSnapshot = await get(child(dbRef, `codes/${codeVal}`));
+                const snap = await get(child(ref(db), `codes/${code}`));
+                if(!snap.exists() || snap.val().used) throw new Error("كود غير صالح");
                 
-                if (!codeSnapshot.exists() || codeSnapshot.val().used) {
-                    throw new Error("الكود غير صحيح أو تم استخدامه مسبقاً");
-                }
-
-                // حساب التواريخ
-                const days = codeSnapshot.val().days || 30;
-                const startDate = new Date();
-                const endDate = new Date();
-                endDate.setDate(endDate.getDate() + days);
-
-                // حفظ بيانات الاشتراك للمشتركة
-                await set(ref(db, 'users/' + auth.currentUser.uid), {
+                const days = snap.val().days || 30;
+                const end = new Date(); end.setDate(end.getDate() + days);
+                
+                await set(ref(db, `users/${auth.currentUser.uid}`), {
                     email: auth.currentUser.email,
-                    startDate: startDate.toISOString(),
-                    endDate: endDate.toISOString()
+                    startDate: new Date().toISOString(),
+                    endDate: end.toISOString(),
+                    onboardingCompleted: false
                 });
-
-                // تعطيل الكود
-                await update(ref(db, 'codes/' + codeVal), { used: true, usedBy: auth.currentUser.email });
-                
-                showMsg("تم تفعيل اشتراكك بنجاح! مرحباً بك", false);
-                codeInput.value = '';
-                
-                // تحديث الواجهة فوراً
-                showSection('userDashboard');
-                renderTimeline(startDate.toISOString(), endDate.toISOString());
-
-            } catch (error) {
-                showMsg(error.message || "حدث خطأ أثناء التفعيل");
-            } finally {
-                btn.textContent = "تفعيل الحساب";
-                btn.disabled = false;
-            }
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth);
-            ui.email.value = ''; ui.password.value = ''; document.getElementById('activationCodeInput').value = '';
-        });
-
-        document.getElementById('forgotPasswordBtn').addEventListener('click', async () => {
-            const email = ui.email.value.trim();
-            if(!email) return showMsg("أدخلي الإيميل في الحقل أولاً لإرسال الرابط");
-            try {
-                await sendPasswordResetEmail(auth, email);
-                showMsg("تم إرسال الرابط بنجاح", false);
-            } catch (error) { showMsg("حدث خطأ في الإرسال"); }
-        });
-
-        document.getElementById('resendVerificationBtn').addEventListener('click', async () => {
-            try {
-                await sendEmailVerification(auth.currentUser);
-                showMsg("تم إرسال الرسالة", false);
-            } catch (e) { showMsg("انتظري قليلاً قبل المحاولة"); }
-        });
-
-        document.getElementById('changePasswordBtn').addEventListener('click', async () => {
-            try {
-                await sendPasswordResetEmail(auth, auth.currentUser.email);
-                showMsg("تم إرسال الرابط لإيميلك", false);
-            } catch(e) { showMsg("حدث خطأ"); }
-        });
-
-        // ---------------- الإدارة ---------------- //
-        document.getElementById('generateCodeBtn').addEventListener('click', async () => {
-            const codeVal = document.getElementById('adminNewCode').value.trim();
-            const daysVal = parseInt(document.getElementById('adminDays').value) || 0;
-            if(!codeVal || daysVal <= 0) return showMsg("بيانات الكود غير مكتملة");
-
-            try {
-                await set(ref(db, 'codes/' + codeVal), { code: codeVal, days: daysVal, used: false });
-                showMsg("تم حفظ الكود بنجاح!", false);
-                document.getElementById('adminNewCode').value = '';
-            } catch (e) { showMsg("حدث خطأ في الحفظ"); }
-        });
-
-        document.getElementById('refreshUsersBtn').addEventListener('click', loadAdminUsers);
-
-        async function loadAdminUsers() {
-            const listUI = document.getElementById('usersList');
-            listUI.innerHTML = '<p class="text-[15px] text-apple-gray text-center py-6">جاري التحميل...</p>';
-            try {
-                const dbRef = ref(db);
-                const snapshot = await get(child(dbRef, 'users'));
-                listUI.innerHTML = '';
-                
-                if(!snapshot.exists()) {
-                    listUI.innerHTML = '<p class="text-[15px] text-apple-gray text-center py-6">لا توجد مشتركات</p>';
-                    return;
-                }
-
-                snapshot.forEach((childSnapshot) => {
-                    const uid = childSnapshot.key;
-                    const data = childSnapshot.val();
-                    const end = new Date(data.endDate);
-                    const diffDays = Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24));
-                    
-                    listUI.innerHTML += `
-                        <div class="p-4 flex justify-between items-center">
-                            <div>
-                                <p class="text-[15px] font-semibold text-black">${data.email}</p>
-                                <p class="text-[13px] ${diffDays > 0 ? 'text-apple-blue' : 'text-red-500'} mt-0.5">${diffDays > 0 ? 'باقي ' + diffDays + ' يوم' : 'منتهي'}</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="window.addDays('${uid}')" class="text-[13px] bg-gray-100 text-black px-3 py-1.5 rounded-lg font-medium">تعديل</button>
-                                <button onclick="window.deleteUser('${uid}')" class="text-[13px] text-red-500 bg-red-50 px-3 py-1.5 rounded-lg font-medium">حذف</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch (e) { listUI.innerHTML = '<p class="text-sm text-red-500 text-center py-4">فشل التحميل</p>'; }
-        }
-
-        window.addDays = async (uid) => {
-            const extraDays = prompt("كم عدد الأيام المراد إضافتها؟ (بالسالب للخصم)", "10");
-            if(extraDays) {
-                try {
-                    const dbRef = ref(db);
-                    const userSnapshot = await get(child(dbRef, `users/${uid}`));
-                    const newEndDate = new Date(userSnapshot.val().endDate);
-                    newEndDate.setDate(newEndDate.getDate() + parseInt(extraDays));
-                    
-                    await update(ref(db, `users/${uid}`), { endDate: newEndDate.toISOString() });
-                    showMsg("تم تعديل الأيام بنجاح!", false);
-                    loadAdminUsers();
-                } catch(e) { showMsg("حدث خطأ أثناء التعديل"); }
-            }
+                await update(ref(db, `codes/${code}`), { used: true });
+                showSection('onboardingSection');
+            } catch(e) { showMsg(e.message); }
         };
 
-        window.deleteUser = async (uid) => {
-            if(confirm("هل أنتِ متأكدة من حذف المشتركة نهائياً؟")) {
-                try {
-                    await remove(ref(db, `users/${uid}`));
-                    showMsg("تم الحذف بنجاح", false);
-                    loadAdminUsers();
-                } catch(e) { showMsg("حدث خطأ أثناء الحذف"); }
-            }
-        };
-
-        // ---------------- التايم لاين ---------------- //
-        function renderTimeline(startIso, endIso) {
-            const start = new Date(startIso);
-            const end = new Date(endIso);
-            const now = new Date();
-
-            let percentage = ((now - start) / (end - start)) * 100;
-            percentage = Math.max(0, Math.min(percentage, 100));
-
-            const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-
-            document.getElementById('startDateText').textContent = start.toLocaleDateString('en-GB');
-            document.getElementById('endDateText').textContent = end.toLocaleDateString('en-GB');
-            document.getElementById('daysRemainingText').textContent = `${diffDays} يوم`;
+        // حفظ الأسئلة المبدئية
+        document.getElementById('saveOnboardingBtn').onclick = async () => {
+            const goal = document.getElementById('qGoal').value;
+            const weight = document.getElementById('qWeight').value;
+            const height = document.getElementById('qHeight').value;
+            const notes = document.getElementById('qNotes').value;
             
-            setTimeout(() => { document.getElementById('timelineBar').style.width = `${percentage}%`; }, 100);
+            await update(ref(db, `users/${auth.currentUser.uid}`), {
+                onboardingCompleted: true,
+                profile: { goal, weight, height, notes },
+                progress: { currentWeight: weight }
+            });
+            const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`));
+            renderUserDashboard(snap.val());
+            showSection('userDashboard');
+        };
+
+        // تحديث وزن المشتركة
+        document.getElementById('updateProgressBtn').onclick = async () => {
+            const newW = document.getElementById('userCurrentWeight').value;
+            if(!newW) return;
+            await update(ref(db, `users/${auth.currentUser.uid}/progress`), { currentWeight: newW });
+            showMsg("تم تحديث التقدم 👏", false);
+        };
+
+        function renderUserDashboard(data) {
+            const end = new Date(data.endDate);
+            document.getElementById('daysRemainingText').innerText = Math.ceil((end - new Date())/(1000*60*60*24)) + ' يوم';
+            document.getElementById('userNutritionPlan').innerText = data.plan?.nutrition || "لم يتم إضافة خطة التغذية بعد.";
+            document.getElementById('userWorkoutPlan').innerText = data.plan?.workout || "لم يتم إضافة خطة التمارين بعد.";
+            switchTab('tabHome');
         }
+
+        // ==================== الإدارة (Admin) ====================
+        
+        // إنشاء كود
+        document.getElementById('generateCodeBtn').onclick = async () => {
+            const code = document.getElementById('adminNewCode').value.trim();
+            const days = parseInt(document.getElementById('adminDays').value);
+            if(code && days) {
+                await set(ref(db, `codes/${code}`), { code, days, used: false });
+                showMsg("تم حفظ الكود", false);
+            }
+        };
+
+        // جلب قائمة المشتركات
+        async function loadAdminUsers() {
+            const list = document.getElementById('usersList');
+            const snap = await get(child(ref(db), 'users'));
+            list.innerHTML = '';
+            if(!snap.exists()) return list.innerHTML = '<p class="text-center py-4">لا مشتركات</p>';
+            
+            snap.forEach(childSnap => {
+                const uid = childSnap.key;
+                const d = childSnap.val();
+                list.innerHTML += `
+                    <div class="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50" onclick="window.openUserDetail('${uid}')">
+                        <div>
+                            <p class="font-semibold text-black">${d.email}</p>
+                            <p class="text-[13px] text-gray-500">${d.onboardingCompleted ? 'أكملت البيانات' : 'جديدة'}</p>
+                        </div>
+                        <span class="text-xl">›</span>
+                    </div>`;
+            });
+        }
+        document.getElementById('refreshUsersBtn').onclick = loadAdminUsers;
+
+        // فتح تفاصيل مشتركة
+        window.openUserDetail = async (uid) => {
+            currentAdminViewUid = uid;
+            const snap = await get(child(ref(db), `users/${uid}`));
+            const d = snap.val();
+            
+            document.getElementById('adminMainView').classList.add('hidden');
+            document.getElementById('adminUserDetailView').classList.remove('hidden');
+            
+            document.getElementById('detailUserEmail').innerText = d.email;
+            
+            if(d.profile) {
+                document.getElementById('detailUserAnswers').innerText = `الهدف: ${d.profile.goal} | الوزن البداية: ${d.profile.weight} | الطول: ${d.profile.height}\nملاحظات: ${d.profile.notes}`;
+            }
+            document.getElementById('detailUserProgress').innerText = `أحدث وزن: ${d.progress?.currentWeight || '--'}`;
+            
+            document.getElementById('adminPlanNutrition').value = d.plan?.nutrition || '';
+            document.getElementById('adminPlanWorkout').value = d.plan?.workout || '';
+            
+            switchAdminTab('adminTabPlan');
+            loadAdminChat(uid);
+        };
+
+        document.getElementById('backToAdminMainBtn').onclick = () => {
+            document.getElementById('adminUserDetailView').classList.add('hidden');
+            document.getElementById('adminMainView').classList.remove('hidden');
+        };
+
+        // حفظ الخطة من الأدمن
+        document.getElementById('adminSavePlanBtn').onclick = async () => {
+            const nut = document.getElementById('adminPlanNutrition').value;
+            const wrk = document.getElementById('adminPlanWorkout').value;
+            await update(ref(db, `users/${currentAdminViewUid}/plan`), { nutrition: nut, workout: wrk });
+            showMsg("تم إرسال الخطة للمشتركة!", false);
+        };
+
+        // ==================== نظام المحادثة (Chat) ====================
+        
+        function formatMsg(text, isMe, isAdminContext) {
+            // isMe: هل أنا المرسل الحالي؟
+            // isAdminContext: هل الواجهة التي ترسم الشات هي واجهة الإدارة؟
+            let cssClass = "";
+            if (isAdminContext) {
+                cssClass = isMe ? "msg-admin" : "msg-other";
+            } else {
+                cssClass = isMe ? "msg-me" : "msg-other";
+            }
+            return `<div class="chat-msg ${cssClass}">${text}</div>`;
+        }
+
+        // شات المشتركة
+        function loadUserChat(uid) {
+            const area = document.getElementById('userChatArea');
+            onValue(ref(db, `chats/${uid}`), (snap) => {
+                area.innerHTML = '';
+                if(snap.exists()){
+                    snap.forEach(c => {
+                        const m = c.val();
+                        area.innerHTML += formatMsg(m.text, m.sender === 'user', false);
+                    });
+                    area.scrollTop = area.scrollHeight;
+                }
+            });
+        }
+        document.getElementById('userSendChatBtn').onclick = () => {
+            const inp = document.getElementById('userChatInput');
+            if(inp.value.trim()){
+                push(ref(db, `chats/${auth.currentUser.uid}`), { text: inp.value, sender: 'user', time: Date.now() });
+                inp.value = '';
+            }
+        };
+
+        // شات الأدمن
+        function loadAdminChat(uid) {
+            const area = document.getElementById('adminChatArea');
+            onValue(ref(db, `chats/${uid}`), (snap) => {
+                area.innerHTML = '';
+                if(snap.exists()){
+                    snap.forEach(c => {
+                        const m = c.val();
+                        area.innerHTML += formatMsg(m.text, m.sender === 'admin', true);
+                    });
+                    area.scrollTop = area.scrollHeight;
+                }
+            });
+        }
+        document.getElementById('adminSendChatBtn').onclick = () => {
+            const inp = document.getElementById('adminChatInput');
+            if(inp.value.trim() && currentAdminViewUid){
+                push(ref(db, `chats/${currentAdminViewUid}`), { text: inp.value, sender: 'admin', time: Date.now() });
+                inp.value = '';
+            }
+        };
+
     </script>
 </body>
 </html>

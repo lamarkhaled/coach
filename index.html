@@ -326,7 +326,7 @@
                 </div>
             </div>
 
-            <!-- ملف المتدربة المفصل للأدمن (مع زر حفظ شامل وموحد يضمن حفظ كل التعديلات ونشرها فوراً) -->
+            <!-- ملف المتدربة المفصل للأدمن (مع زر حفظ موحد شامل يضمن الحفظ الفوري) -->
             <div id="adminUserDetailView" class="hidden flex flex-col gap-4">
                 <button id="backToAdminMainBtn" class="text-gray-400 text-xs font-bold self-start bg-input px-4 py-2.5 rounded-full border border-border-color">❮ رجوع للقائمة</button>
                 
@@ -345,7 +345,6 @@
                     <button onclick="switchAdminTab('adminTabChat')" class="flex-1 py-3 text-xs font-bold rounded-xl text-gray-400">4. المحادثة</button>
                 </div>
 
-                <!-- 1. أهداف الماكروز -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <h3 class="text-sm font-bold text-white">تحديد أهداف الماكروز اليومي للمتدربة</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
@@ -356,7 +355,6 @@
                     </div>
                 </div>
 
-                <!-- 2. وجبات التغذية -->
                 <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🍎 وجبات التغذية والمكونات</label>
@@ -365,7 +363,6 @@
                     <div id="adminMealsList" class="space-y-4"></div>
                 </div>
 
-                <!-- 3. التمارين -->
                 <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-card shadow-xl space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-bold text-white">🏋️‍♀️ جدول تمارين اليوم</label>
@@ -374,7 +371,6 @@
                     <div id="adminExercisesList" class="space-y-3"></div>
                 </div>
 
-                <!-- 4. المحادثة -->
                 <div id="adminTabChat" class="admin-tab hidden bg-card rounded-ios-lg border border-card h-[60vh] flex flex-col overflow-hidden shadow-xl">
                     <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto"></div>
                     <div class="p-3.5 border-t border-border-color bg-input flex gap-3 items-center">
@@ -1201,7 +1197,7 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        // زر الحفظ الموحد الشامل (المضمون 100% والذي يحفظ كل التعديلات: الماكروز والوجبات والتمارين دفعة واحدة بضغطة زر)
+        // زر الحفظ الشامل الموحد والآمن تماماً
         document.getElementById('adminSaveAllBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,

@@ -1201,7 +1201,7 @@
         window.addIng = (mIdx) => { currentAdminMeals[mIdx].ingredients = currentAdminMeals[mIdx].ingredients || []; currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); renderAdminMeals(); };
         window.remIng = (mIdx, iIdx) => { currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); renderAdminMeals(); };
 
-        // زر الحفظ الشامل الموحد والآمن تماماً
+        // زر الحفظ الموحد الشامل (المضمون 100% والذي يحفظ كل التعديلات: الماكروز والوجبات والتمارين دفعة واحدة بضغطة زر)
         document.getElementById('adminSaveAllBtn').onclick = async () => {
             const targets = {
                 cal: parseInt(document.getElementById('targetCalInput').value) || 2000,

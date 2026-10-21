@@ -46,7 +46,7 @@ export function initUI() {
     };
 
     window.showSection = (sectionId) => {
-        ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard'].forEach(id => {
+        ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard', 'verifyEmailSection'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
         });

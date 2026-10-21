@@ -1,0 +1,9 @@
+.glass-nav { 
+    background-color: var(--bg-card); 
+    background-opacity: 0.85; 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+}
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}

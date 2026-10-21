@@ -56,16 +56,40 @@ export function initAdmin() {
     };
 
     window.addMilestone = () => {
-        const title = document.getElementById('msTitle').value.trim(); const weight = parseFloat(document.getElementById('msWeight').value) || 0; const note = document.getElementById('msNote').value.trim();
+        const title = document.getElementById('msTitle').value.trim(); 
+        const weight = parseFloat(document.getElementById('msWeight').value) || 0; 
+        const preNote = document.getElementById('msPreNote').value.trim();
+        const postNote = document.getElementById('msPostNote').value.trim();
+
         if(!title || !weight) return window.showMsg("أدخلي اسم المرحلة والوزن المستهدف", true);
-        window.currentAdminTimeline.push({ title, targetWeight: weight, note });
-        document.getElementById('msTitle').value = ''; document.getElementById('msWeight').value = ''; document.getElementById('msNote').value = ''; window.renderAdminTimeline();
+        window.currentAdminTimeline.push({ title, targetWeight: weight, preNote, postNote });
+        
+        document.getElementById('msTitle').value = ''; 
+        document.getElementById('msWeight').value = ''; 
+        document.getElementById('msPreNote').value = ''; 
+        document.getElementById('msPostNote').value = '';
+        window.renderAdminTimeline();
     };
 
     window.renderAdminTimeline = () => {
         const list = document.getElementById('adminTimelineList'); list.innerHTML = '';
-        if(window.currentAdminTimeline.length === 0) list.innerHTML = '<p class="text-xs text-muted py-4 text-center">لم يتم بناء خطة مخصصة بعد. ستظهر الخطة التلقائية للمتدربة.</p>';
-        window.currentAdminTimeline.forEach((m, idx) => { list.innerHTML += `<div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-3 relative shadow-sm fade-in"><button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button><div class="flex items-center gap-3"><span class="text-sm font-bold text-primary">${m.title}</span><span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span></div>${m.note ? `<span class="text-[11px] text-muted font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50">${m.note}</span>` : ''}</div>`; });
+        if(window.currentAdminTimeline.length === 0) { list.innerHTML = '<p class="text-xs text-muted py-4 text-center">لم يتم بناء خطة مخصصة بعد. ستظهر الخطة التلقائية للمتدربة.</p>'; return; }
+        
+        window.currentAdminTimeline.forEach((m, idx) => { 
+            const preHtml = m.preNote ? `<div class="text-[11px] text-muted font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50 mt-2">قبل: ${m.preNote}</div>` : '';
+            const postHtml = m.postNote ? `<div class="text-[11px] text-accent font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50 mt-1">بعد: ${m.postNote}</div>` : '';
+            
+            list.innerHTML += `
+            <div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-2 relative shadow-sm fade-in">
+                <button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-bold text-primary">${m.title}</span>
+                    <span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span>
+                </div>
+                ${preHtml}
+                ${postHtml}
+            </div>`; 
+        });
     };
     window.remMilestone = (idx) => { window.currentAdminTimeline.splice(idx, 1); window.renderAdminTimeline(); };
 

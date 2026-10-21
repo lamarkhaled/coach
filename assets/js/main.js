@@ -3,7 +3,6 @@ import { initWidgets } from './widgets.js';
 import { initAdmin } from './admin.js';
 import { initAuth } from './auth.js';
 
-// تعريف المتغيرات المشتركة
 window.adminEmail = "lm6p12@gmail.com";
 window.activeUserData = null;
 window.currentAdminViewUid = null;
@@ -21,7 +20,6 @@ window.globalWorkHours = { start: '09:00', end: '17:00' };
 window.lastAutoReplyTime = 0;
 window.currentUserUid = null;
 
-// دالة التاريخ
 window.getTodayStr = () => { 
     const d = new Date();
     const year = d.getFullYear();
@@ -30,7 +28,6 @@ window.getTodayStr = () => {
     return `${year}-${month}-${day}`;
 };
 
-// دالة التشغيل الآمنة (تضمن إن الأزرار موجودة قبل تشغيل الكود)
 function bootstrapApp() {
     initUI();
     initWidgets();
@@ -38,7 +35,6 @@ function bootstrapApp() {
     initAuth();
 }
 
-// تشغيل النظام
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootstrapApp);
 } else {

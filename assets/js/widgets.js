@@ -66,7 +66,6 @@ export function initWidgets() {
         const curW = currentWeight || startW; 
         const isGaining = targetW > startW;
 
-        // حساب أفضل وزن وصلت له المتدربة عشان نكشف التراجع
         const historyObj = window.activeUserData?.progress?.weightHistory || {};
         const historyVals = Object.values(historyObj).map(Number);
         let bestW = curW;
@@ -74,13 +73,9 @@ export function initWidgets() {
             bestW = isGaining ? Math.max(...historyVals) : Math.min(...historyVals);
         }
 
-        // بناء قائمة المراحل
         let steps = [];
-        if(customTimeline && customTimeline.length > 0) {
-            steps = [...customTimeline];
-        }
+        if(customTimeline && customTimeline.length > 0) { steps = [...customTimeline]; }
 
-        // إضافة الهدف النهائي دائماً في الأخير
         if(targetW > 0) {
             const lastStep = steps.length > 0 ? steps[steps.length - 1] : null;
             if(!lastStep || lastStep.targetWeight !== targetW) {
@@ -117,20 +112,17 @@ export function initWidgets() {
                 let clickAttr = '';
 
                 if (isPassed) {
-                    // وصلت للوزن أو تعدته
                     const postNoteText = m.postNote || 'ألف مبروك! إنجاز رائع واصلي يا بطلة 💪';
                     const safePostNote = postNoteText.replace(/'/g, "\\'");
                     clickAttr = `onclick="window.openMilestone('${m.title}', '${safePostNote}')"`;
-                    noteHtml = `<div class="mt-3 p-3 bg-accent bg-opacity-10 border border-accent rounded-xl text-center"><p class="text-[11px] text-accent leading-relaxed font-bold">${postNoteText}</p><span class="text-[10px] text-primary mt-2 block font-bold underline cursor-pointer hover:text-accent transition-colors">اضغطي هنا للاحتفال 🎉</span></div>`;
+                    noteHtml = `<div class="mt-3 p-3 bg-accent bg-opacity-10 border border-accent rounded-xl text-center"><p class="text-[11px] text-primary leading-relaxed font-bold">${postNoteText}</p><span class="text-[10px] text-primary mt-2 block font-bold underline cursor-pointer hover:text-accent transition-colors">اضغطي هنا للاحتفال 🎉</span></div>`;
                 } else if (wasPassed && !isPassed) {
-                    // تراجعت بالوزن بعد ما فتحتها
                     iconClass = 'timeline-icon-locked border-red-500 text-red-500 bg-red-500 bg-opacity-10';
                     iconSymbol = '🔒';
                     noteHtml = `<div class="mt-3 p-3 bg-red-500 bg-opacity-10 border border-red-500 rounded-xl text-center"><p class="text-[11px] text-red-500 leading-relaxed font-bold">ترا رجعتي للوراء! يلا شدي حيلك عشان نرجع نفتحها 💪</p></div>`;
                 } else {
-                    // مرحلة مقفلة طبيعية لسه ما وصلتها
                     const preNoteText = m.preNote || m.note || 'استمري، أنتِ في طريقك لتحقيق هذا الهدف!';
-                    noteHtml = `<div class="mt-3 p-3 bg-input rounded-xl border border-theme text-center opacity-80"><p class="text-[11px] text-muted leading-relaxed font-medium">🔒 ${preNoteText}</p></div>`;
+                    noteHtml = `<div class="mt-3 p-4 bg-input rounded-xl border border-theme text-center"><p class="text-[11px] text-primary leading-relaxed font-bold">🔒 ${preNoteText}</p></div>`;
                 }
 
                 htmlStr += `
@@ -139,7 +131,7 @@ export function initWidgets() {
                     <div class="bg-card p-5 rounded-2xl border ${isPassed ? 'border-accent shadow-lg cursor-pointer active:scale-95 transition-transform' : 'border-theme shadow-sm'}" ${clickAttr}>
                         <div class="flex justify-between items-center mb-1">
                             <h4 class="text-sm font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.title}</h4>
-                            <span class="text-[11px] bg-input border border-theme px-3 py-1 rounded-lg font-bold shadow-inner">${m.targetWeight} كج</span>
+                            <span class="text-[11px] bg-input border border-theme text-primary px-3 py-1 rounded-lg font-bold shadow-inner">${m.targetWeight} كج</span>
                         </div>
                         ${noteHtml}
                     </div>
@@ -150,7 +142,6 @@ export function initWidgets() {
             container.innerHTML = '<p class="text-xs text-muted text-center py-4">لم يتم بناء خطة المراحل بعد.</p>';
         }
 
-        // تحديث البانر اللي فوق
         let isFinalGoalReached = false;
         if(targetW > 0) { isFinalGoalReached = (!isGaining && curW <= targetW) || (isGaining && curW >= targetW); }
         const badge = document.getElementById('goalStatusBadge');
@@ -216,21 +207,40 @@ export function initWidgets() {
     }
 
     const btnUpdateW = document.getElementById('updateProgressBtn');
-    if(btnUpdateW) btnUpdateW.onclick = async () => {
-        const newW = parseFloat(document.getElementById('userCurrentWeight').value); const newH = parseFloat(document.getElementById('userHeightInput').value) || window.activeUserData.profile?.height || 160;
-        if(isNaN(newW)) return window.showMsg("أدخلي الوزن بشكل صحيح");
-        const uid = auth.currentUser.uid; const weightHistory = window.activeUserData.progress?.weightHistory || {}; const dates = Object.keys(weightHistory);
-        let lastWeight = window.activeUserData.profile?.weight || newW; if(dates.length > 0) lastWeight = weightHistory[dates[dates.length - 1]];
-        const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }); weightHistory[timestamp] = newW;
-        window.activeUserData.progress = window.activeUserData.progress || {}; window.activeUserData.progress.weightHistory = weightHistory; window.activeUserData.progress.currentWeight = newW;
-        window.activeUserData.profile = window.activeUserData.profile || {}; window.activeUserData.profile.height = newH; window.activeUserData.profile.weight = newW;
-        await update(ref(db, `users/${uid}/progress`), window.activeUserData.progress); await update(ref(db, `users/${uid}/profile`), window.activeUserData.profile);
-        const roastBanner = document.getElementById('weightRoastBanner'); roastBanner.classList.remove('hidden');
-        if(newW > lastWeight) { roastBanner.className = 'bg-red-500 text-white p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'يا ويلك! 😡 وزنك زاد عن القياس السابق.. شدي حيلك!'; window.showMsg("الوزن زاد! انتبهي ⚠️", true); } 
-        else if (newW < lastWeight) { roastBanner.className = 'bg-accent text-accent-text p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'شطووورة! 🎉 نزلتي وزنك.. استمري يا بطلة فخورة فيك!'; window.showMsg("عاش بطلتنا! نزول ممتاز 🌟", false); } 
-        else { roastBanner.className = 'bg-yellow-500 text-black p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'وزنك ثابت! مو مشكلة أهم شيء الالتزام.'; window.showMsg("تم حفظ القياس بنجاح 🌟", false); }
-        window.renderUserDashboard(window.activeUserData);
-    };
+    if(btnUpdateW) {
+        btnUpdateW.onclick = async () => {
+            const newW = parseFloat(document.getElementById('userCurrentWeight').value); const newH = parseFloat(document.getElementById('userHeightInput').value) || window.activeUserData.profile?.height || 160;
+            if(isNaN(newW)) return window.showMsg("أدخلي الوزن بشكل صحيح");
+            
+            btnUpdateW.innerText = 'جاري الحفظ...';
+            btnUpdateW.disabled = true;
+
+            const uid = auth.currentUser.uid; const weightHistory = window.activeUserData.progress?.weightHistory || {}; const dates = Object.keys(weightHistory);
+            let lastWeight = window.activeUserData.profile?.weight || newW; if(dates.length > 0) lastWeight = weightHistory[dates[dates.length - 1]];
+            const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }); weightHistory[timestamp] = newW;
+            window.activeUserData.progress = window.activeUserData.progress || {}; window.activeUserData.progress.weightHistory = weightHistory; window.activeUserData.progress.currentWeight = newW;
+            window.activeUserData.profile = window.activeUserData.profile || {}; window.activeUserData.profile.height = newH; window.activeUserData.profile.weight = newW;
+            await update(ref(db, `users/${uid}/progress`), window.activeUserData.progress); await update(ref(db, `users/${uid}/profile`), window.activeUserData.profile);
+            
+            // تغيير الزر لـ "تم الحفظ" بالأخضر
+            btnUpdateW.innerText = 'تم الحفظ ✔️';
+            btnUpdateW.classList.remove('bg-accent', 'text-accent-text');
+            btnUpdateW.classList.add('bg-green-500', 'text-white');
+            
+            setTimeout(() => {
+                btnUpdateW.innerText = 'حفظ التحديث';
+                btnUpdateW.classList.remove('bg-green-500', 'text-white');
+                btnUpdateW.classList.add('bg-accent', 'text-accent-text');
+                btnUpdateW.disabled = false;
+            }, 3000);
+
+            const roastBanner = document.getElementById('weightRoastBanner'); roastBanner.classList.remove('hidden');
+            if(newW > lastWeight) { roastBanner.className = 'bg-red-500 text-white p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'يا ويلك! 😡 وزنك زاد عن القياس السابق.. شدي حيلك!'; window.showMsg("الوزن زاد! انتبهي ⚠️", true); } 
+            else if (newW < lastWeight) { roastBanner.className = 'bg-accent text-accent-text p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'شطووورة! 🎉 نزلتي وزنك.. استمري يا بطلة فخورة فيك!'; window.showMsg("عاش بطلتنا! نزول ممتاز 🌟", false); } 
+            else { roastBanner.className = 'bg-yellow-500 text-black p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'وزنك ثابت! مو مشكلة أهم شيء الالتزام.'; window.showMsg("تم حفظ القياس بنجاح 🌟", false); }
+            window.renderUserDashboard(window.activeUserData);
+        };
+    }
 
     window.openWeightHistoryModal = () => {
         const listContainer = document.getElementById('modalWeightHistoryList'); const history = window.activeUserData.progress?.weightHistory || {}; listContainer.innerHTML = '';

@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>كوتش صحة</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/layout.css">
@@ -37,12 +34,10 @@
             <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-52 mb-8 object-contain">
             <h1 class="text-3xl font-black mb-4 text-primary">منصة كوتش صحة</h1>
             <p class="text-muted text-sm mb-8 max-w-xs leading-relaxed font-medium">برامج تدريبية وتغذية مخصصة ومتابعة مباشرة لبناء أهدافك.</p>
-            
             <div class="w-full max-w-sm space-y-4">
                 <button id="showLoginBtn" class="w-full bg-accent font-bold py-4 rounded-ios text-base shadow-sm text-accent-text transition-transform active:scale-95">تسجيل الدخول</button>
                 <button id="showRegisterBtn" class="w-full bg-card border border-theme text-primary font-bold py-4 rounded-ios text-base shadow-sm transition-transform active:scale-95">حساب جديد</button>
             </div>
-
             <div class="flex justify-center gap-5 mt-10">
                 <a href="https://x.com/health_coaach?s=11" target="_blank" class="w-12 h-12 bg-input border border-theme rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-accent hover:text-accent-text hover:border-accent transition-all duration-300 active:scale-90">
                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -96,10 +91,8 @@
 
         <!-- ================= USER DASHBOARD ================= -->
         <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl fade-in">
-            
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
                 <div id="currentDayBanner" class="bg-accent text-accent-text p-4 rounded-2xl font-black text-center text-lg shadow-lg"></div>
-
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
                 <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
@@ -137,14 +130,8 @@
                         <button onclick="window.openWeightHistoryModal()" class="bg-card border border-theme text-primary font-bold px-5 py-4 rounded-xl text-sm shadow-sm">سجل الأوزان</button>
                     </div>
                     <div id="bmiResultCard" class="hidden bg-input p-5 rounded-xl border border-theme space-y-3 mt-3 shadow-inner">
-                        <div class="flex justify-between items-center">
-                            <span class="text-muted text-xs font-bold">مؤشر الكتلة (BMI):</span>
-                            <span id="bmiValueText" class="font-black text-accent text-lg">--</span>
-                        </div>
-                        <div class="flex justify-between items-center border-t border-theme pt-3">
-                            <span class="text-muted text-xs font-bold">حالة الجسم:</span>
-                            <span id="bmiStatusText" class="font-bold text-primary text-sm">--</span>
-                        </div>
+                        <div class="flex justify-between items-center"><span class="text-muted text-xs font-bold">مؤشر الكتلة (BMI):</span><span id="bmiValueText" class="font-black text-accent text-lg">--</span></div>
+                        <div class="flex justify-between items-center border-t border-theme pt-3"><span class="text-muted text-xs font-bold">حالة الجسم:</span><span id="bmiStatusText" class="font-bold text-primary text-sm">--</span></div>
                     </div>
                 </div>
 
@@ -156,17 +143,13 @@
 
             <div id="tabPlan" class="user-tab hidden w-full space-y-6 fade-in">
                 <h1 class="text-2xl font-black px-1 text-primary">برنامج <span class="text-accent">اليوم</span></h1>
-                
                 <div class="flex gap-3 bg-card p-1.5 rounded-2xl border border-theme shadow-sm">
                     <button onclick="window.switchPlanSubTab('nutrition')" id="btnSubNut" class="flex-1 bg-accent font-bold py-3.5 rounded-xl text-sm transition-all text-accent-text shadow-sm">🍎 وجبات اليوم</button>
                     <button onclick="window.switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all">🏋️‍♀️ تمارين اليوم</button>
                 </div>
 
                 <div id="subTabNutrition" class="plan-sub-tab block space-y-6 fade-in">
-                    <button onclick="window.openGroceryList()" class="w-full bg-card border border-theme text-primary font-black text-sm py-4 rounded-xl shadow-sm transition-transform active:scale-95 mb-2 flex items-center justify-center gap-2">
-                        <span class="text-xl">🛒</span> عرض قائمة المقاضي للوصفات
-                    </button>
-
+                    <button onclick="window.openGroceryList()" class="w-full bg-card border border-theme text-primary font-black text-sm py-4 rounded-xl shadow-sm transition-transform active:scale-95 mb-2 flex items-center justify-center gap-2"><span class="text-xl">🛒</span> عرض قائمة المقاضي للوصفات</button>
                     <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
                         <div class="flex justify-between items-center border-b border-theme pb-4">
                             <h3 class="text-sm font-bold text-primary">ملخص الماكروز</h3>
@@ -201,14 +184,9 @@
                         <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-accent to-green-500 flex items-center justify-center font-black text-accent-text text-xl shadow-sm">ص</div>
                         <div id="userChatStatusDot" class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-card rounded-full transition-colors duration-300"></div>
                     </div>
-                    <div>
-                        <h3 class="font-black text-base text-primary">كوتش صحة</h3>
-                        <p id="userChatStatusText" class="text-[11px] font-bold text-muted mt-0.5">غير متصلة</p>
-                    </div>
+                    <div><h3 class="font-black text-base text-primary">كوتش صحة</h3><p id="userChatStatusText" class="text-[11px] font-bold text-muted mt-0.5">غير متصلة</p></div>
                 </div>
-                
                 <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
-                
                 <div class="p-3 bg-card border-t border-theme flex gap-2 items-center z-10 pb-safe">
                     <label class="cursor-pointer text-muted bg-input w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full border border-theme shadow-sm transition-transform active:scale-95">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
@@ -228,7 +206,6 @@
             <div id="adminMainView">
                 <h1 class="text-2xl font-black mb-6 text-primary">لوحة الإدارة المركزية</h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    
                     <div class="space-y-5">
                         <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                             <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">🔑</span> إدارة الأكواد</h3>
@@ -241,11 +218,8 @@
                                 </div>
                                 <button id="generateCodeBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-2 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الكود</button>
                             </div>
-                            <div class="mt-6 pt-4 border-t border-theme">
-                                <div id="adminCodesList" class="space-y-3 max-h-48 overflow-y-auto pr-1"></div>
-                            </div>
+                            <div class="mt-6 pt-4 border-t border-theme"><div id="adminCodesList" class="space-y-3 max-h-48 overflow-y-auto pr-1"></div></div>
                         </div>
-
                         <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                             <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">⏰</span> أوقات العمل (للرد الآلي)</h3>
                             <div class="grid grid-cols-2 gap-4">
@@ -255,7 +229,6 @@
                             <button id="saveWorkHoursBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الأوقات</button>
                         </div>
                     </div>
-
                     <div class="bg-card rounded-ios-lg overflow-hidden border border-theme shadow-sm flex flex-col h-[600px]">
                         <div class="flex justify-between items-center p-5 border-b border-theme bg-input">
                             <h3 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">👥</span> المتدربات</h3>
@@ -266,7 +239,6 @@
                 </div>
             </div>
 
-            <!-- ملف المتدربة المفصل للأدمن -->
             <div id="adminUserDetailView" class="hidden flex flex-col gap-6 fade-in">
                 <div class="flex justify-between items-center bg-card p-6 rounded-ios-lg border border-theme shadow-sm">
                     <button id="backToAdminMainBtn" class="bg-input border border-theme text-primary text-sm font-bold px-5 py-3 rounded-xl transition-transform active:scale-95">❮ رجوع</button>
@@ -277,10 +249,7 @@
                 </div>
 
                 <div class="bg-card p-5 rounded-ios-lg border border-theme flex justify-between items-center sticky top-20 z-30 shadow-lg glass-nav">
-                    <div>
-                        <h4 class="font-bold text-sm text-primary mb-1">تفعيل التعديلات</h4>
-                        <p class="text-[11px] text-muted">اضغطي حفظ لنشر التعديلات.</p>
-                    </div>
+                    <div><h4 class="font-bold text-sm text-primary mb-1">تفعيل التعديلات</h4><p class="text-[11px] text-muted">اضغطي حفظ لنشر التعديلات.</p></div>
                     <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">حفظ ونشر الكل ✔️</button>
                 </div>
 
@@ -292,9 +261,7 @@
                         <button onclick="window.endSub()" class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">إنهاء الآن</button>
                         <button onclick="window.deleteUser()" class="bg-red-500/10 text-red-500 border border-red-500/30 font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">حذف المتدربة</button>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-theme">
-                        <p class="text-xs text-muted font-bold flex items-center">تاريخ الانتهاء الحالي: <span id="adminSubEndText" class="text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2">--</span></p>
-                    </div>
+                    <div class="mt-4 pt-4 border-t border-theme"><p class="text-xs text-muted font-bold flex items-center">تاريخ الانتهاء الحالي: <span id="adminSubEndText" class="text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2">--</span></p></div>
                 </div>
 
                 <div class="flex flex-wrap bg-input rounded-2xl p-1.5 border border-theme gap-1 shadow-inner">
@@ -352,10 +319,7 @@
                 <div id="adminTabChat" class="admin-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
                     <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
                         <div class="w-11 h-11 rounded-full bg-input flex items-center justify-center font-bold text-primary text-lg border border-theme shadow-sm">م</div>
-                        <div>
-                            <h3 class="font-black text-base text-primary">شات المتدربة</h3>
-                            <p class="text-[11px] font-bold text-muted mt-0.5">متابعة مباشرة</p>
-                        </div>
+                        <div><h3 class="font-black text-base text-primary">شات المتدربة</h3><p class="text-[11px] font-bold text-muted mt-0.5">متابعة مباشرة</p></div>
                     </div>
                     <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
                     <div class="p-3 bg-card border-t border-theme flex gap-2 items-center z-10 pb-safe">
@@ -384,15 +348,9 @@
     </main>
 
     <div id="bottomNavBar" class="fixed bottom-0 left-0 w-full glass-nav border-t border-theme flex justify-around items-center py-3 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.15)] hidden">
-        <button onclick="window.switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
-            <span class="text-2xl drop-shadow-sm">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
-        </button>
-        <button onclick="window.switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
-            <span class="text-2xl drop-shadow-sm">📋</span><span class="text-[11px] font-bold">البرنامج</span>
-        </button>
-        <button onclick="window.switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
-            <span class="text-2xl drop-shadow-sm">💬</span><span class="text-[11px] font-bold">المحادثة</span>
-        </button>
+        <button onclick="window.switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95"><span class="text-2xl drop-shadow-sm">📊</span><span class="text-[11px] font-bold">الخلاصة</span></button>
+        <button onclick="window.switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95"><span class="text-2xl drop-shadow-sm">📋</span><span class="text-[11px] font-bold">البرنامج</span></button>
+        <button onclick="window.switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95"><span class="text-2xl drop-shadow-sm">💬</span><span class="text-[11px] font-bold">المحادثة</span></button>
     </div>
 
     <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">

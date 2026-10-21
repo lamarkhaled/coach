@@ -16,7 +16,9 @@ export function initWidgets() {
     }
 
     window.renderUserDashboard = (data) => {
-        window.activeUserData = data; const todayStr = window.getTodayStr(); const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        window.activeUserData = data; 
+        const todayStr = window.getTodayStr(); 
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         if(document.getElementById('currentDayBanner')) document.getElementById('currentDayBanner').innerText = new Date().toLocaleDateString('ar-SA', dateOptions);
 
         if(data.profile?.height && document.getElementById('userHeightInput')) document.getElementById('userHeightInput').value = data.profile.height;
@@ -24,7 +26,8 @@ export function initWidgets() {
             document.getElementById('userCurrentWeight').value = data.progress.currentWeight;
             if(data.profile?.height) {
                 const hM = data.profile.height / 100; const bmi = (data.progress.currentWeight / (hM * hM)).toFixed(1);
-                let bmiStatus = bmi < 18.5 ? "نحافة" : bmi < 25 ? "وزن مثالي" : bmi < 30 ? "زيادة وزن" : "سمنة"; let avatarEmoji = bmi < 18.5 ? "🏃‍♀️" : bmi < 25 ? "💃" : bmi < 30 ? "👩‍🦰" : "🧘‍♀️";
+                let bmiStatus = bmi < 18.5 ? "نحافة" : bmi < 25 ? "وزن مثالي" : bmi < 30 ? "زيادة وزن" : "سمنة"; 
+                let avatarEmoji = bmi < 18.5 ? "🏃‍♀️" : bmi < 25 ? "💃" : bmi < 30 ? "👩‍🦰" : "🧘‍♀️";
                 document.getElementById('bmiResultCard')?.classList.remove('hidden');
                 if(document.getElementById('bmiValueText')) document.getElementById('bmiValueText').innerText = bmi;
                 if(document.getElementById('bmiStatusText')) document.getElementById('bmiStatusText').innerText = bmiStatus;
@@ -35,7 +38,9 @@ export function initWidgets() {
 
         const badgesArr = Array.isArray(data.badges) ? data.badges : Object.values(data.badges || {}).filter(b => b != null && b.title);
         const customTimeline = Array.isArray(data.plan?.timeline) ? data.plan?.timeline : Object.values(data.plan?.timeline || {}).filter(x => x != null && x.title);
-        renderUserBadges(badgesArr); renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, customTimeline);
+        
+        renderUserBadges(badgesArr); 
+        renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, customTimeline);
 
         if(!window.leaderboardListenerAttached) { loadLeaderboardAuto(); window.leaderboardListenerAttached = true; }
 
@@ -55,34 +60,77 @@ export function initWidgets() {
         container.innerHTML = badges.map(b => `<div class="flex flex-col items-center justify-center bg-input border border-theme p-4 rounded-2xl w-24 text-center shadow-md fade-in hover:scale-105 transition-transform"><span class="text-3xl mb-2 filter drop-shadow-md">${b.icon || '🏅'}</span><span class="text-[10px] font-bold text-primary leading-tight">${b.title}</span></div>`).join('');
     }
 
+    // الدالة المسؤولة عن عرض الخطة (التايم لاين) تحت الأوسمة
     function renderDetailedGoalTimeline(goalPlan, currentWeight, customTimeline) {
-        const card = document.getElementById('goalTimelineCard'); const container = document.getElementById('timelineContainerArea');
+        const card = document.getElementById('goalTimelineCard'); 
+        const container = document.getElementById('timelineContainerArea');
         if(!card || !container) return;
-        if(!goalPlan) { card.classList.add('hidden'); return; } card.classList.remove('hidden');
+        
+        card.classList.remove('hidden');
 
-        const startW = goalPlan.startWeight; const targetW = goalPlan.targetWeight; const curW = currentWeight || startW; const isGaining = targetW > startW;
-        let isGoalReached = (!isGaining && curW <= targetW) || (isGaining && curW >= targetW);
+        const curW = currentWeight || goalPlan?.startWeight || 0;
+        let isGaining = false;
+        let targetW = 0;
+
+        // تحديد إذا كان الهدف نزول أو زيادة وزن
+        if(goalPlan && goalPlan.targetWeight) {
+            targetW = goalPlan.targetWeight;
+            isGaining = targetW > goalPlan.startWeight;
+        } else if (customTimeline && customTimeline.length > 0) {
+            targetW = customTimeline[customTimeline.length-1].targetWeight;
+            isGaining = targetW > curW;
+        }
+
+        let isGoalReached = false;
+        if(targetW > 0) {
+            isGoalReached = (!isGaining && curW <= targetW) || (isGaining && curW >= targetW);
+        }
 
         const badge = document.getElementById('goalStatusBadge');
         if(badge) {
-            if(isGoalReached) { badge.innerText = 'أتممت الهدف 👑'; badge.className = 'text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold shadow-sm'; } 
+            if(isGoalReached && targetW > 0) { badge.innerText = 'أتممت الهدف 👑'; badge.className = 'text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold shadow-sm'; } 
             else { badge.innerText = 'مستمر 🔥'; badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-3 py-1.5 rounded-lg font-bold shadow-sm'; }
         }
 
+        // إذا أضاف المشرف خطة مراحل مخصصة (التايم لاين)
         if(customTimeline && customTimeline.length > 0) {
-            let passedCount = 0; customTimeline.forEach(m => { if((!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight)) passedCount++; });
-            let progressPercent = customTimeline.length > 0 ? (passedCount / customTimeline.length) * 100 : 0; if(progressPercent > 100) progressPercent = 100;
+            let passedCount = 0; 
+            customTimeline.forEach(m => { if((!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight)) passedCount++; });
+            let progressPercent = customTimeline.length > 0 ? (passedCount / customTimeline.length) * 100 : 0; 
+            if(progressPercent > 100) progressPercent = 100;
 
             let htmlStr = `<div class="timeline-wrapper fade-in"><div class="timeline-line"></div><div class="timeline-line-progress" style="height: ${progressPercent}%;"></div>`;
             customTimeline.forEach((m) => {
                 const isPassed = (!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight);
-                const iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked'; const iconSymbol = isPassed ? '🔓' : '🔒'; const clickAttr = isPassed ? `onclick="window.openMilestone('${m.title}', '${m.note || ''}')"` : '';
-                htmlStr += `<div class="timeline-step-pro"><div class="timeline-icon-pro ${iconClass}" ${clickAttr}>${iconSymbol}</div><div class="bg-card p-5 rounded-2xl border ${isPassed ? 'border-accent shadow-lg cursor-pointer active:scale-95 transition-transform' : 'border-theme shadow-sm'}" ${clickAttr}><div class="flex justify-between items-center mb-1"><h4 class="text-sm font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.title}</h4><span class="text-[11px] bg-input border border-theme px-3 py-1 rounded-lg font-bold">${m.targetWeight} كج</span></div>${isPassed ? '<span class="text-[11px] text-accent font-bold mt-2 block">اضغطي لفتح القفل واستلام رسالتك 🎁</span>' : '<span class="text-[10px] text-muted block mt-2">مقفلة حتى الوصول للوزن الهدف</span>'}</div></div>`;
+                const iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked'; 
+                const iconSymbol = isPassed ? '🔓' : '🔒'; 
+                const clickAttr = isPassed ? `onclick="window.openMilestone('${m.title}', '${m.note || ''}')"` : '';
+                
+                htmlStr += `
+                <div class="timeline-step-pro">
+                    <div class="timeline-icon-pro ${iconClass}" ${clickAttr}>${iconSymbol}</div>
+                    <div class="bg-card p-5 rounded-2xl border ${isPassed ? 'border-accent shadow-lg cursor-pointer active:scale-95 transition-transform' : 'border-theme shadow-sm'}" ${clickAttr}>
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="text-sm font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.title}</h4>
+                            <span class="text-[11px] bg-input border border-theme px-3 py-1 rounded-lg font-bold">${m.targetWeight} كج</span>
+                        </div>
+                        ${isPassed ? '<span class="text-[11px] text-accent font-bold mt-2 block">اضغطي لفتح القفل واستلام رسالتك 🎁</span>' : '<span class="text-[10px] text-muted block mt-2">مقفلة حتى الوصول للوزن الهدف</span>'}
+                    </div>
+                </div>`;
             });
-            htmlStr += `</div>`; container.innerHTML = htmlStr;
-        } else {
-            let remaining = Math.abs(curW - targetW).toFixed(1); let reached = Math.abs(startW - curW).toFixed(1); if(isGoalReached) remaining = 0;
+            htmlStr += `</div>`; 
+            container.innerHTML = htmlStr;
+        } 
+        // إذا لم يكن هناك خطة مخصصة ولكن تم تحديد وزن هدف مبدئي
+        else if (goalPlan && targetW > 0) {
+            const startW = goalPlan.startWeight;
+            let remaining = Math.abs(curW - targetW).toFixed(1); 
+            let reached = Math.abs(startW - curW).toFixed(1); 
+            if(isGoalReached) remaining = 0;
+            
             container.innerHTML = `<div class="timeline-wrapper fade-in"><div class="timeline-line"></div><div class="timeline-line-progress" style="height: ${isGoalReached ? '100' : '50'}%;"></div><div class="timeline-step-pro"><div class="timeline-icon-pro timeline-icon-unlocked">✅</div><div class="bg-card p-4 rounded-xl border border-accent shadow-sm"><h4 class="text-[11px] text-muted font-bold mb-1">الوضع الحالي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-accent">${curW} كج</span><span class="text-[10px] text-primary bg-input px-3 py-1 rounded-lg shadow-sm">قطعتِ: ${reached} كج</span></div></div></div><div class="timeline-step-pro"><div class="timeline-icon-pro ${isGoalReached ? 'timeline-icon-unlocked' : 'timeline-icon-locked'}">${isGoalReached ? '👑' : '🎯'}</div><div class="bg-card p-4 rounded-xl border ${isGoalReached ? 'border-accent shadow-md' : 'border-theme shadow-sm'}"><h4 class="text-[11px] text-muted font-bold mb-1">الهدف النهائي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-primary">${targetW} كج</span><span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg font-bold">المتبقي: ${remaining} كج</span></div></div></div></div>`;
+        } else {
+            container.innerHTML = '<p class="text-xs text-muted text-center py-4">لم يتم بناء خطة المراحل بعد.</p>';
         }
     }
 

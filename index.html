@@ -177,20 +177,22 @@
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
-                <!-- التايم لاين المطور -->
-                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
-                    <div class="flex justify-between items-center border-b border-theme pb-4">
-                        <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
-                        <span id="goalStatusBadge" class="text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold">نشط</span>
-                    </div>
-                    <div id="timelineContainerArea" class="w-full"></div>
-                </div>
-
+                <!-- الأوسمة والإنجازات (تم نقلها للأعلى) -->
                 <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2 mb-5">🌟 أوسمة الإنجاز</h2>
                     <div id="userBadgesContainer" class="flex flex-wrap gap-4"></div>
                 </div>
 
+                <!-- التايم لاين المطور (تم نقله أسفل الأوسمة) -->
+                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
+                    <div class="flex justify-between items-center border-b border-theme pb-4">
+                        <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
+                        <span id="goalStatusBadge" class="text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold">نشط</span>
+                    </div>
+                    <div class="timeline-container mt-5" id="timelineContainerArea"></div>
+                </div>
+
+                <!-- تحديث القياسات -->
                 <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> تحديث القياسات</h2>
                     <div id="weightRoastBanner" class="hidden p-4 rounded-xl text-sm font-bold mb-3 shadow-sm"></div>
@@ -224,6 +226,7 @@
                     </div>
                 </div>
 
+                <!-- لوحة الصدارة -->
                 <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                     <h2 class="text-sm font-bold text-primary mb-4">🏆 لوحة الصدارة (Top 3)</h2>
                     <div id="leaderboardContainer" class="space-y-3"></div>
@@ -993,7 +996,6 @@
                     if((!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight)) passedCount++;
                 });
                 
-                // حساب طول الخط الملون
                 let progressPercent = totalSteps > 0 ? (passedCount / totalSteps) * 100 : 0;
                 if(progressPercent > 100) progressPercent = 100;
 
@@ -1007,7 +1009,6 @@
                     const isPassed = (!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight);
                     const iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked';
                     const iconSymbol = isPassed ? '🔓' : '🔒';
-                    // تمرير البيانات بدون أخطاء اقتباس
                     const safeTitle = m.title.replace(/'/g, "\\'");
                     const safeNote = m.note ? m.note.replace(/'/g, "\\'") : '';
                     const clickAttr = isPassed ? `onclick="window.openMilestone('${safeTitle}', '${safeNote}')"` : '';
@@ -1560,6 +1561,25 @@
             document.getElementById('adminUserDetailView').classList.add('hidden');
             document.getElementById('adminMainView').classList.remove('hidden');
             loadAdminUsers();
+        };
+
+        window.addMilestone = () => {
+            const title = document.getElementById('msTitle').value.trim();
+            const weight = parseFloat(document.getElementById('msWeight').value) || 0;
+            const note = document.getElementById('msNote').value.trim();
+
+            if(!title || !weight) {
+                showMsg("أدخلي اسم المرحلة والوزن المستهدف", true);
+                return;
+            }
+
+            currentAdminTimeline.push({ title, targetWeight: weight, note });
+            
+            document.getElementById('msTitle').value = '';
+            document.getElementById('msWeight').value = '';
+            document.getElementById('msNote').value = '';
+            
+            renderAdminTimeline();
         };
 
         function renderAdminTimeline() {

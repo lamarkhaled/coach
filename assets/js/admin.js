@@ -76,19 +76,10 @@ export function initAdmin() {
         if(window.currentAdminTimeline.length === 0) { list.innerHTML = '<p class="text-xs text-muted py-4 text-center">لم يتم بناء خطة مخصصة بعد. ستظهر الخطة التلقائية للمتدربة.</p>'; return; }
         
         window.currentAdminTimeline.forEach((m, idx) => { 
-            const preHtml = m.preNote ? `<div class="text-[11px] text-muted font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50 mt-2">قبل: ${m.preNote}</div>` : '';
-            const postHtml = m.postNote ? `<div class="text-[11px] text-accent font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50 mt-1">بعد: ${m.postNote}</div>` : '';
+            const preHtml = m.preNote ? `<div class="text-[11px] text-primary font-bold bg-input p-3 rounded-lg border border-theme mt-2 opacity-90">قبل: ${m.preNote}</div>` : '';
+            const postHtml = m.postNote ? `<div class="text-[11px] text-primary font-bold bg-input p-3 rounded-lg border border-theme mt-1 text-accent">بعد: ${m.postNote}</div>` : '';
             
-            list.innerHTML += `
-            <div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-2 relative shadow-sm fade-in">
-                <button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button>
-                <div class="flex items-center gap-3">
-                    <span class="text-sm font-bold text-primary">${m.title}</span>
-                    <span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span>
-                </div>
-                ${preHtml}
-                ${postHtml}
-            </div>`; 
+            list.innerHTML += `<div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-2 relative shadow-sm fade-in"><button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button><div class="flex items-center gap-3"><span class="text-sm font-bold text-primary">${m.title}</span><span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span></div>${preHtml}${postHtml}</div>`; 
         });
     };
     window.remMilestone = (idx) => { window.currentAdminTimeline.splice(idx, 1); window.renderAdminTimeline(); };

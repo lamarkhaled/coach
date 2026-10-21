@@ -35,7 +35,8 @@ export function initWidgets() {
 
         const badgesArr = Array.isArray(data.badges) ? data.badges : Object.values(data.badges || {}).filter(b => b != null && b.title);
         const customTimeline = Array.isArray(data.plan?.timeline) ? data.plan?.timeline : Object.values(data.plan?.timeline || {}).filter(x => x != null && x.title);
-        renderUserBadges(badgesArr); renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, customTimeline);
+        renderUserBadges(badgesArr); 
+        renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, customTimeline);
 
         if(!window.leaderboardListenerAttached) { loadLeaderboardAuto(); window.leaderboardListenerAttached = true; }
 
@@ -60,39 +61,77 @@ export function initWidgets() {
         if(!card || !container) return;
         card.classList.remove('hidden');
 
-        const curW = currentWeight || goalPlan?.startWeight || 0;
-        let isGaining = false; let targetW = 0;
+        const startW = goalPlan?.startWeight || 0; 
+        const targetW = goalPlan?.targetWeight || 0; 
+        const curW = currentWeight || startW; 
+        const isGaining = targetW > startW;
 
-        if(goalPlan && goalPlan.targetWeight) { targetW = goalPlan.targetWeight; isGaining = targetW > goalPlan.startWeight; } 
-        else if (customTimeline && customTimeline.length > 0) { targetW = customTimeline[customTimeline.length-1].targetWeight; isGaining = targetW > curW; }
-
-        let isGoalReached = false;
-        if(targetW > 0) { isGoalReached = (!isGaining && curW <= targetW) || (isGaining && curW >= targetW); }
-
-        const badge = document.getElementById('goalStatusBadge');
-        if(badge) {
-            if(isGoalReached && targetW > 0) { badge.innerText = 'أتممت الهدف 👑'; badge.className = 'text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold shadow-sm'; } 
-            else { badge.innerText = 'مستمر 🔥'; badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-3 py-1.5 rounded-lg font-bold shadow-sm'; }
+        // حساب أفضل وزن وصلت له المتدربة عشان نكشف التراجع
+        const historyObj = window.activeUserData?.progress?.weightHistory || {};
+        const historyVals = Object.values(historyObj).map(Number);
+        let bestW = curW;
+        if(historyVals.length > 0) {
+            bestW = isGaining ? Math.max(...historyVals) : Math.min(...historyVals);
         }
 
+        // بناء قائمة المراحل
+        let steps = [];
         if(customTimeline && customTimeline.length > 0) {
-            let passedCount = 0; customTimeline.forEach(m => { if((!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight)) passedCount++; });
-            let progressPercent = customTimeline.length > 0 ? (passedCount / customTimeline.length) * 100 : 0; if(progressPercent > 100) progressPercent = 100;
+            steps = [...customTimeline];
+        }
+
+        // إضافة الهدف النهائي دائماً في الأخير
+        if(targetW > 0) {
+            const lastStep = steps.length > 0 ? steps[steps.length - 1] : null;
+            if(!lastStep || lastStep.targetWeight !== targetW) {
+                steps.push({
+                    title: 'الهدف',
+                    targetWeight: targetW,
+                    preNote: 'الهدف النهائي! هانت يا بطلة لا توقفين 🚀',
+                    postNote: 'مبروك وصلتي لنهاية مشوارك حافظي على وزنك',
+                    isFinal: true
+                });
+            } else if (lastStep && lastStep.targetWeight === targetW) {
+                steps[steps.length - 1].title = 'الهدف';
+                steps[steps.length - 1].isFinal = true;
+                if(!steps[steps.length - 1].postNote) steps[steps.length - 1].postNote = 'مبروك وصلتي لنهاية مشوارك حافظي على وزنك';
+            }
+        }
+
+        if(steps.length > 0) {
+            let passedCount = 0; 
+            steps.forEach(m => { if((!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight)) passedCount++; });
+            let progressPercent = steps.length > 0 ? (passedCount / steps.length) * 100 : 0; 
+            if(progressPercent > 100) progressPercent = 100;
 
             let htmlStr = `<div class="timeline-wrapper fade-in"><div class="timeline-line"></div><div class="timeline-line-progress" style="height: ${progressPercent}%;"></div>`;
-            customTimeline.forEach((m) => {
+            
+            steps.forEach((m) => {
                 const isPassed = (!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight);
-                const iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked'; 
-                const iconSymbol = isPassed ? '🔓' : '🔒'; 
+                const wasPassed = (!isGaining && bestW <= m.targetWeight) || (isGaining && bestW >= m.targetWeight);
                 
-                const preNoteText = m.preNote || m.note || 'استمري، أنتِ في طريقك لتحقيق هذا الهدف!';
-                const postNoteText = m.postNote || 'ألف مبروك! إنجاز رائع واصلي يا بطلة 💪';
-                const safePostNote = postNoteText.replace(/'/g, "\\'");
-                const clickAttr = isPassed ? `onclick="window.openMilestone('${m.title}', '${safePostNote}')"` : '';
+                let iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked'; 
+                let iconSymbol = m.isFinal ? '🎯' : (isPassed ? '🔓' : '🔒'); 
+                
+                let noteHtml = '';
+                let clickAttr = '';
 
-                const noteHtml = isPassed 
-                    ? `<div class="mt-3 p-3 bg-accent bg-opacity-10 border border-accent rounded-xl text-center"><p class="text-[11px] text-accent leading-relaxed font-bold">${postNoteText}</p><span class="text-[10px] text-primary mt-2 block font-bold underline cursor-pointer hover:text-accent transition-colors">اضغطي هنا للاحتفال 🎉</span></div>` 
-                    : `<div class="mt-3 p-3 bg-input rounded-xl border border-theme text-center opacity-80"><p class="text-[11px] text-muted leading-relaxed font-medium">🔒 ${preNoteText}</p></div>`;
+                if (isPassed) {
+                    // وصلت للوزن أو تعدته
+                    const postNoteText = m.postNote || 'ألف مبروك! إنجاز رائع واصلي يا بطلة 💪';
+                    const safePostNote = postNoteText.replace(/'/g, "\\'");
+                    clickAttr = `onclick="window.openMilestone('${m.title}', '${safePostNote}')"`;
+                    noteHtml = `<div class="mt-3 p-3 bg-accent bg-opacity-10 border border-accent rounded-xl text-center"><p class="text-[11px] text-accent leading-relaxed font-bold">${postNoteText}</p><span class="text-[10px] text-primary mt-2 block font-bold underline cursor-pointer hover:text-accent transition-colors">اضغطي هنا للاحتفال 🎉</span></div>`;
+                } else if (wasPassed && !isPassed) {
+                    // تراجعت بالوزن بعد ما فتحتها
+                    iconClass = 'timeline-icon-locked border-red-500 text-red-500 bg-red-500 bg-opacity-10';
+                    iconSymbol = '🔒';
+                    noteHtml = `<div class="mt-3 p-3 bg-red-500 bg-opacity-10 border border-red-500 rounded-xl text-center"><p class="text-[11px] text-red-500 leading-relaxed font-bold">ترا رجعتي للوراء! يلا شدي حيلك عشان نرجع نفتحها 💪</p></div>`;
+                } else {
+                    // مرحلة مقفلة طبيعية لسه ما وصلتها
+                    const preNoteText = m.preNote || m.note || 'استمري، أنتِ في طريقك لتحقيق هذا الهدف!';
+                    noteHtml = `<div class="mt-3 p-3 bg-input rounded-xl border border-theme text-center opacity-80"><p class="text-[11px] text-muted leading-relaxed font-medium">🔒 ${preNoteText}</p></div>`;
+                }
 
                 htmlStr += `
                 <div class="timeline-step-pro">
@@ -108,8 +147,16 @@ export function initWidgets() {
             });
             htmlStr += `</div>`; container.innerHTML = htmlStr;
         } else {
-            let remaining = Math.abs(curW - targetW).toFixed(1); let reached = Math.abs(startW - curW).toFixed(1); if(isGoalReached) remaining = 0;
-            container.innerHTML = `<div class="timeline-wrapper fade-in"><div class="timeline-line"></div><div class="timeline-line-progress" style="height: ${isGoalReached ? '100' : '50'}%;"></div><div class="timeline-step-pro"><div class="timeline-icon-pro timeline-icon-unlocked">✅</div><div class="bg-card p-4 rounded-xl border border-accent shadow-sm"><h4 class="text-[11px] text-muted font-bold mb-1">الوضع الحالي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-accent">${curW} كج</span><span class="text-[10px] text-primary bg-input px-3 py-1 rounded-lg shadow-sm">قطعتِ: ${reached} كج</span></div></div></div><div class="timeline-step-pro"><div class="timeline-icon-pro ${isGoalReached ? 'timeline-icon-unlocked' : 'timeline-icon-locked'}">${isGoalReached ? '👑' : '🎯'}</div><div class="bg-card p-4 rounded-xl border ${isGoalReached ? 'border-accent shadow-md' : 'border-theme shadow-sm'}"><h4 class="text-[11px] text-muted font-bold mb-1">الهدف النهائي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-primary">${targetW} كج</span><span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg font-bold">المتبقي: ${remaining} كج</span></div></div></div></div>`;
+            container.innerHTML = '<p class="text-xs text-muted text-center py-4">لم يتم بناء خطة المراحل بعد.</p>';
+        }
+
+        // تحديث البانر اللي فوق
+        let isFinalGoalReached = false;
+        if(targetW > 0) { isFinalGoalReached = (!isGaining && curW <= targetW) || (isGaining && curW >= targetW); }
+        const badge = document.getElementById('goalStatusBadge');
+        if(badge) {
+            if(isFinalGoalReached) { badge.innerText = 'أتممت الهدف 👑'; badge.className = 'text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold shadow-sm'; } 
+            else { badge.innerText = 'مستمر 🔥'; badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-3 py-1.5 rounded-lg font-bold shadow-sm'; }
         }
     }
 

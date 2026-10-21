@@ -3,68 +3,50 @@ import { ref, set, get, child, update, remove, push } from "https://www.gstatic.
 
 export function initAdmin() {
     window.extendSub = async (days) => {
-        if(!window.activeUserData) return;
-        let end = new Date(window.activeUserData.endDate); if(isNaN(end.getTime()) || end < new Date()) end = new Date();
-        end.setDate(end.getDate() + days);
-        await update(ref(db, `users/${window.currentAdminViewUid}`), { endDate: end.toISOString() });
+        if(!window.activeUserData) return; let end = new Date(window.activeUserData.endDate); if(isNaN(end.getTime()) || end < new Date()) end = new Date();
+        end.setDate(end.getDate() + days); await update(ref(db, `users/${window.currentAdminViewUid}`), { endDate: end.toISOString() });
         window.activeUserData.endDate = end.toISOString();
-        document.getElementById('adminSubEndText').innerText = end.toLocaleDateString('ar-SA');
-        document.getElementById('adminSubEndText').className = 'text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2';
+        document.getElementById('adminSubEndText').innerText = end.toLocaleDateString('ar-SA'); document.getElementById('adminSubEndText').className = 'text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2';
         window.showMsg(`تم التمديد بنجاح لـ ${days} أيام 📅`, false);
     };
 
     window.endSub = async () => {
         if(!confirm("هل أنت متأكدة من إنهاء الاشتراك الآن؟ سيتم إغلاق حساب المتدربة فوراً.")) return;
-        const end = new Date(); end.setDate(end.getDate() - 1); 
-        await update(ref(db, `users/${window.currentAdminViewUid}`), { endDate: end.toISOString() });
+        const end = new Date(); end.setDate(end.getDate() - 1); await update(ref(db, `users/${window.currentAdminViewUid}`), { endDate: end.toISOString() });
         if(window.activeUserData) window.activeUserData.endDate = end.toISOString();
-        document.getElementById('adminSubEndText').innerText = 'منتهي (مغلق)';
-        document.getElementById('adminSubEndText').className = 'text-red-500 font-black text-sm bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/30 inline-block mr-2 ml-2';
+        document.getElementById('adminSubEndText').innerText = 'منتهي (مغلق)'; document.getElementById('adminSubEndText').className = 'text-red-500 font-black text-sm bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/30 inline-block mr-2 ml-2';
         window.showMsg("تم إنهاء الاشتراك وأغلق الحساب 🔒", false);
     };
 
     window.deleteUser = async () => {
         if(!confirm("⚠️ تحذير: هل أنت متأكدة من حذف المتدربة نهائياً؟ سيتم مسح كل بياناتها!")) return;
-        await remove(ref(db, `users/${window.currentAdminViewUid}`));
-        window.showMsg("تم حذف المتدربة نهائياً 🗑️", false);
+        await remove(ref(db, `users/${window.currentAdminViewUid}`)); window.showMsg("تم حذف المتدربة نهائياً 🗑️", false);
         document.getElementById('backToAdminMainBtn').click();
     };
 
     window.loadAdminCodes = async () => {
         const list = document.getElementById('adminCodesList'); const snap = await get(child(ref(db), 'codes')); list.innerHTML = '';
         if(!snap.exists()) return list.innerHTML = '<p class="text-xs text-muted">لا يوجد أكواد</p>';
-        snap.forEach(cSnap => {
-            const c = cSnap.val();
-            list.innerHTML += `<div class="bg-input p-4 rounded-xl border border-theme flex justify-between items-center text-sm shadow-sm fade-in"><div><strong class="text-primary">${c.code}</strong> <span class="text-xs text-muted">(${c.days} يوم)</span></div><span class="text-[11px] px-2 py-1 bg-card rounded-md border border-theme font-bold ${c.used ? 'text-red-500' : 'text-accent'}">${c.used ? 'مُستخدم' : 'متاح'}</span></div>`;
-        });
+        snap.forEach(cSnap => { const c = cSnap.val(); list.innerHTML += `<div class="bg-input p-4 rounded-xl border border-theme flex justify-between items-center text-sm shadow-sm fade-in"><div><strong class="text-primary">${c.code}</strong> <span class="text-xs text-muted">(${c.days} يوم)</span></div><span class="text-[11px] px-2 py-1 bg-card rounded-md border border-theme font-bold ${c.used ? 'text-red-500' : 'text-accent'}">${c.used ? 'مُستخدم' : 'متاح'}</span></div>`; });
     };
 
     window.loadAdminUsers = async () => {
         const list = document.getElementById('usersList'); const snap = await get(child(ref(db), 'users')); list.innerHTML = '';
         if(!snap.exists()) return list.innerHTML = '<p class="text-center py-8 text-sm text-muted">لا يوجد متدربات</p>';
-        snap.forEach(uSnap => {
-            const uid = uSnap.key; const d = uSnap.val();
-            list.innerHTML += `<div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme transition-colors" onclick="window.openUserDetail('${uid}')"><div><p class="font-bold text-primary text-sm">${d.email}</p><span class="text-[11px] text-accent font-bold mt-1 inline-block">${d.usedCode || 'بدون كود'}</span></div><span class="text-xl text-muted font-bold">›</span></div>`;
-        });
+        snap.forEach(uSnap => { const uid = uSnap.key; const d = uSnap.val(); list.innerHTML += `<div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme transition-colors" onclick="window.openUserDetail('${uid}')"><div><p class="font-bold text-primary text-sm">${d.email}</p><span class="text-[11px] text-accent font-bold mt-1 inline-block">${d.usedCode || 'بدون كود'}</span></div><span class="text-xl text-muted font-bold">›</span></div>`; });
     };
 
     window.openUserDetail = async (uid) => {
         window.currentAdminViewUid = uid; const snap = await get(child(ref(db), `users/${uid}`)); const d = snap.val(); window.activeUserData = d; 
         document.getElementById('adminMainView').classList.add('hidden'); document.getElementById('adminUserDetailView').classList.remove('hidden'); document.getElementById('detailUserEmail').innerText = d.email;
-        if(d.endDate) {
-            const isExpired = new Date(d.endDate) < new Date(); const endTxt = document.getElementById('adminSubEndText');
-            endTxt.innerText = new Date(d.endDate).toLocaleDateString('ar-SA'); endTxt.className = isExpired ? 'text-red-500 font-black text-sm bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/30 inline-block mr-2 ml-2' : 'text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2';
-        }
+        if(d.endDate) { const isExpired = new Date(d.endDate) < new Date(); const endTxt = document.getElementById('adminSubEndText'); endTxt.innerText = new Date(d.endDate).toLocaleDateString('ar-SA'); endTxt.className = isExpired ? 'text-red-500 font-black text-sm bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/30 inline-block mr-2 ml-2' : 'text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2'; }
         const targets = d.targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
-        document.getElementById('targetCalInput').value = targets.cal; document.getElementById('targetProInput').value = targets.pro;
-        document.getElementById('targetCarbInput').value = targets.carb; document.getElementById('targetFatInput').value = targets.fat;
-        document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--';
-        document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
+        document.getElementById('targetCalInput').value = targets.cal; document.getElementById('targetProInput').value = targets.pro; document.getElementById('targetCarbInput').value = targets.carb; document.getElementById('targetFatInput').value = targets.fat;
+        document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--'; document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
 
         window.currentAdminExercises = Array.isArray(d.plan?.exercises || d.exercises) ? (d.plan?.exercises || d.exercises) : Object.values(d.plan?.exercises || d.exercises || {});
         window.currentAdminMeals = Array.isArray(d.plan?.meals || d.meals) ? (d.plan?.meals || d.meals) : Object.values(d.plan?.meals || d.meals || {});
-        window.currentAdminBadges = Array.isArray(d.badges) ? d.badges : Object.values(d.badges || {});
-        window.currentAdminTimeline = Array.isArray(d.plan?.timeline) ? d.plan?.timeline : Object.values(d.plan?.timeline || {});
+        window.currentAdminBadges = Array.isArray(d.badges) ? d.badges : Object.values(d.badges || {}); window.currentAdminTimeline = Array.isArray(d.plan?.timeline) ? d.plan?.timeline : Object.values(d.plan?.timeline || {});
 
         window.currentAdminExercises = window.currentAdminExercises.filter(x => x != null && x.title); window.currentAdminMeals = window.currentAdminMeals.filter(x => x != null && x.title);
         window.currentAdminBadges = window.currentAdminBadges.filter(x => x != null && x.title); window.currentAdminTimeline = window.currentAdminTimeline.filter(x => x != null && x.title);
@@ -77,19 +59,16 @@ export function initAdmin() {
         const title = document.getElementById('msTitle').value.trim(); const weight = parseFloat(document.getElementById('msWeight').value) || 0; const note = document.getElementById('msNote').value.trim();
         if(!title || !weight) return window.showMsg("أدخلي اسم المرحلة والوزن المستهدف", true);
         window.currentAdminTimeline.push({ title, targetWeight: weight, note });
-        document.getElementById('msTitle').value = ''; document.getElementById('msWeight').value = ''; document.getElementById('msNote').value = '';
-        window.renderAdminTimeline();
+        document.getElementById('msTitle').value = ''; document.getElementById('msWeight').value = ''; document.getElementById('msNote').value = ''; window.renderAdminTimeline();
     };
 
     window.renderAdminTimeline = () => {
         const list = document.getElementById('adminTimelineList'); list.innerHTML = '';
         if(window.currentAdminTimeline.length === 0) list.innerHTML = '<p class="text-xs text-muted py-4 text-center">لم يتم بناء خطة مخصصة بعد. ستظهر الخطة التلقائية للمتدربة.</p>';
-        window.currentAdminTimeline.forEach((m, idx) => {
-            list.innerHTML += `<div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-3 relative shadow-sm fade-in"><button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button><div class="flex items-center gap-3"><span class="text-sm font-bold text-primary">${m.title}</span><span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span></div>${m.note ? `<span class="text-[11px] text-muted font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50">${m.note}</span>` : ''}</div>`;
-        });
+        window.currentAdminTimeline.forEach((m, idx) => { list.innerHTML += `<div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-3 relative shadow-sm fade-in"><button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button><div class="flex items-center gap-3"><span class="text-sm font-bold text-primary">${m.title}</span><span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span></div>${m.note ? `<span class="text-[11px] text-muted font-bold bg-input p-2 rounded-lg border border-theme border-opacity-50">${m.note}</span>` : ''}</div>`; });
     };
-
     window.remMilestone = (idx) => { window.currentAdminTimeline.splice(idx, 1); window.renderAdminTimeline(); };
+
     window.addExercise = () => { window.currentAdminExercises.push({title:'تمرين جديد', media:'', type:'sets', sets:3, timerMins:5, period:'', date:''}); window.renderAdminExercises(); };
     window.addMeal = () => { window.currentAdminMeals.push({title:'وجبة جديدة', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, period:'', date:'', ingredients:[{name:'', amount:''}]}); window.renderAdminMeals(); };
     window.addBadge = () => { window.currentAdminBadges.push({icon:'🏆', title:'إنجاز جديد'}); window.renderAdminBadges(); };
@@ -97,12 +76,9 @@ export function initAdmin() {
     window.renderAdminBadges = () => {
         const list = document.getElementById('adminBadgesList'); list.innerHTML = '';
         if(window.currentAdminBadges.length === 0) list.innerHTML = '<p class="text-xs text-muted text-center py-4">لا يوجد أوسمة ممنوحة حالياً.</p>';
-        window.currentAdminBadges.forEach((b, idx) => {
-            list.innerHTML += `<div class="flex items-center gap-3 bg-input p-4 rounded-xl border border-theme relative shadow-sm fade-in"><button onclick="window.remBadge(${idx})" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-500 font-bold px-2 py-1 text-lg">✕</button><select onchange="window.updateBadgeIcon(${idx}, this.value)" class="bg-card px-3 py-3 rounded-xl text-2xl border border-theme shadow-inner"><option value="🏆" ${b.icon==='🏆'?'selected':''}>🏆</option><option value="🌟" ${b.icon==='🌟'?'selected':''}>🌟</option><option value="🔥" ${b.icon==='🔥'?'selected':''}>🔥</option><option value="👑" ${b.icon==='👑'?'selected':''}>👑</option><option value="🎯" ${b.icon==='🎯'?'selected':''}>🎯</option><option value="💪" ${b.icon==='💪'?'selected':''}>💪</option><option value="🏅" ${b.icon==='🏅'?'selected':''}>🏅</option><option value="💯" ${b.icon==='💯'?'selected':''}>💯</option></select><input type="text" onchange="window.updateBadgeTitle(${idx}, this.value)" value="${b.title||''}" class="flex-grow bg-card px-4 py-3 rounded-xl text-sm text-primary shadow-inner" placeholder="اسم الوسام"></div>`;
-        });
+        window.currentAdminBadges.forEach((b, idx) => { list.innerHTML += `<div class="flex items-center gap-3 bg-input p-4 rounded-xl border border-theme relative shadow-sm fade-in"><button onclick="window.remBadge(${idx})" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-500 font-bold px-2 py-1 text-lg">✕</button><select onchange="window.updateBadgeIcon(${idx}, this.value)" class="bg-card px-3 py-3 rounded-xl text-2xl border border-theme shadow-inner"><option value="🏆" ${b.icon==='🏆'?'selected':''}>🏆</option><option value="🌟" ${b.icon==='🌟'?'selected':''}>🌟</option><option value="🔥" ${b.icon==='🔥'?'selected':''}>🔥</option><option value="👑" ${b.icon==='👑'?'selected':''}>👑</option><option value="🎯" ${b.icon==='🎯'?'selected':''}>🎯</option><option value="💪" ${b.icon==='💪'?'selected':''}>💪</option><option value="🏅" ${b.icon==='🏅'?'selected':''}>🏅</option><option value="💯" ${b.icon==='💯'?'selected':''}>💯</option></select><input type="text" onchange="window.updateBadgeTitle(${idx}, this.value)" value="${b.title||''}" class="flex-grow bg-card px-4 py-3 rounded-xl text-sm text-primary shadow-inner" placeholder="اسم الوسام"></div>`; });
     };
-    window.remBadge = (idx) => { window.currentAdminBadges.splice(idx, 1); window.renderAdminBadges(); };
-    window.updateBadgeIcon = (idx, val) => { window.currentAdminBadges[idx].icon = val; }; window.updateBadgeTitle = (idx, val) => { window.currentAdminBadges[idx].title = val; };
+    window.remBadge = (idx) => { window.currentAdminBadges.splice(idx, 1); window.renderAdminBadges(); }; window.updateBadgeIcon = (idx, val) => { window.currentAdminBadges[idx].icon = val; }; window.updateBadgeTitle = (idx, val) => { window.currentAdminBadges[idx].title = val; };
 
     window.renderAdminExercises = () => {
         const list = document.getElementById('adminExercisesList'); list.innerHTML = '';
@@ -111,8 +87,7 @@ export function initAdmin() {
             list.innerHTML += `<div class="bg-input p-5 rounded-ios-lg border border-theme relative text-sm space-y-4 shadow-sm fade-in"><button onclick="window.remEx(${idx})" class="absolute top-4 left-4 text-red-500 font-bold px-2 py-1 text-lg leading-none z-10">✕</button><input type="text" onchange="window.updateExTitle(${idx}, this.value)" value="${ex.title}" class="w-full bg-card px-4 py-3 rounded-xl font-bold text-primary shadow-inner pr-12" placeholder="اسم التمرين"><div class="grid grid-cols-2 gap-3"><div><label class="text-[10px] text-muted font-bold block mb-1">تاريخ العرض (فارغ = دائم)</label><input type="date" onchange="window.updateExDate(${idx}, this.value)" value="${ex.date||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner"></div><div><label class="text-[10px] text-muted font-bold block mb-1">الفترة (توضيحي)</label><input type="text" onchange="window.updateExPeriod(${idx}, this.value)" value="${ex.period||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="مثال: الأسبوع الأول"></div></div><input type="text" onchange="window.updateExMedia(${idx}, this.value)" value="${ex.media}" class="w-full bg-card px-4 py-3 rounded-xl text-accent font-medium text-xs shadow-inner" placeholder="رابط فيديو"><div class="flex flex-col sm:flex-row gap-3 bg-card p-3 rounded-xl border border-theme shadow-inner"><select onchange="window.toggleExType(${idx}, this.value)" class="bg-input px-3 py-3 rounded-lg text-primary font-bold text-sm border border-theme sm:w-1/2"><option value="sets" ${!isTimer?'selected':''}>جولات</option><option value="timer" ${isTimer?'selected':''}>مؤقت زمني</option></select>${isTimer ? `<div class="flex items-center justify-between sm:justify-start gap-3 sm:w-1/2 sm:border-r border-theme sm:pr-4"><span class="text-xs text-muted font-bold">المدة (دقائق):</span><input type="number" onchange="window.updateExTimer(${idx}, this.value)" value="${ex.timerMins||5}" class="w-20 bg-input px-2 py-2 text-center rounded-lg text-primary font-bold border border-theme shadow-inner"></div>` : `<div class="flex items-center justify-between sm:justify-start gap-3 sm:w-1/2 sm:border-r border-theme sm:pr-4"><span class="text-xs text-muted font-bold">عدد الجولات:</span><input type="number" onchange="window.updateExSets(${idx}, this.value)" value="${ex.sets||3}" class="w-20 bg-input px-2 py-2 text-center rounded-lg text-primary font-bold border border-theme shadow-inner"></div>`}</div></div>`;
         });
     };
-    window.remEx = (idx) => { window.currentAdminExercises.splice(idx, 1); window.renderAdminExercises(); }; window.toggleExType = (idx, val) => { window.currentAdminExercises[idx].type = val; window.renderAdminExercises(); };
-    window.updateExTitle = (idx, val) => { window.currentAdminExercises[idx].title = val; }; window.updateExDate = (idx, val) => { window.currentAdminExercises[idx].date = val; }; window.updateExPeriod = (idx, val) => { window.currentAdminExercises[idx].period = val; }; window.updateExMedia = (idx, val) => { window.currentAdminExercises[idx].media = val; }; window.updateExTimer = (idx, val) => { window.currentAdminExercises[idx].timerMins = parseInt(val); }; window.updateExSets = (idx, val) => { window.currentAdminExercises[idx].sets = parseInt(val); };
+    window.remEx = (idx) => { window.currentAdminExercises.splice(idx, 1); window.renderAdminExercises(); }; window.toggleExType = (idx, val) => { window.currentAdminExercises[idx].type = val; window.renderAdminExercises(); }; window.updateExTitle = (idx, val) => { window.currentAdminExercises[idx].title = val; }; window.updateExDate = (idx, val) => { window.currentAdminExercises[idx].date = val; }; window.updateExPeriod = (idx, val) => { window.currentAdminExercises[idx].period = val; }; window.updateExMedia = (idx, val) => { window.currentAdminExercises[idx].media = val; }; window.updateExTimer = (idx, val) => { window.currentAdminExercises[idx].timerMins = parseInt(val); }; window.updateExSets = (idx, val) => { window.currentAdminExercises[idx].sets = parseInt(val); };
 
     window.renderAdminMeals = () => {
         const list = document.getElementById('adminMealsList'); list.innerHTML = '';
@@ -124,35 +99,36 @@ export function initAdmin() {
     window.remMeal = (idx) => { window.currentAdminMeals.splice(idx, 1); window.renderAdminMeals(); }; window.addIng = (mIdx) => { window.currentAdminMeals[mIdx].ingredients = window.currentAdminMeals[mIdx].ingredients || []; window.currentAdminMeals[mIdx].ingredients.push({name:'', amount:''}); window.renderAdminMeals(); }; window.remIng = (mIdx, iIdx) => { window.currentAdminMeals[mIdx].ingredients.splice(iIdx, 1); window.renderAdminMeals(); };
     window.updateIngName = (mIdx, iIdx, val) => { window.currentAdminMeals[mIdx].ingredients[iIdx].name = val; }; window.updateIngAmount = (mIdx, iIdx, val) => { window.currentAdminMeals[mIdx].ingredients[iIdx].amount = val; }; window.updateMealTitle = (idx, val) => { window.currentAdminMeals[idx].title = val; }; window.updateMealDate = (idx, val) => { window.currentAdminMeals[idx].date = val; }; window.updateMealPeriod = (idx, val) => { window.currentAdminMeals[idx].period = val; }; window.updateMealCal = (idx, val) => { window.currentAdminMeals[idx].cal = parseInt(val) || 0; }; window.updateMealPro = (idx, val) => { window.currentAdminMeals[idx].pro = parseInt(val) || 0; }; window.updateMealCarb = (idx, val) => { window.currentAdminMeals[idx].carb = parseInt(val) || 0; }; window.updateMealFat = (idx, val) => { window.currentAdminMeals[idx].fat = parseInt(val) || 0; }; window.updateMealImage = (idx, val) => { window.currentAdminMeals[idx].image = val; }; window.updateMealRecipe = (idx, val) => { window.currentAdminMeals[idx].recipe = val; }; window.updateMealMedia = (idx, val) => { window.currentAdminMeals[idx].media = val; };
 
-    if(document.getElementById('generateCodeBtn')) {
-        document.getElementById('generateCodeBtn').onclick = async () => {
-            const code = document.getElementById('adminNewCode').value.trim().toUpperCase(); const days = parseInt(document.getElementById('codeDays').value) || 0;
-            const hours = parseInt(document.getElementById('codeHours').value) || 0; const mins = parseInt(document.getElementById('codeMins').value) || 0;
-            if(code && (days||hours||mins)) {
-                await set(ref(db, `codes/${code}`), { code, days, hours, mins, used: false });
-                window.showMsg("تم حفظ الكود", false); document.getElementById('adminNewCode').value = ''; window.loadAdminCodes();
-            }
-        };
-        document.getElementById('saveWorkHoursBtn').onclick = async () => {
-            const start = document.getElementById('workStart').value; const end = document.getElementById('workEnd').value;
-            await set(ref(db, 'admin_settings/workHours'), { start, end }); window.showMsg("تم حفظ أوقات العمل بنجاح ⏰", false);
-        };
-        document.getElementById('refreshUsersBtn').onclick = window.loadAdminUsers;
-        document.getElementById('backToAdminMainBtn').onclick = () => { document.getElementById('adminUserDetailView').classList.add('hidden'); document.getElementById('adminMainView').classList.remove('hidden'); window.loadAdminUsers(); };
-        document.getElementById('adminSaveAllBtn').onclick = async () => {
-            const targets = { cal: parseInt(document.getElementById('targetCalInput').value) || 2000, pro: parseInt(document.getElementById('targetProInput').value) || 150, carb: parseInt(document.getElementById('targetCarbInput').value) || 200, fat: parseInt(document.getElementById('targetFatInput').value) || 60 };
-            const btn = document.getElementById('adminSaveAllBtn'); btn.innerText = 'جاري الحفظ...';
-            const cleanBadges = window.currentAdminBadges.filter(b => b != null && b.title && b.title.trim() !== ''); const cleanTimeline = window.currentAdminTimeline.filter(t => t != null && t.title && t.title.trim() !== '');
-            const cleanExercises = window.currentAdminExercises.filter(e => e != null && e.title && e.title.trim() !== ''); const cleanMeals = window.currentAdminMeals.filter(m => m != null && m.title && m.title.trim() !== '');
-            await update(ref(db, `users/${window.currentAdminViewUid}`), { targets: targets, 'plan/exercises': cleanExercises.length > 0 ? cleanExercises : null, 'plan/meals': cleanMeals.length > 0 ? cleanMeals : null, 'plan/timeline': cleanTimeline.length > 0 ? cleanTimeline : null, badges: cleanBadges.length > 0 ? cleanBadges : null });
-            window.showMsg("تم الحفظ والنشر بنجاح!", false); btn.innerText = 'حفظ ونشر الكل ✔️';
-        };
-        document.getElementById('addExerciseBtn').onclick = window.addExercise; document.getElementById('addMealBtn').onclick = window.addMeal; document.getElementById('addBadgeBtn').onclick = window.addBadge;
-        document.getElementById('adminSendChatBtn').onclick = () => {
-            const inp = document.getElementById('adminChatInput');
-            if(inp.value.trim() && window.currentAdminViewUid){ push(ref(db, `chats/${window.currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; }
-        };
-        document.getElementById('adminChatInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('adminSendChatBtn').click(); });
+    const btnGenCode = document.getElementById('generateCodeBtn');
+    if(btnGenCode) btnGenCode.onclick = async () => {
+        const code = document.getElementById('adminNewCode').value.trim().toUpperCase(); const days = parseInt(document.getElementById('codeDays').value) || 0; const hours = parseInt(document.getElementById('codeHours').value) || 0; const mins = parseInt(document.getElementById('codeMins').value) || 0;
+        if(code && (days||hours||mins)) { await set(ref(db, `codes/${code}`), { code, days, hours, mins, used: false }); window.showMsg("تم حفظ الكود", false); document.getElementById('adminNewCode').value = ''; window.loadAdminCodes(); }
+    };
+    
+    const btnSaveHrs = document.getElementById('saveWorkHoursBtn');
+    if(btnSaveHrs) btnSaveHrs.onclick = async () => { const start = document.getElementById('workStart').value; const end = document.getElementById('workEnd').value; await set(ref(db, 'admin_settings/workHours'), { start, end }); window.showMsg("تم حفظ أوقات العمل بنجاح ⏰", false); };
+    
+    const btnRefUsers = document.getElementById('refreshUsersBtn'); if(btnRefUsers) btnRefUsers.onclick = window.loadAdminUsers;
+    const btnBackAdm = document.getElementById('backToAdminMainBtn'); if(btnBackAdm) btnBackAdm.onclick = () => { document.getElementById('adminUserDetailView').classList.add('hidden'); document.getElementById('adminMainView').classList.remove('hidden'); window.loadAdminUsers(); };
+    
+    const btnSaveAll = document.getElementById('adminSaveAllBtn');
+    if(btnSaveAll) btnSaveAll.onclick = async () => {
+        const targets = { cal: parseInt(document.getElementById('targetCalInput').value) || 2000, pro: parseInt(document.getElementById('targetProInput').value) || 150, carb: parseInt(document.getElementById('targetCarbInput').value) || 200, fat: parseInt(document.getElementById('targetFatInput').value) || 60 };
+        btnSaveAll.innerText = 'جاري الحفظ...';
+        const cleanBadges = window.currentAdminBadges.filter(b => b != null && b.title && b.title.trim() !== ''); const cleanTimeline = window.currentAdminTimeline.filter(t => t != null && t.title && t.title.trim() !== '');
+        const cleanExercises = window.currentAdminExercises.filter(e => e != null && e.title && e.title.trim() !== ''); const cleanMeals = window.currentAdminMeals.filter(m => m != null && m.title && m.title.trim() !== '');
+        await update(ref(db, `users/${window.currentAdminViewUid}`), { targets: targets, 'plan/exercises': cleanExercises.length > 0 ? cleanExercises : null, 'plan/meals': cleanMeals.length > 0 ? cleanMeals : null, 'plan/timeline': cleanTimeline.length > 0 ? cleanTimeline : null, badges: cleanBadges.length > 0 ? cleanBadges : null });
+        window.showMsg("تم الحفظ والنشر بنجاح!", false); btnSaveAll.innerText = 'حفظ ونشر الكل ✔️';
+    };
+    
+    const btnAddEx = document.getElementById('addExerciseBtn'); if(btnAddEx) btnAddEx.onclick = window.addExercise; 
+    const btnAddMl = document.getElementById('addMealBtn'); if(btnAddMl) btnAddMl.onclick = window.addMeal; 
+    const btnAddBg = document.getElementById('addBadgeBtn'); if(btnAddBg) btnAddBg.onclick = window.addBadge;
+
+    const btnAdmSend = document.getElementById('adminSendChatBtn');
+    if(btnAdmSend) {
+        btnAdmSend.onclick = () => { const inp = document.getElementById('adminChatInput'); if(inp.value.trim() && window.currentAdminViewUid){ push(ref(db, `chats/${window.currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; } };
+        document.getElementById('adminChatInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') btnAdmSend.click(); });
         document.getElementById('adminChatFile').onchange = (e) => window.handleImageUpload(e, window.currentAdminViewUid, 'admin');
     }
 }

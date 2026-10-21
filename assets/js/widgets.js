@@ -61,8 +61,7 @@ export function initWidgets() {
         card.classList.remove('hidden');
 
         const curW = currentWeight || goalPlan?.startWeight || 0;
-        let isGaining = false;
-        let targetW = 0;
+        let isGaining = false; let targetW = 0;
 
         if(goalPlan && goalPlan.targetWeight) { targetW = goalPlan.targetWeight; isGaining = targetW > goalPlan.startWeight; } 
         else if (customTimeline && customTimeline.length > 0) { targetW = customTimeline[customTimeline.length-1].targetWeight; isGaining = targetW > curW; }
@@ -86,13 +85,14 @@ export function initWidgets() {
                 const iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked'; 
                 const iconSymbol = isPassed ? '🔓' : '🔒'; 
                 
-                const preNoteText = m.preNote || m.note || '';
+                const preNoteText = m.preNote || m.note || 'استمري، أنتِ في طريقك لتحقيق هذا الهدف!';
                 const postNoteText = m.postNote || 'ألف مبروك! إنجاز رائع واصلي يا بطلة 💪';
                 const safePostNote = postNoteText.replace(/'/g, "\\'");
                 const clickAttr = isPassed ? `onclick="window.openMilestone('${m.title}', '${safePostNote}')"` : '';
 
-                const preNoteHtml = preNoteText ? `<p class="text-[11px] text-muted leading-relaxed mt-3 p-2 bg-input rounded-lg border border-theme font-medium text-center">${preNoteText}</p>` : '';
-                const postNoteHtml = `<p class="text-[11px] text-accent leading-relaxed mt-3 p-2 bg-accent bg-opacity-10 border border-accent rounded-lg font-bold text-center">${postNoteText}</p><span class="text-[10px] text-primary mt-2 block font-bold text-center underline">اضغطي هنا للاحتفال 🎉</span>`;
+                const noteHtml = isPassed 
+                    ? `<div class="mt-3 p-3 bg-accent bg-opacity-10 border border-accent rounded-xl text-center"><p class="text-[11px] text-accent leading-relaxed font-bold">${postNoteText}</p><span class="text-[10px] text-primary mt-2 block font-bold underline cursor-pointer hover:text-accent transition-colors">اضغطي هنا للاحتفال 🎉</span></div>` 
+                    : `<div class="mt-3 p-3 bg-input rounded-xl border border-theme text-center opacity-80"><p class="text-[11px] text-muted leading-relaxed font-medium">🔒 ${preNoteText}</p></div>`;
 
                 htmlStr += `
                 <div class="timeline-step-pro">
@@ -100,21 +100,16 @@ export function initWidgets() {
                     <div class="bg-card p-5 rounded-2xl border ${isPassed ? 'border-accent shadow-lg cursor-pointer active:scale-95 transition-transform' : 'border-theme shadow-sm'}" ${clickAttr}>
                         <div class="flex justify-between items-center mb-1">
                             <h4 class="text-sm font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.title}</h4>
-                            <span class="text-[11px] bg-input border border-theme px-3 py-1 rounded-lg font-bold">${m.targetWeight} كج</span>
+                            <span class="text-[11px] bg-input border border-theme px-3 py-1 rounded-lg font-bold shadow-inner">${m.targetWeight} كج</span>
                         </div>
-                        ${isPassed ? postNoteHtml : preNoteHtml}
+                        ${noteHtml}
                     </div>
                 </div>`;
             });
             htmlStr += `</div>`; container.innerHTML = htmlStr;
-        } 
-        else if (goalPlan && targetW > 0) {
-            const startW = goalPlan.startWeight;
-            let remaining = Math.abs(curW - targetW).toFixed(1); let reached = Math.abs(startW - curW).toFixed(1); if(isGoalReached) remaining = 0;
-            
-            container.innerHTML = `<div class="timeline-wrapper fade-in"><div class="timeline-line"></div><div class="timeline-line-progress" style="height: ${isGoalReached ? '100' : '50'}%;"></div><div class="timeline-step-pro"><div class="timeline-icon-pro timeline-icon-unlocked">✅</div><div class="bg-card p-4 rounded-xl border border-accent shadow-sm"><h4 class="text-[11px] text-muted font-bold mb-1">الوضع الحالي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-accent">${curW} كج</span><span class="text-[10px] text-primary bg-input px-3 py-1 rounded-lg shadow-sm">قطعتِ: ${reached} كج</span></div></div></div><div class="timeline-step-pro"><div class="timeline-icon-pro ${isGoalReached ? 'timeline-icon-unlocked' : 'timeline-icon-locked'}">${isGoalReached ? '👑' : '🎯'}</div><div class="bg-card p-4 rounded-xl border ${isGoalReached ? 'border-accent shadow-md' : 'border-theme shadow-sm'}"><h4 class="text-[11px] text-muted font-bold mb-1">الهدف النهائي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-primary">${targetW} كج</span><span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg font-bold">المتبقي: ${remaining} كج</span></div></div></div></div>`;
         } else {
-            container.innerHTML = '<p class="text-xs text-muted text-center py-4">لم يتم بناء خطة المراحل بعد.</p>';
+            let remaining = Math.abs(curW - targetW).toFixed(1); let reached = Math.abs(startW - curW).toFixed(1); if(isGoalReached) remaining = 0;
+            container.innerHTML = `<div class="timeline-wrapper fade-in"><div class="timeline-line"></div><div class="timeline-line-progress" style="height: ${isGoalReached ? '100' : '50'}%;"></div><div class="timeline-step-pro"><div class="timeline-icon-pro timeline-icon-unlocked">✅</div><div class="bg-card p-4 rounded-xl border border-accent shadow-sm"><h4 class="text-[11px] text-muted font-bold mb-1">الوضع الحالي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-accent">${curW} كج</span><span class="text-[10px] text-primary bg-input px-3 py-1 rounded-lg shadow-sm">قطعتِ: ${reached} كج</span></div></div></div><div class="timeline-step-pro"><div class="timeline-icon-pro ${isGoalReached ? 'timeline-icon-unlocked' : 'timeline-icon-locked'}">${isGoalReached ? '👑' : '🎯'}</div><div class="bg-card p-4 rounded-xl border ${isGoalReached ? 'border-accent shadow-md' : 'border-theme shadow-sm'}"><h4 class="text-[11px] text-muted font-bold mb-1">الهدف النهائي</h4><div class="flex justify-between items-center"><span class="text-base font-black text-primary">${targetW} كج</span><span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg font-bold">المتبقي: ${remaining} كج</span></div></div></div></div>`;
         }
     }
 

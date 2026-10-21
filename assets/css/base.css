@@ -1,0 +1,21 @@
+body { 
+    font-family: 'Alexandria', sans-serif; 
+    background-color: var(--bg-main); 
+    color: var(--txt-main); 
+    -webkit-font-smoothing: antialiased; 
+    -webkit-tap-highlight-color: transparent;
+}
+::-webkit-scrollbar { width: 0px; background: transparent; } 
+
+.bg-main-solid { background-color: var(--bg-main) !important; }
+.text-primary { color: var(--txt-main) !important; }
+.text-muted { color: var(--txt-muted) !important; }
+.bg-card { background-color: var(--bg-card) !important; }
+.bg-input { background-color: var(--bg-input) !important; }
+.border-theme { border-color: var(--border-color) !important; }
+.text-accent { color: var(--accent) !important; }
+.bg-accent { background-color: var(--accent) !important; color: var(--accent-text) !important; }
+.hidden { display: none !important; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }

@@ -13,7 +13,7 @@
     <!-- مكتبة التصميم (Tailwind) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     
-    <!-- ملفات CSS المقسمة -->
+    <!-- ملفات التنسيق (CSS) المقسمة -->
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/layout.css">
@@ -21,7 +21,6 @@
 </head>
 <body class="min-h-screen flex flex-col relative pb-28">
 
-    <!-- النيف بار (Header) -->
     <nav class="glass-nav border-b border-theme sticky top-0 z-40 px-5 py-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
             <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="h-8 w-auto object-contain">
@@ -33,13 +32,11 @@
         </div>
     </nav>
 
-    <!-- رسائل النظام -->
     <div id="globalMessage" class="hidden fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-2xl text-sm font-bold text-center shadow-lg transition-all duration-300 w-max max-w-[90%] border"></div>
 
-    <!-- المحتوى الرئيسي -->
     <main class="flex-grow flex flex-col items-center justify-start p-4 w-full max-w-3xl mx-auto overflow-x-hidden">
         
-        <!-- قسم الترحيب -->
+        <!-- ================= AUTH ================= -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-12 fade-in">
             <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-52 mb-8 object-contain">
             <h1 class="text-3xl font-black mb-4 text-primary">منصة كوتش صحة</h1>
@@ -61,13 +58,418 @@
             </div>
         </div>
 
-        <!-- الأقسام الأخرى التي كانت موجودة (تم إبقاؤها كما هي لتوافق التصميم) -->
-        <!-- يُرجى نسخ باقي أقسام الـ div (مثل authSection, userDashboard, adminDashboard, النوافذ المنبثقة) من كودك الأصلي ووضعها هنا تماماً كما كانت -->
-        <!-- لأسباب تقنية متعلقة بطول الرد، يرجى إدراج المحتوى الداخلي لـ HTML هنا من ملفك الأساسي -->
-        
+        <div id="authSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-8 border border-theme shadow-md mt-8 fade-in">
+            <button id="backToWelcomeBtn" class="text-muted text-sm mb-8 font-bold flex items-center gap-1">❮ رجوع</button>
+            <h1 id="authTitle" class="text-2xl font-black mb-2 text-primary">تسجيل الدخول</h1>
+            <p class="text-muted mb-8 text-xs font-medium">أدخلي الإيميل وكلمة المرور للمتابعة</p>
+            <div class="space-y-5">
+                <input type="email" id="emailInput" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="البريد الإلكتروني">
+                <input type="password" id="passwordInput" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="كلمة المرور">
+                <button id="mainAuthBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">متابعة</button>
+            </div>
+        </div>
+
+        <div id="activationSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-8 text-center border border-theme shadow-md mt-8 fade-in">
+            <h2 class="text-xl font-black mb-3 text-primary">تفعيل الاشتراك 🔑</h2>
+            <p class="text-muted text-xs mb-8 font-medium">أدخلي كود الاشتراك لفتح المنصة.</p>
+            <div class="space-y-5">
+                <input type="text" id="activationCodeInput" class="w-full px-5 py-4 rounded-xl text-2xl text-center font-bold tracking-widest text-accent uppercase shadow-sm" placeholder="الكود">
+                <button id="activateSubscriptionBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">تفعيل الكود</button>
+            </div>
+        </div>
+
+        <div id="onboardingSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-8 border border-theme shadow-md mt-8 fade-in">
+            <h2 class="text-xl font-black mb-3 text-center text-primary">بياناتك الشخصية 👋</h2>
+            <p class="text-muted text-xs mb-8 text-center font-medium">خطوة واحدة لبناء ملفك.</p>
+            <div class="space-y-5">
+                <input type="text" id="qGoal" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="هدفك الأساسي (نزول، بناء)">
+                <div class="flex gap-4">
+                    <input type="number" id="qWeight" class="w-1/2 px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="الوزن (كج)">
+                    <input type="number" id="qHeight" class="w-1/2 px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="الطول (سم)">
+                </div>
+                <div class="bg-input p-5 rounded-xl border border-theme shadow-sm">
+                    <label class="text-xs text-accent font-bold block mb-3">الهدف المطلوب</label>
+                    <div class="flex gap-3">
+                        <input type="number" id="qTargetKg" class="w-1/2 p-3 rounded-lg text-sm text-center font-bold" placeholder="الوزن الهدف">
+                        <input type="number" id="qTargetDays" class="w-1/2 p-3 rounded-lg text-sm text-center font-bold" placeholder="المدة (أيام)">
+                    </div>
+                </div>
+                <textarea id="qNotes" rows="2" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="ملاحظات صحية (اختياري)"></textarea>
+                <button id="saveOnboardingBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ والبدء</button>
+            </div>
+        </div>
+
+        <!-- ================= USER DASHBOARD ================= -->
+        <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl fade-in">
+            
+            <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
+                <!-- بانر التاريخ -->
+                <div id="currentDayBanner" class="bg-accent text-accent-text p-4 rounded-2xl font-black text-center text-lg shadow-lg"></div>
+
+                <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
+                
+                <!-- 1. الأوسمة -->
+                <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
+                    <h2 class="text-sm font-bold text-primary flex items-center gap-2 mb-5">🌟 أوسمة الإنجاز</h2>
+                    <div id="userBadgesContainer" class="flex flex-wrap gap-4"></div>
+                </div>
+
+                <!-- 2. التايم لاين -->
+                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
+                    <div class="flex justify-between items-center border-b border-theme pb-4">
+                        <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
+                        <span id="goalStatusBadge" class="text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold">نشط</span>
+                    </div>
+                    <div class="timeline-container mt-5" id="timelineContainerArea"></div>
+                </div>
+
+                <!-- 3. القياسات -->
+                <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
+                    <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> تحديث القياسات</h2>
+                    <div id="weightRoastBanner" class="hidden p-4 rounded-xl text-sm font-bold mb-3 shadow-sm"></div>
+                    <div class="bg-input p-6 rounded-xl border border-theme flex flex-col items-center justify-center text-center shadow-inner">
+                        <div id="bodyVisualAvatar" class="w-24 h-24 rounded-full bg-card border-4 border-accent flex items-center justify-center text-5xl mb-3 transition-all duration-500 shadow-sm">🧍‍♀️</div>
+                        <span id="bodyVisualStatus" class="text-xs font-bold text-accent">أدخلي طولك ووزنك للتحليل البصري</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="text-[11px] font-bold text-muted block mb-2 px-1">الطول (سم)</label>
+                            <input type="number" id="userHeightInput" class="w-full px-4 py-4 rounded-xl text-base bg-input font-bold shadow-sm" placeholder="165">
+                        </div>
+                        <div class="w-1/2">
+                            <label class="text-[11px] font-bold text-muted block mb-2 px-1">الوزن (كج)</label>
+                            <input type="number" id="userCurrentWeight" class="w-full px-4 py-4 rounded-xl text-base bg-input font-bold shadow-sm" placeholder="65">
+                        </div>
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button id="updateProgressBtn" class="flex-grow bg-accent font-bold py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">حفظ التحديث</button>
+                        <button onclick="window.openWeightHistoryModal()" class="bg-card border border-theme text-primary font-bold px-5 py-4 rounded-xl text-sm shadow-sm">سجل الأوزان</button>
+                    </div>
+                    <div id="bmiResultCard" class="hidden bg-input p-5 rounded-xl border border-theme space-y-3 mt-3 shadow-inner">
+                        <div class="flex justify-between items-center">
+                            <span class="text-muted text-xs font-bold">مؤشر الكتلة (BMI):</span>
+                            <span id="bmiValueText" class="font-black text-accent text-lg">--</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-theme pt-3">
+                            <span class="text-muted text-xs font-bold">حالة الجسم:</span>
+                            <span id="bmiStatusText" class="font-bold text-primary text-sm">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
+                    <h2 class="text-sm font-bold text-primary mb-4">🏆 لوحة الصدارة (Top 3)</h2>
+                    <div id="leaderboardContainer" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- البرنامج لليوم الفعلي -->
+            <div id="tabPlan" class="user-tab hidden w-full space-y-6 fade-in">
+                <h1 class="text-2xl font-black px-1 text-primary">برنامج <span class="text-accent">اليوم</span></h1>
+                
+                <div class="flex gap-3 bg-card p-1.5 rounded-2xl border border-theme shadow-sm">
+                    <button onclick="window.switchPlanSubTab('nutrition')" id="btnSubNut" class="flex-1 bg-accent font-bold py-3.5 rounded-xl text-sm transition-all text-accent-text shadow-sm">🍎 وجبات اليوم</button>
+                    <button onclick="window.switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all">🏋️‍♀️ تمارين اليوم</button>
+                </div>
+
+                <!-- التغذية -->
+                <div id="subTabNutrition" class="plan-sub-tab block space-y-6 fade-in">
+                    <button onclick="window.openGroceryList()" class="w-full bg-card border border-theme text-primary font-black text-sm py-4 rounded-xl shadow-sm transition-transform active:scale-95 mb-2 flex items-center justify-center gap-2">
+                        <span class="text-xl">🛒</span> عرض قائمة المقاضي للوصفات
+                    </button>
+
+                    <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
+                        <div class="flex justify-between items-center border-b border-theme pb-4">
+                            <h3 class="text-sm font-bold text-primary">ملخص الماكروز</h3>
+                            <span id="macroWarningBadge" class="hidden text-[10px] bg-red-500 text-white px-3 py-1 rounded-lg font-bold shadow-sm">⚠️ تجاوز</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-3 text-center">
+                            <div class="bg-input p-3 rounded-xl border border-theme shadow-inner"><span class="text-[10px] text-muted font-bold block mb-1">سعرات</span><span id="macroCalVal" class="text-base font-black text-primary block">0</span><span class="text-[9px] text-muted">من <span id="targetCalVal">0</span></span></div>
+                            <div class="bg-input p-3 rounded-xl border border-theme shadow-inner"><span class="text-[10px] text-muted font-bold block mb-1">بروتين</span><span id="macroProVal" class="text-base font-black text-accent block">0g</span><span class="text-[9px] text-muted">من <span id="targetProVal">0g</span></span></div>
+                            <div class="bg-input p-3 rounded-xl border border-theme shadow-inner"><span class="text-[10px] text-muted font-bold block mb-1">كارب</span><span id="macroCarbVal" class="text-base font-black text-blue-500 block">0g</span><span class="text-[9px] text-muted">من <span id="targetCarbVal">0g</span></span></div>
+                            <div class="bg-input p-3 rounded-xl border border-theme shadow-inner"><span class="text-[10px] text-muted font-bold block mb-1">دهون</span><span id="macroFatVal" class="text-base font-black text-yellow-500 block">0g</span><span class="text-[9px] text-muted">من <span id="targetFatVal">0g</span></span></div>
+                        </div>
+                        <button onclick="window.openSwapModal()" class="w-full bg-input border border-theme text-primary font-bold text-sm py-4 rounded-xl mt-3 shadow-sm transition-transform active:scale-95">🔄 تسجيل وجبة خارجية بديلة</button>
+                    </div>
+                    <div id="userNutritionCourse" class="space-y-5"></div>
+                </div>
+
+                <!-- التمارين -->
+                <div id="subTabWorkouts" class="plan-sub-tab hidden fade-in w-full">
+                    <div id="userWorkoutCourseSummary" class="bg-card rounded-ios-lg p-8 border border-theme shadow-sm min-h-[300px] flex flex-col justify-center text-center fade-in"></div>
+                    <div id="inlinePlayerView" class="hidden bg-card rounded-ios-lg p-5 sm:p-8 border border-theme shadow-lg min-h-[400px] flex flex-col fade-in">
+                        <div class="flex justify-between items-center mb-6 w-full border-b border-theme pb-4">
+                            <button onclick="window.saveAndExitCoursePlayer()" class="text-primary text-xs font-bold bg-input px-4 py-2.5 rounded-xl border border-theme shadow-sm">💾 حفظ وخروج</button>
+                            <span id="workoutTimerDisplay" class="text-xs font-bold text-accent bg-input px-4 py-2.5 rounded-xl border border-theme shadow-sm">00:00</span>
+                        </div>
+                        <div id="playerContentArea" class="flex-grow flex flex-col w-full text-center fade-in"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشات -->
+            <div id="tabChat" class="user-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
+                <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
+                    <div class="relative">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-accent to-green-500 flex items-center justify-center font-black text-accent-text text-xl shadow-sm">ص</div>
+                        <div id="userChatStatusDot" class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-card rounded-full transition-colors duration-300"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-base text-primary">كوتش صحة</h3>
+                        <p id="userChatStatusText" class="text-[11px] font-bold text-muted mt-0.5">غير متصلة</p>
+                    </div>
+                </div>
+                
+                <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
+                
+                <div class="p-3 bg-card border-t border-theme flex gap-2 items-center z-10 pb-safe">
+                    <label class="cursor-pointer text-muted bg-input w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full border border-theme shadow-sm transition-transform active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                        <input type="file" id="userChatFile" accept="image/*" class="hidden">
+                    </label>
+                    <input type="text" id="userChatInput" class="flex-grow bg-input border border-theme px-5 py-3.5 rounded-full text-sm text-primary shadow-inner" placeholder="اكتبي رسالتك هنا...">
+                    <button id="userSendChatBtn" class="bg-accent text-accent-text w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full shadow-sm transition-transform active:scale-95">
+                        <svg class="w-5 h-5 transform rotate-180" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= ADMIN DASHBOARD ================= -->
+        <div id="adminDashboard" class="hidden w-full max-w-4xl pb-10 fade-in">
+            <div id="adminMainView">
+                <h1 class="text-2xl font-black mb-6 text-primary">لوحة الإدارة المركزية</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    <div class="space-y-5">
+                        <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
+                            <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">🔑</span> إدارة الأكواد</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="adminNewCode" class="w-full px-4 py-4 bg-input border border-theme rounded-xl text-sm uppercase text-accent font-bold shadow-inner" placeholder="أدخلي الكود">
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">أيام</label><input type="number" id="codeDays" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="30"></div>
+                                    <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">ساعات</label><input type="number" id="codeHours" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="0"></div>
+                                    <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">دقائق</label><input type="number" id="codeMins" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="0"></div>
+                                </div>
+                                <button id="generateCodeBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-2 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الكود</button>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-theme">
+                                <div id="adminCodesList" class="space-y-3 max-h-48 overflow-y-auto pr-1"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
+                            <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">⏰</span> أوقات العمل (للرد الآلي)</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">من الساعة</label><input type="time" id="workStart" class="w-full p-4 bg-input border border-theme rounded-xl text-primary font-bold shadow-inner text-center"></div>
+                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">إلى الساعة</label><input type="time" id="workEnd" class="w-full p-4 bg-input border border-theme rounded-xl text-primary font-bold shadow-inner text-center"></div>
+                            </div>
+                            <button id="saveWorkHoursBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الأوقات</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-ios-lg overflow-hidden border border-theme shadow-sm flex flex-col h-[600px]">
+                        <div class="flex justify-between items-center p-5 border-b border-theme bg-input">
+                            <h3 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">👥</span> المتدربات</h3>
+                            <button id="refreshUsersBtn" class="text-xs bg-card px-4 py-2 rounded-lg border border-theme font-bold text-primary shadow-sm transition-transform active:scale-95">تحديث</button>
+                        </div>
+                        <div id="usersList" class="divide-y divide-border-color overflow-y-auto flex-grow p-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ملف المتدربة المفصل للأدمن -->
+            <div id="adminUserDetailView" class="hidden flex flex-col gap-6 fade-in">
+                <div class="flex justify-between items-center bg-card p-6 rounded-ios-lg border border-theme shadow-sm">
+                    <button id="backToAdminMainBtn" class="bg-input border border-theme text-primary text-sm font-bold px-5 py-3 rounded-xl transition-transform active:scale-95">❮ رجوع</button>
+                    <div class="text-left">
+                        <h2 class="text-base font-black text-primary" id="detailUserEmail">user@mail.com</h2>
+                        <span class="text-[11px] text-accent font-bold">تعديل خطة المتدربة</span>
+                    </div>
+                </div>
+
+                <div class="bg-card p-5 rounded-ios-lg border border-theme flex justify-between items-center sticky top-20 z-30 shadow-lg glass-nav">
+                    <div>
+                        <h4 class="font-bold text-sm text-primary mb-1">تفعيل التعديلات</h4>
+                        <p class="text-[11px] text-muted">اضغطي حفظ لنشر التعديلات.</p>
+                    </div>
+                    <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">حفظ ونشر الكل ✔️</button>
+                </div>
+
+                <div class="bg-card p-6 rounded-ios-lg border border-theme shadow-sm fade-in">
+                    <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2">⚙️ إدارة اشتراك المتدربة</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="window.extendSub(30)" class="bg-input border border-theme text-primary font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">تمديد 30 يوم</button>
+                        <button onclick="window.extendSub(7)" class="bg-input border border-theme text-primary font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">تمديد 7 أيام</button>
+                        <button onclick="window.endSub()" class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">إنهاء الآن</button>
+                        <button onclick="window.deleteUser()" class="bg-red-500/10 text-red-500 border border-red-500/30 font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">حذف المتدربة</button>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-theme">
+                        <p class="text-xs text-muted font-bold flex items-center">تاريخ الانتهاء الحالي: <span id="adminSubEndText" class="text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2">--</span></p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap bg-input rounded-2xl p-1.5 border border-theme gap-1 shadow-inner">
+                    <button onclick="window.switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl bg-card text-primary shadow-sm border border-theme transition-all">الماكروز</button>
+                    <button onclick="window.switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الوجبات</button>
+                    <button onclick="window.switchAdminTab('adminTabWorkouts')" id="btnAdmTabWorkouts" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">التمارين</button>
+                    <button onclick="window.switchAdminTab('adminTabTimeline')" id="btnAdmTabTimeline" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الخطة</button>
+                    <button onclick="window.switchAdminTab('adminTabChat')" id="btnAdmTabChat" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الشات</button>
+                    <button onclick="window.switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الأوسمة</button>
+                </div>
+
+                <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
+                    <h3 class="text-sm font-bold text-primary mb-3">أهداف السعرات الشهرية</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div><label class="text-[11px] text-muted font-bold block mb-2 px-1">سعرات</label><input type="number" id="targetCalInput" class="w-full p-4 bg-input border border-theme rounded-xl text-primary font-bold text-center text-lg shadow-inner"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-2 px-1">بروتين (g)</label><input type="number" id="targetProInput" class="w-full p-4 bg-input border border-theme rounded-xl text-accent font-bold text-center text-lg shadow-inner"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-2 px-1">كارب (g)</label><input type="number" id="targetCarbInput" class="w-full p-4 bg-input border border-theme rounded-xl text-blue-500 font-bold text-center text-lg shadow-inner"></div>
+                        <div><label class="text-[11px] text-muted font-bold block mb-2 px-1">دهون (g)</label><input type="number" id="targetFatInput" class="w-full p-4 bg-input border border-theme rounded-xl text-yellow-500 font-bold text-center text-lg shadow-inner"></div>
+                    </div>
+                </div>
+
+                <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-base font-bold text-primary">🍎 التغذية (مربوطة بالتاريخ)</label>
+                        <button id="addMealBtn" class="text-xs bg-input border border-theme text-primary font-bold px-5 py-3 rounded-xl shadow-sm transition-transform active:scale-95">+ إضافة وجبة</button>
+                    </div>
+                    <div id="adminMealsList" class="space-y-5"></div>
+                </div>
+
+                <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-base font-bold text-primary">🏋️‍♀️ التمارين (مربوطة بالتاريخ)</label>
+                        <button id="addExerciseBtn" class="text-xs bg-input border border-theme text-primary font-bold px-5 py-3 rounded-xl shadow-sm transition-transform active:scale-95">+ إضافة تمرين</button>
+                    </div>
+                    <div id="adminExercisesList" class="space-y-4"></div>
+                </div>
+
+                <div id="adminTabTimeline" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
+                    <h3 class="text-sm font-bold text-primary mb-3">🎯 بناء خطة مسار المتدربة</h3>
+                    <div class="bg-input p-4 rounded-xl border border-theme flex flex-col sm:flex-row justify-between sm:items-center gap-3 shadow-inner">
+                        <span class="text-xs font-bold text-muted">الوزن الحالي: <span id="admCurrentW" class="text-primary text-base">--</span> كج</span>
+                        <span class="text-xs font-bold text-muted">الوزن الهدف: <span id="admTargetW" class="text-accent text-base">--</span> كج</span>
+                    </div>
+                    <div class="space-y-3 mt-5 bg-input p-5 rounded-xl border border-theme shadow-inner">
+                        <h4 class="text-xs font-bold text-primary mb-3">إضافة مرحلة جديدة:</h4>
+                        <input type="text" id="msTitle" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm" placeholder="اسم المرحلة">
+                        <input type="number" id="msWeight" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm" placeholder="الوزن المتوقع الوصول له">
+                        <input type="text" id="msNote" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm" placeholder="رسالة للمتدربة (ملاحظة)">
+                        <button onclick="window.addMilestone()" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-3 shadow-sm transition-transform active:scale-95 text-accent-text">إضافة المرحلة</button>
+                    </div>
+                    <div id="adminTimelineList" class="space-y-4 mt-5"></div>
+                </div>
+
+                <div id="adminTabChat" class="admin-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
+                    <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
+                        <div class="w-11 h-11 rounded-full bg-input flex items-center justify-center font-bold text-primary text-lg border border-theme shadow-sm">م</div>
+                        <div>
+                            <h3 class="font-black text-base text-primary">شات المتدربة</h3>
+                            <p class="text-[11px] font-bold text-muted mt-0.5">متابعة مباشرة</p>
+                        </div>
+                    </div>
+                    <div id="adminChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
+                    <div class="p-3 bg-card border-t border-theme flex gap-2 items-center z-10 pb-safe">
+                        <label class="cursor-pointer text-muted bg-input w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full border border-theme shadow-sm transition-transform active:scale-95">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                            <input type="file" id="adminChatFile" accept="image/*" class="hidden">
+                        </label>
+                        <input type="text" id="adminChatInput" class="flex-grow bg-input border border-theme px-5 py-3.5 rounded-full text-sm text-primary shadow-inner" placeholder="رسالتك...">
+                        <button id="adminSendChatBtn" class="bg-accent text-accent-text w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full shadow-sm transition-transform active:scale-95">
+                            <svg class="w-5 h-5 transform rotate-180" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="adminTabBadges" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-base font-bold text-primary">🌟 إدارة أوسمة المتدربة</label>
+                        <button id="addBadgeBtn" class="text-xs bg-accent text-accent-text font-bold px-5 py-3 rounded-xl shadow-sm transition-transform active:scale-95">+ وسام جديد</button>
+                    </div>
+                    <div id="adminBadgesList" class="space-y-4"></div>
+                </div>
+
+            </div>
+        </div>
+
     </main>
 
-    <!-- ملف الجافاسكربت الرئيسي الذي سيقوم بتشغيل النظام -->
+    <!-- الشريط السفلي -->
+    <div id="bottomNavBar" class="fixed bottom-0 left-0 w-full glass-nav border-t border-theme flex justify-around items-center py-3 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.15)] hidden">
+        <button onclick="window.switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
+            <span class="text-2xl drop-shadow-sm">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
+        </button>
+        <button onclick="window.switchTab('tabPlan')" id="navBtnPlan" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
+            <span class="text-2xl drop-shadow-sm">📋</span><span class="text-[11px] font-bold">البرنامج</span>
+        </button>
+        <button onclick="window.switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
+            <span class="text-2xl drop-shadow-sm">💬</span><span class="text-[11px] font-bold">المحادثة</span>
+        </button>
+    </div>
+
+    <!-- النوافذ المنبثقة -->
+    <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
+        <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-theme pb-4">
+                <h3 class="text-lg font-bold text-primary">سجل القياسات</h3>
+                <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
+            </div>
+            <div id="modalWeightHistoryList" class="space-y-3 max-h-64 overflow-y-auto pr-2"></div>
+            <button onclick="document.getElementById('weightHistoryModal').classList.add('hidden')" class="w-full bg-input border border-theme text-primary font-bold py-4 rounded-xl text-sm mt-2">إغلاق</button>
+        </div>
+    </div>
+    
+    <div id="mealDetailModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
+        <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-theme pb-4">
+                <h3 id="modalMealTitle" class="text-lg font-bold text-primary">التفاصيل</h3>
+                <button onclick="document.getElementById('mealDetailModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
+            </div>
+            <div id="modalMealBody" class="space-y-4 text-sm text-primary max-h-[60vh] overflow-y-auto pr-2"></div>
+        </div>
+    </div>
+    
+    <div id="mealSwapModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
+        <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 text-sm shadow-2xl">
+            <div class="flex justify-between items-center border-b border-theme pb-4">
+                <h3 class="text-lg font-bold text-primary">تسجيل وجبة بديلة</h3>
+                <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
+            </div>
+            <input type="text" id="swapMealName" class="w-full px-4 py-4 bg-input border border-theme rounded-xl text-sm text-primary shadow-sm" placeholder="اسم الوجبة">
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div><label class="text-[11px] text-muted font-bold block mb-2">سعرات</label><input type="number" id="swapCal" class="w-full p-3 bg-input border border-theme rounded-xl text-primary text-center font-bold text-base shadow-inner" value="500"></div>
+                <div><label class="text-[11px] text-muted font-bold block mb-2">بروتين</label><input type="number" id="swapPro" class="w-full p-3 bg-input border border-theme rounded-xl text-accent text-center font-bold text-base shadow-inner" value="30"></div>
+                <div><label class="text-[11px] text-muted font-bold block mb-2">كارب</label><input type="number" id="swapCarb" class="w-full p-3 bg-input border border-theme rounded-xl text-blue-500 text-center font-bold text-base shadow-inner" value="50"></div>
+                <div><label class="text-[11px] text-muted font-bold block mb-2">دهون</label><input type="number" id="swapFat" class="w-full p-3 bg-input border border-theme rounded-xl text-yellow-500 text-center font-bold text-base shadow-inner" value="15"></div>
+            </div>
+            <button onclick="window.saveSwapMeal()" class="w-full bg-accent font-bold py-4 rounded-xl text-base mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">إضافة الوجبة</button>
+        </div>
+    </div>
+
+    <!-- قائمة المقاضي -->
+    <div id="groceryListModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
+        <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-theme pb-4">
+                <h3 class="text-lg font-bold text-primary flex items-center gap-2">🛒 مقاضي الشهر</h3>
+                <button onclick="document.getElementById('groceryListModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
+            </div>
+            <div id="groceryModalBody" class="space-y-3 max-h-[50vh] overflow-y-auto pr-2"></div>
+            <button onclick="document.getElementById('groceryListModal').classList.add('hidden')" class="w-full bg-input border border-theme text-primary font-bold py-4 rounded-xl text-sm mt-2">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة الاحتفال -->
+    <div id="milestoneModal" class="hidden fixed inset-0 z-[110] bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center items-center fade-in">
+        <div class="max-w-sm w-full bg-card rounded-[32px] p-8 border border-theme text-center shadow-2xl transform scale-100 transition-transform">
+            <div class="text-7xl mb-6 filter drop-shadow-lg">🎉</div>
+            <h3 id="milestoneModalTitle" class="text-2xl font-black text-accent mb-4">إنجاز جديد!</h3>
+            <p id="milestoneModalNote" class="text-sm text-primary font-bold leading-relaxed mb-8 bg-input p-4 rounded-xl border border-theme border-opacity-50 shadow-inner">الملاحظة تظهر هنا</p>
+            <button onclick="document.getElementById('milestoneModal').classList.add('hidden')" class="w-full bg-accent text-accent-text font-black py-4 rounded-xl shadow-lg active:scale-95 transition-transform text-lg">روعة! 😍</button>
+        </div>
+    </div>
+
+    <!-- استدعاء ملف الجافاسكربت الرئيسي -->
     <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>

@@ -151,6 +151,82 @@ export function initWidgets() {
         }
     }
 
+    window.saveWeightUpdate = async () => {
+        const btnUpdateW = document.getElementById('updateProgressBtn');
+        const newW = parseFloat(document.getElementById('userCurrentWeight').value); 
+        const newH = parseFloat(document.getElementById('userHeightInput').value) || window.activeUserData?.profile?.height || 160;
+        
+        if(isNaN(newW)) return window.showMsg("أدخلي الوزن بشكل صحيح");
+        
+        if (btnUpdateW) {
+            btnUpdateW.innerText = 'جاري الحفظ...';
+            btnUpdateW.disabled = true;
+        }
+
+        try {
+            const uid = auth.currentUser.uid; 
+            const weightHistory = window.activeUserData.progress?.weightHistory || {}; 
+            const dates = Object.keys(weightHistory);
+            let lastWeight = window.activeUserData.profile?.weight || newW; 
+            if(dates.length > 0) lastWeight = weightHistory[dates[dates.length - 1]];
+            
+            const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }); 
+            weightHistory[timestamp] = newW;
+            
+            window.activeUserData.progress = window.activeUserData.progress || {}; 
+            window.activeUserData.progress.weightHistory = weightHistory; 
+            window.activeUserData.progress.currentWeight = newW;
+            window.activeUserData.profile = window.activeUserData.profile || {}; 
+            window.activeUserData.profile.height = newH; 
+            window.activeUserData.profile.weight = newW;
+            
+            await update(ref(db, `users/${uid}/progress`), window.activeUserData.progress); 
+            await update(ref(db, `users/${uid}/profile`), window.activeUserData.profile);
+            
+            if (btnUpdateW) {
+                btnUpdateW.innerText = 'تم الحفظ ✔️';
+                btnUpdateW.classList.remove('bg-accent', 'text-accent-text');
+                btnUpdateW.classList.add('bg-green-500', 'text-white');
+                
+                setTimeout(() => {
+                    btnUpdateW.innerText = 'حفظ التحديث';
+                    btnUpdateW.classList.remove('bg-green-500', 'text-white');
+                    btnUpdateW.classList.add('bg-accent', 'text-accent-text');
+                    btnUpdateW.disabled = false;
+                }, 3000);
+            }
+
+            const roastBanner = document.getElementById('weightRoastBanner'); 
+            if (roastBanner) {
+                roastBanner.classList.remove('hidden');
+                if(newW > lastWeight) { 
+                    roastBanner.className = 'bg-red-500 text-white p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; 
+                    roastBanner.innerText = 'يا ويلك! 😡 وزنك زاد عن القياس السابق.. شدي حيلك عشان نرجع نفتح الخطة!'; 
+                    window.showMsg("الوزن زاد! انتبهي ⚠️", true); 
+                } else if (newW < lastWeight) { 
+                    roastBanner.className = 'bg-accent text-accent-text p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; 
+                    roastBanner.innerText = 'شطووورة! 🎉 نزلتي وزنك.. استمري يا بطلة فخورة فيك!'; 
+                    window.showMsg("عاش بطلتنا! نزول ممتاز 🌟", false); 
+                } else { 
+                    roastBanner.className = 'bg-yellow-500 text-black p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; 
+                    roastBanner.innerText = 'وزنك ثابت! مو مشكلة أهم شيء الالتزام.'; 
+                    window.showMsg("تم حفظ القياس بنجاح 🌟", false); 
+                }
+            }
+            
+            window.renderUserDashboard(window.activeUserData);
+        } catch (e) {
+            console.error(e);
+            window.showMsg("حدث خطأ أثناء الحفظ", true);
+            if (btnUpdateW) {
+                btnUpdateW.innerText = 'حفظ التحديث';
+                btnUpdateW.classList.remove('bg-green-500', 'text-white');
+                btnUpdateW.classList.add('bg-accent', 'text-accent-text');
+                btnUpdateW.disabled = false;
+            }
+        }
+    };
+
     function loadLeaderboardAuto() {
         onValue(ref(db, 'users'), (snap) => {
             const container = document.getElementById('leaderboardContainer'); if(!container) return;
@@ -204,42 +280,6 @@ export function initWidgets() {
         const area = document.getElementById('userWorkoutCourseSummary'); if(!area) return;
         if(!exercises || exercises.length === 0) { area.innerHTML = '<p class="text-sm text-muted text-center py-8">لا توجد تمارين مخصصة لليوم.</p>'; return; }
         area.innerHTML = `<div class="text-center py-6"><div class="text-6xl mb-4 filter drop-shadow-lg">💪</div><h3 class="font-black text-2xl mb-3 text-primary">جلسة تمارين اليوم جاهزة</h3><p class="text-sm text-muted mb-8">الجلسة تتضمن ${exercises.length} تمارين مخصصة لكِ.</p><button onclick="window.startCoursePlayer()" class="w-full bg-accent text-accent-text font-bold py-4 rounded-xl text-lg shadow-lg transition-transform active:scale-95">بدء التمرين 🔥</button></div>`;
-    }
-
-    const btnUpdateW = document.getElementById('updateProgressBtn');
-    if(btnUpdateW) {
-        btnUpdateW.onclick = async () => {
-            const newW = parseFloat(document.getElementById('userCurrentWeight').value); const newH = parseFloat(document.getElementById('userHeightInput').value) || window.activeUserData.profile?.height || 160;
-            if(isNaN(newW)) return window.showMsg("أدخلي الوزن بشكل صحيح");
-            
-            btnUpdateW.innerText = 'جاري الحفظ...';
-            btnUpdateW.disabled = true;
-
-            const uid = auth.currentUser.uid; const weightHistory = window.activeUserData.progress?.weightHistory || {}; const dates = Object.keys(weightHistory);
-            let lastWeight = window.activeUserData.profile?.weight || newW; if(dates.length > 0) lastWeight = weightHistory[dates[dates.length - 1]];
-            const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }); weightHistory[timestamp] = newW;
-            window.activeUserData.progress = window.activeUserData.progress || {}; window.activeUserData.progress.weightHistory = weightHistory; window.activeUserData.progress.currentWeight = newW;
-            window.activeUserData.profile = window.activeUserData.profile || {}; window.activeUserData.profile.height = newH; window.activeUserData.profile.weight = newW;
-            await update(ref(db, `users/${uid}/progress`), window.activeUserData.progress); await update(ref(db, `users/${uid}/profile`), window.activeUserData.profile);
-            
-            // تغيير الزر لـ "تم الحفظ" بالأخضر
-            btnUpdateW.innerText = 'تم الحفظ ✔️';
-            btnUpdateW.classList.remove('bg-accent', 'text-accent-text');
-            btnUpdateW.classList.add('bg-green-500', 'text-white');
-            
-            setTimeout(() => {
-                btnUpdateW.innerText = 'حفظ التحديث';
-                btnUpdateW.classList.remove('bg-green-500', 'text-white');
-                btnUpdateW.classList.add('bg-accent', 'text-accent-text');
-                btnUpdateW.disabled = false;
-            }, 3000);
-
-            const roastBanner = document.getElementById('weightRoastBanner'); roastBanner.classList.remove('hidden');
-            if(newW > lastWeight) { roastBanner.className = 'bg-red-500 text-white p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'يا ويلك! 😡 وزنك زاد عن القياس السابق.. شدي حيلك!'; window.showMsg("الوزن زاد! انتبهي ⚠️", true); } 
-            else if (newW < lastWeight) { roastBanner.className = 'bg-accent text-accent-text p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'شطووورة! 🎉 نزلتي وزنك.. استمري يا بطلة فخورة فيك!'; window.showMsg("عاش بطلتنا! نزول ممتاز 🌟", false); } 
-            else { roastBanner.className = 'bg-yellow-500 text-black p-4 rounded-xl text-sm font-bold mb-3 shadow-sm fade-in'; roastBanner.innerText = 'وزنك ثابت! مو مشكلة أهم شيء الالتزام.'; window.showMsg("تم حفظ القياس بنجاح 🌟", false); }
-            window.renderUserDashboard(window.activeUserData);
-        };
     }
 
     window.openWeightHistoryModal = () => {

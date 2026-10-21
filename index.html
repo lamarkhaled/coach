@@ -48,11 +48,28 @@
         <div id="authSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-8 border border-theme shadow-md mt-8 fade-in">
             <button id="backToWelcomeBtn" class="text-muted text-sm mb-8 font-bold flex items-center gap-1">❮ رجوع</button>
             <h1 id="authTitle" class="text-2xl font-black mb-2 text-primary">تسجيل الدخول</h1>
-            <p class="text-muted mb-8 text-xs font-medium">أدخلي الإيميل وكلمة المرور للمتابعة</p>
-            <div class="space-y-5">
+            <p class="text-muted mb-6 text-xs font-medium">أدخلي بياناتك للمتابعة</p>
+            <div class="space-y-4">
+                <input type="text" id="nameInput" class="hidden w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="الاسم (وش حابة نناديك؟)">
                 <input type="email" id="emailInput" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="البريد الإلكتروني">
                 <input type="password" id="passwordInput" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="كلمة المرور">
-                <button id="mainAuthBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">متابعة</button>
+                
+                <div id="authLinks" class="flex justify-between text-[11px] font-bold px-1">
+                    <button id="forgotPassBtn" class="text-muted hover:text-accent transition-colors">نسيت كلمة المرور؟</button>
+                </div>
+
+                <button id="mainAuthBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-2 shadow-sm transition-transform active:scale-95 text-accent-text">متابعة</button>
+            </div>
+        </div>
+
+        <!-- قسم الإيميل غير المفعل -->
+        <div id="verifyEmailSection" class="hidden w-full max-w-sm bg-card rounded-ios-lg p-8 text-center border border-theme shadow-md mt-8 fade-in">
+            <h2 class="text-xl font-black mb-3 text-primary">تفعيل الحساب 📧</h2>
+            <p class="text-muted text-xs mb-8 font-medium leading-relaxed">أرسلنا رابط تفعيل إلى إيميلك. الرجاء الضغط عليه لتفعيل حسابك ثم اضغطي "تم التفعيل".</p>
+            <div class="space-y-4">
+                <button id="verifyDoneBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">تم التفعيل (دخول)</button>
+                <button id="resendVerifyEmailBtn" class="w-full bg-input border border-theme text-primary font-bold py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95">إعادة إرسال الرابط</button>
+                <button onclick="document.getElementById('logoutBtn').click()" class="w-full text-red-500 font-bold py-2 text-xs">رجوع للرئيسية</button>
             </div>
         </div>
 
@@ -69,7 +86,6 @@
             <h2 class="text-xl font-black mb-3 text-center text-primary">بياناتك الشخصية 👋</h2>
             <p class="text-muted text-xs mb-8 text-center font-medium">خطوة واحدة لبناء ملفك.</p>
             <div class="space-y-5">
-                <input type="text" id="qName" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="الاسم (وش حابة نناديك؟)">
                 <input type="text" id="qGoal" class="w-full px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="هدفك الأساسي (نزول، بناء)">
                 <div class="flex gap-4">
                     <input type="number" id="qWeight" class="w-1/2 px-5 py-4 rounded-xl text-sm shadow-sm" placeholder="الوزن (كج)">
@@ -262,9 +278,12 @@
                     <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">حفظ ونشر الكل ✔️</button>
                 </div>
 
+                <!-- قسم ملخص إنجازات المتدربة لليوم -->
                 <div class="bg-card p-6 rounded-ios-lg border border-theme shadow-sm fade-in">
                     <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2">📊 ملخص أداء اليوم</h3>
-                    <div class="grid grid-cols-3 gap-3 text-center" id="adminUserDailySummary"></div>
+                    <div class="grid grid-cols-3 gap-3 text-center" id="adminUserDailySummary">
+                        <!-- سيتم تعبئتها برمجياً من admin.js -->
+                    </div>
                 </div>
 
                 <div class="bg-card p-6 rounded-ios-lg border border-theme shadow-sm fade-in">
@@ -367,7 +386,7 @@
         <button onclick="window.switchTab('tabChat')" id="navBtnChat" class="nav-btn flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95"><span class="text-2xl drop-shadow-sm">💬</span><span class="text-[11px] font-bold">المحادثة</span></button>
     </div>
 
-    <!-- نافذة تعديل ملف المتدربة -->
+    <!-- نافذة تعديل ملف المتدربة (إيميل وباسورد واسم) -->
     <div id="profileModal" class="hidden fixed inset-0 z-[60] bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">

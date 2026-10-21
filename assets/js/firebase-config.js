@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM",
     authDomain: "helth-c7e42.firebaseapp.com",
     projectId: "helth-c7e42",

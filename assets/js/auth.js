@@ -54,8 +54,15 @@ export function initAuth() {
         const goal = document.getElementById('qGoal').value; const weight = parseFloat(document.getElementById('qWeight').value) || 0;
         const height = parseFloat(document.getElementById('qHeight').value) || 0; const targetKg = parseFloat(document.getElementById('qTargetKg').value) || 0;
         const targetDays = parseInt(document.getElementById('qTargetDays').value) || 30; const notes = document.getElementById('qNotes').value;
+        
         const targetDate = new Date(); targetDate.setDate(targetDate.getDate() + targetDays);
-        const initialHistory = {}; initialHistory[new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })] = weight;
+        
+        // الحل الجذري لصيغة التاريخ
+        const d = new Date();
+        const timestamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        
+        const initialHistory = {}; initialHistory[timestamp] = weight;
+        
         await update(ref(db, `users/${auth.currentUser.uid}`), { onboardingCompleted: true, profile: { goal, weight, height, notes }, goalPlan: { startWeight: weight, targetWeight: targetKg, startDate: new Date().toISOString(), targetDate: targetDate.toISOString() }, progress: { weightHistory: initialHistory, currentWeight: weight } });
         const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`)); window.renderUserDashboard(snap.val()); window.showSection('userDashboard');
     };

@@ -61,6 +61,29 @@
         input:focus, textarea:focus, select:focus { 
             border-color: var(--accent); 
         }
+        /* تصميم الـ Checkbox لقائمة المهام */
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        input[type="checkbox"]:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+        input[type="checkbox"]:checked::after {
+            content: '✔';
+            color: var(--accent-text);
+            font-size: 14px;
+            font-weight: 900;
+        }
 
         .rounded-ios { border-radius: 20px; }
         .rounded-ios-lg { border-radius: 24px; }
@@ -68,7 +91,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-        /* ستايل التايم لاين الجديد (الأقفال والخط) */
         .timeline-wrapper { position: relative; padding-right: 36px; margin-top: 10px; margin-bottom: 10px; }
         .timeline-line { position: absolute; right: 14px; top: 10px; bottom: 10px; width: 4px; background: var(--bg-input); border-radius: 4px; z-index: 0; }
         .timeline-line-progress { position: absolute; right: 14px; top: 10px; width: 4px; background: var(--accent); border-radius: 4px; z-index: 1; transition: height 1s ease; box-shadow: 0 0 8px var(--accent); }
@@ -177,13 +199,13 @@
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
-                <!-- الأوسمة والإنجازات (تم نقلها للأعلى) -->
+                <!-- 1. الأوسمة بالبداية -->
                 <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2 mb-5">🌟 أوسمة الإنجاز</h2>
                     <div id="userBadgesContainer" class="flex flex-wrap gap-4"></div>
                 </div>
 
-                <!-- التايم لاين المطور (تم نقله أسفل الأوسمة) -->
+                <!-- 2. الخطة (التايم لاين) تحت الأوسمة مباشرة -->
                 <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
                     <div class="flex justify-between items-center border-b border-theme pb-4">
                         <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
@@ -226,7 +248,6 @@
                     </div>
                 </div>
 
-                <!-- لوحة الصدارة -->
                 <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                     <h2 class="text-sm font-bold text-primary mb-4">🏆 لوحة الصدارة (Top 3)</h2>
                     <div id="leaderboardContainer" class="space-y-3"></div>
@@ -246,7 +267,13 @@
                     <button onclick="window.switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all">🏋️‍♀️ التمارين</button>
                 </div>
 
+                <!-- التغذية -->
                 <div id="subTabNutrition" class="plan-sub-tab block space-y-6 fade-in">
+                    <!-- زر قائمة المقاضي -->
+                    <button onclick="window.openGroceryList()" class="w-full bg-card border border-theme text-primary font-black text-sm py-4 rounded-xl shadow-sm transition-transform active:scale-95 mb-2 flex items-center justify-center gap-2">
+                        <span class="text-xl">🛒</span> عرض قائمة المقاضي للوصفات (To-Do)
+                    </button>
+
                     <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
                         <div class="flex justify-between items-center border-b border-theme pb-4">
                             <h3 class="text-sm font-bold text-primary">ملخص الماكروز</h3>
@@ -263,6 +290,7 @@
                     <div id="userNutritionCourse" class="space-y-5"></div>
                 </div>
 
+                <!-- التمارين -->
                 <div id="subTabWorkouts" class="plan-sub-tab hidden fade-in w-full">
                     <div id="userWorkoutCourseSummary" class="bg-card rounded-ios-lg p-8 border border-theme shadow-sm min-h-[300px] flex flex-col justify-center text-center fade-in"></div>
                     <div id="inlinePlayerView" class="hidden bg-card rounded-ios-lg p-5 sm:p-8 border border-theme shadow-lg min-h-[400px] flex flex-col fade-in">
@@ -311,7 +339,6 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     
                     <div class="space-y-5">
-                        <!-- إدارة الأكواد -->
                         <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                             <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">🔑</span> إدارة الأكواد</h3>
                             <div class="space-y-4">
@@ -328,7 +355,6 @@
                             </div>
                         </div>
 
-                        <!-- إعداد أوقات العمل للرد الآلي -->
                         <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                             <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">⏰</span> أوقات العمل (للرد الآلي)</h3>
                             <div class="grid grid-cols-2 gap-4">
@@ -339,7 +365,6 @@
                         </div>
                     </div>
 
-                    <!-- قائمة المتدربات -->
                     <div class="bg-card rounded-ios-lg overflow-hidden border border-theme shadow-sm flex flex-col h-[600px]">
                         <div class="flex justify-between items-center p-5 border-b border-theme bg-input">
                             <h3 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">👥</span> المتدربات</h3>
@@ -368,6 +393,20 @@
                     <button id="adminSaveAllBtn" class="bg-accent font-bold px-6 py-4 rounded-xl text-sm shadow-sm transition-transform active:scale-95 text-accent-text">حفظ ونشر الكل ✔️</button>
                 </div>
 
+                <!-- قسم إدارة الاشتراك الجديد -->
+                <div class="bg-card p-6 rounded-ios-lg border border-theme shadow-sm fade-in">
+                    <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2">⚙️ إدارة اشتراك المتدربة</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="window.extendSub(30)" class="bg-input border border-theme text-primary font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">تمديد 30 يوم</button>
+                        <button onclick="window.extendSub(7)" class="bg-input border border-theme text-primary font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">تمديد 7 أيام</button>
+                        <button onclick="window.endSub()" class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">إنهاء الآن</button>
+                        <button onclick="window.deleteUser()" class="bg-red-500/10 text-red-500 border border-red-500/30 font-bold py-3.5 rounded-xl text-sm shadow-sm transition-transform active:scale-95">حذف المتدربة</button>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-theme">
+                        <p class="text-xs text-muted font-bold">تاريخ الانتهاء الحالي: <span id="adminSubEndText" class="text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2">--</span></p>
+                    </div>
+                </div>
+
                 <div class="flex flex-wrap bg-input rounded-2xl p-1.5 border border-theme gap-1 shadow-inner">
                     <button onclick="window.switchAdminTab('adminTabMacros')" id="btnAdmTabMacros" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl bg-card text-primary shadow-sm border border-theme transition-all">الماكروز</button>
                     <button onclick="window.switchAdminTab('adminTabMeals')" id="btnAdmTabMeals" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الوجبات</button>
@@ -377,7 +416,6 @@
                     <button onclick="window.switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الأوسمة</button>
                 </div>
 
-                <!-- ... بقية التبويبات ... -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
                     <h3 class="text-sm font-bold text-primary mb-3">أهداف السعرات اليومية</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -470,8 +508,7 @@
         </button>
     </div>
 
-    <!-- النوافذ المنبثقة (سجل، تفاصيل الوجبة، استبدال، و نافذة الإنجاز/الاحتفال) -->
-    
+    <!-- النوافذ المنبثقة -->
     <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
@@ -510,7 +547,19 @@
         </div>
     </div>
 
-    <!-- نافذة الاحتفال بالوصول لمرحلة (Milestone Celebration) -->
+    <!-- نافذة قائمة المقاضي -->
+    <div id="groceryListModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
+        <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-theme pb-4">
+                <h3 class="text-lg font-bold text-primary flex items-center gap-2">🛒 قائمة المقاضي</h3>
+                <button onclick="document.getElementById('groceryListModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
+            </div>
+            <div id="groceryModalBody" class="space-y-3 max-h-[50vh] overflow-y-auto pr-2"></div>
+            <button onclick="document.getElementById('groceryListModal').classList.add('hidden')" class="w-full bg-input border border-theme text-primary font-bold py-4 rounded-xl text-sm mt-2">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة الاحتفال بالوصول لمرحلة -->
     <div id="milestoneModal" class="hidden fixed inset-0 z-[110] bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center items-center fade-in">
         <div class="max-w-sm w-full bg-card rounded-[32px] p-8 border border-theme text-center shadow-2xl transform scale-100 transition-transform">
             <div class="text-7xl mb-6 filter drop-shadow-lg">🎉</div>
@@ -556,7 +605,6 @@
         let globalWorkHours = { start: '09:00', end: '17:00' };
         let lastAutoReplyTime = 0;
 
-        // دالة الدنانيش (Confetti) الرهيبة
         window.fireConfetti = () => {
             const colors = ['#C6F432', '#ff4b4b', '#4CAF50', '#2196F3', '#FFC107', '#E91E63', '#9C27B0'];
             const container = document.createElement('div');
@@ -589,13 +637,12 @@
             setTimeout(() => container.remove(), 4500);
         };
 
-        // فتح نافذة الإنجاز مع الاحتفال
         window.openMilestone = (title, note) => {
             document.getElementById('milestoneModalTitle').innerText = title;
             document.getElementById('milestoneModalNote').innerText = note || 'ألف مبروك! إنجاز رائع واصلي يا بطلة 💪';
             document.getElementById('milestoneModal').classList.remove('hidden');
             window.fireConfetti();
-            if(navigator.vibrate) navigator.vibrate([100, 50, 100]); // اهتزاز خفيف للموبايل
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100]); 
         };
 
         window.toggleThemeMode = () => {
@@ -962,7 +1009,6 @@
             checkWorkoutReminder(exercisesList, data.progress?.workouts);
         }
 
-        // ================= التايم لاين المطور مع الخط العمودي =================
         function renderDetailedGoalTimeline(goalPlan, currentWeight, customTimeline) {
             const card = document.getElementById('goalTimelineCard');
             const container = document.getElementById('timelineContainerArea');
@@ -1184,17 +1230,27 @@
                     let ingredientsHtml = '';
                     if(m.ingredients && m.ingredients.length > 0) {
                         ingredientsHtml = `<div class="mt-4 space-y-2 text-xs bg-input p-4 rounded-xl border border-theme shadow-inner">
-                            <strong class="text-primary block mb-2 text-sm">المكونات:</strong>
-                            ${m.ingredients.map(ing => `<div class="flex justify-between text-muted border-b border-theme border-opacity-50 pb-1 last:border-0 last:pb-0"><span>• ${ing.name}</span> <span>${ing.amount}</span></div>`).join('')}
+                            <strong class="text-primary block mb-3 text-sm">مكونات الوجبة (قائمة مهام):</strong>
+                            <div class="space-y-2">
+                            ${m.ingredients.map(ing => `
+                                <label class="flex items-center gap-3 p-3 bg-card rounded-xl border border-theme cursor-pointer transition-colors active:scale-95 shadow-sm">
+                                    <input type="checkbox" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-muted');">
+                                    <span class="text-sm font-bold text-primary transition-all">${ing.name} <span class="text-accent ml-1">${ing.amount}</span></span>
+                                </label>
+                            `).join('')}
+                            </div>
                         </div>`;
                     }
 
+                    const periodBadge = m.period ? `<span class="text-[10px] bg-card border border-theme text-primary px-3 py-1 rounded-md font-bold absolute top-5 left-5 shadow-sm">${m.period}</span>` : '';
+
                     html += `
-                        <div class="bg-card p-6 rounded-ios-lg border border-theme space-y-4 shadow-sm fade-in">
+                        <div class="bg-card p-6 rounded-ios-lg border border-theme space-y-4 shadow-sm fade-in relative">
+                            ${periodBadge}
                             <div class="flex flex-col gap-4">
                                 <div>
                                     <span class="text-[11px] text-accent font-bold block mb-1">وجبة ${idx+1}</span>
-                                    <h3 class="font-bold text-lg text-primary">${m.title}</h3>
+                                    <h3 class="font-bold text-lg text-primary w-4/5">${m.title}</h3>
                                 </div>
                                 <button onclick="window.toggleMealDone(${idx})" class="w-full py-3.5 rounded-xl text-sm font-bold border border-theme shadow-sm transition-transform active:scale-95 ${isDone ? 'bg-accent text-accent-text' : 'bg-input text-primary'}">
                                     ${isDone ? 'تم تناولها ✔️' : 'تسجيل التناول'}
@@ -1214,10 +1270,34 @@
                     `;
                 });
             } else {
-                html = '<p class="text-sm text-muted bg-input p-6 rounded-xl text-center border border-theme shadow-inner">لا توجد وجبات مضافة اليوم.</p>';
+                html = '<p class="text-sm text-muted bg-input p-6 rounded-xl text-center border border-theme shadow-inner">لا توجد وجبات مضافة.</p>';
             }
             area.innerHTML = html;
         }
+
+        window.openGroceryList = () => {
+            const meals = activeUserData.plan?.meals || activeUserData.meals || [];
+            let allIngs = [];
+            meals.forEach(m => {
+                if(m.ingredients) {
+                    m.ingredients.forEach(ing => {
+                        if(ing.name) allIngs.push(`${ing.name} <span class="text-accent text-xs">(${ing.amount})</span> <span class="text-[10px] text-muted block mt-1">من: ${m.title}</span>`);
+                    });
+                }
+            });
+
+            let html = allIngs.map((ingText) => `
+                <label class="flex items-center gap-3 p-4 bg-input rounded-xl border border-theme cursor-pointer transition-colors active:scale-95 shadow-sm">
+                    <input type="checkbox" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('opacity-50');">
+                    <div class="text-sm font-bold text-primary transition-all">${ingText}</div>
+                </label>
+            `).join('');
+
+            if(allIngs.length === 0) html = '<p class="text-sm text-muted text-center py-4">القائمة فارغة، لا يوجد مقاضي مسجلة.</p>';
+            
+            document.getElementById('groceryModalBody').innerHTML = html;
+            document.getElementById('groceryListModal').classList.remove('hidden');
+        };
 
         window.toggleMealDone = async (idx) => {
             const today = getTodayStr();
@@ -1237,8 +1317,27 @@
             const mealsList = activeUserData.plan?.meals || activeUserData.meals || [];
             const m = mealsList[idx];
             document.getElementById('modalMealTitle').innerText = m.title;
+
+            let ingHtml = '';
+            if(m.ingredients && m.ingredients.length > 0) {
+                ingHtml = `
+                    <div class="mb-4">
+                        <strong class="text-primary text-sm block mb-3 font-bold">المكونات (علمي على اللي جهزتيه):</strong>
+                        <div class="space-y-2">
+                        ${m.ingredients.map(ing => `
+                            <label class="flex items-center gap-3 p-3 bg-input rounded-xl border border-theme cursor-pointer transition-colors active:scale-95 shadow-sm">
+                                <input type="checkbox" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-muted');">
+                                <span class="text-sm font-bold text-primary transition-all">${ing.name} <span class="text-accent ml-1">${ing.amount}</span></span>
+                            </label>
+                        `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             document.getElementById('modalMealBody').innerHTML = `
                 ${m.image ? `<img src="${m.image}" class="w-full rounded-2xl mb-4 border border-theme shadow-sm">` : ''}
+                ${ingHtml}
                 <div class="bg-input p-5 rounded-xl border border-theme shadow-inner">
                     <strong class="text-primary text-sm block mb-3 font-bold">طريقة التحضير:</strong>
                     <p class="text-muted text-sm leading-relaxed">${m.recipe || 'لا يوجد وصف.'}</p>
@@ -1345,14 +1444,17 @@
             const today = getTodayStr();
             const todayProg = activeUserData.progress?.workouts?.[today] || {};
 
+            const periodBadge = ex.period ? `<span class="text-[10px] bg-card border border-theme text-primary px-3 py-1 rounded-md font-bold mb-3 inline-block shadow-sm mr-2">${ex.period}</span>` : '';
+
             if(ex.type === 'timer') {
                 let totalSecs = (ex.timerMins || 1) * 60;
                 exerciseRemainingSeconds = todayProg[playerActiveIndex]?.secondsLeft !== undefined ? todayProg[playerActiveIndex].secondsLeft : totalSecs;
 
                 area.innerHTML = `
                     <div class="fade-in flex flex-col flex-grow">
-                        <div class="mb-4">
+                        <div class="mb-4 text-right">
                             <span class="text-[10px] bg-input border border-theme text-primary px-3 py-1.5 rounded-lg font-bold mb-3 inline-block shadow-sm">نظام مؤقت</span>
+                            ${periodBadge}
                             <h2 class="text-3xl font-black text-primary">${ex.title}</h2>
                         </div>
                         ${buildNativeVideoPlayer(ex.media)}
@@ -1382,8 +1484,9 @@
 
                 area.innerHTML = `
                     <div class="fade-in flex flex-col flex-grow">
-                        <div class="mb-4">
+                        <div class="mb-4 text-right">
                             <span class="text-[10px] bg-input border border-theme text-primary px-3 py-1.5 rounded-lg font-bold mb-3 inline-block shadow-sm">نظام جولات</span>
+                            ${periodBadge}
                             <h2 class="text-3xl font-black text-primary">${ex.title}</h2>
                         </div>
                         ${buildNativeVideoPlayer(ex.media)}
@@ -1472,6 +1575,31 @@
         };
 
         // ================= ADMIN CODES & USERS =================
+        window.extendSub = async (days) => {
+            if(!activeUserData) return;
+            let end = new Date(activeUserData.endDate);
+            if(end < new Date()) end = new Date();
+            end.setDate(end.getDate() + days);
+            await update(ref(db, `users/${currentAdminViewUid}`), { endDate: end.toISOString() });
+            document.getElementById('adminSubEndText').innerText = end.toLocaleDateString('ar-SA');
+            showMsg(`تم التمديد بنجاح لـ ${days} أيام 📅`, false);
+        };
+
+        window.endSub = async () => {
+            if(!confirm("هل أنت متأكدة من إنهاء الاشتراك الآن؟")) return;
+            const end = new Date();
+            await update(ref(db, `users/${currentAdminViewUid}`), { endDate: end.toISOString() });
+            document.getElementById('adminSubEndText').innerText = end.toLocaleDateString('ar-SA');
+            showMsg("تم إنهاء الاشتراك 🔒", false);
+        };
+
+        window.deleteUser = async () => {
+            if(!confirm("⚠️ تحذير: هل أنت متأكدة من حذف المتدربة نهائياً؟ سيتم مسح كل بياناتها!")) return;
+            await remove(ref(db, `users/${currentAdminViewUid}`));
+            showMsg("تم حذف المتدربة نهائياً 🗑️", false);
+            document.getElementById('backToAdminMainBtn').click();
+        };
+
         document.getElementById('generateCodeBtn').onclick = async () => {
             const code = document.getElementById('adminNewCode').value.trim().toUpperCase();
             const days = parseInt(document.getElementById('codeDays').value) || 0;
@@ -1531,10 +1659,16 @@
             currentAdminViewUid = uid;
             const snap = await get(child(ref(db), `users/${uid}`));
             const d = snap.val();
+            activeUserData = d; // لتسهيل إدارة الاشتراك
+            
             document.getElementById('adminMainView').classList.add('hidden');
             document.getElementById('adminUserDetailView').classList.remove('hidden');
             document.getElementById('detailUserEmail').innerText = d.email;
             
+            if(d.endDate) {
+                document.getElementById('adminSubEndText').innerText = new Date(d.endDate).toLocaleDateString('ar-SA');
+            }
+
             const targets = d.targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
             document.getElementById('targetCalInput').value = targets.cal;
             document.getElementById('targetProInput').value = targets.pro;
@@ -1607,8 +1741,8 @@
             renderAdminTimeline();
         };
 
-        document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5}); renderAdminExercises(); };
-        document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
+        document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5, period:''}); renderAdminExercises(); };
+        document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, period:'', ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
         
         document.getElementById('addBadgeBtn').onclick = () => { 
             currentAdminBadges.push({icon:'🏆', title:'إنجاز جديد'}); 
@@ -1651,6 +1785,7 @@
                     <div class="bg-input p-5 rounded-ios-lg border border-theme relative text-sm space-y-4 shadow-sm fade-in">
                         <button onclick="window.remEx(${idx})" class="absolute top-4 left-4 text-red-500 font-bold px-2 py-1 text-lg leading-none z-10">✕</button>
                         <input type="text" onchange="currentAdminExercises[${idx}].title=this.value" value="${ex.title}" class="w-full bg-card px-4 py-3 rounded-xl font-bold text-primary shadow-inner pr-12" placeholder="اسم التمرين">
+                        <input type="text" onchange="currentAdminExercises[${idx}].period=this.value" value="${ex.period||''}" class="w-full bg-card px-4 py-3 rounded-xl text-primary text-xs shadow-inner" placeholder="الفترة (مثال: الأسبوع الأول، السبت)">
                         <input type="text" onchange="currentAdminExercises[${idx}].media=this.value" value="${ex.media}" class="w-full bg-card px-4 py-3 rounded-xl text-accent font-medium text-xs shadow-inner" placeholder="رابط فيديو">
                         
                         <div class="flex flex-col sm:flex-row gap-3 bg-card p-3 rounded-xl border border-theme shadow-inner">
@@ -1688,6 +1823,7 @@
                         <button onclick="window.remMeal(${idx})" class="absolute top-4 left-4 text-red-500 font-bold px-2 py-1 text-lg leading-none z-10">✕</button>
                         
                         <input type="text" onchange="currentAdminMeals[${idx}].title=this.value" value="${m.title}" class="w-full bg-card px-4 py-3.5 rounded-xl font-bold text-primary pr-12 shadow-inner" placeholder="اسم الوجبة">
+                        <input type="text" onchange="currentAdminMeals[${idx}].period=this.value" value="${m.period||''}" class="w-full bg-card px-4 py-3 rounded-xl text-primary text-xs shadow-inner" placeholder="الفترة (مثال: الأسبوع الأول، الإفطار)">
                         
                         <div class="grid grid-cols-4 gap-3 bg-card p-3 rounded-xl border border-theme text-center shadow-inner">
                             <div><label class="text-[10px] text-muted block mb-2 font-bold">سعرات</label><input type="number" onchange="currentAdminMeals[${idx}].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent font-bold text-primary text-base outline-none text-center"></div>

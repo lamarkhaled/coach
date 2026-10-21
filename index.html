@@ -58,6 +58,10 @@
             transition: border-color 0.3s ease;
             -webkit-appearance: none;
         }
+        input[type="date"] {
+            font-family: 'Alexandria', sans-serif;
+            text-align: right;
+        }
         input:focus, textarea:focus, select:focus { 
             border-color: var(--accent); 
         }
@@ -138,6 +142,7 @@
 
     <main class="flex-grow flex flex-col items-center justify-start p-4 w-full max-w-3xl mx-auto overflow-x-hidden">
         
+        <!-- ================= AUTH ================= -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-12 fade-in">
             <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-52 mb-8 object-contain">
             <h1 class="text-3xl font-black mb-4 text-primary">منصة كوتش صحة</h1>
@@ -193,15 +198,18 @@
         <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl fade-in">
             
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
+                <!-- البانر المعتمد على التاريخ -->
                 <div id="currentDayBanner" class="bg-accent text-accent-text p-4 rounded-2xl font-black text-center text-lg shadow-lg"></div>
 
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
+                <!-- 1. الأوسمة -->
                 <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2 mb-5">🌟 أوسمة الإنجاز</h2>
                     <div id="userBadgesContainer" class="flex flex-wrap gap-4"></div>
                 </div>
 
+                <!-- 2. الخطة تحت الأوسمة مباشرة -->
                 <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
                     <div class="flex justify-between items-center border-b border-theme pb-4">
                         <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
@@ -210,6 +218,7 @@
                     <div class="timeline-container mt-5" id="timelineContainerArea"></div>
                 </div>
 
+                <!-- 3. تحديث القياسات -->
                 <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> تحديث القياسات</h2>
                     <div id="weightRoastBanner" class="hidden p-4 rounded-xl text-sm font-bold mb-3 shadow-sm"></div>
@@ -257,6 +266,7 @@
                     <button onclick="window.switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all">🏋️‍♀️ تمارين اليوم</button>
                 </div>
 
+                <!-- التغذية -->
                 <div id="subTabNutrition" class="plan-sub-tab block space-y-6 fade-in">
                     <button onclick="window.openGroceryList()" class="w-full bg-card border border-theme text-primary font-black text-sm py-4 rounded-xl shadow-sm transition-transform active:scale-95 mb-2 flex items-center justify-center gap-2">
                         <span class="text-xl">🛒</span> عرض قائمة المقاضي للوصفات
@@ -278,6 +288,7 @@
                     <div id="userNutritionCourse" class="space-y-5"></div>
                 </div>
 
+                <!-- التمارين -->
                 <div id="subTabWorkouts" class="plan-sub-tab hidden fade-in w-full">
                     <div id="userWorkoutCourseSummary" class="bg-card rounded-ios-lg p-8 border border-theme shadow-sm min-h-[300px] flex flex-col justify-center text-center fade-in"></div>
                     <div id="inlinePlayerView" class="hidden bg-card rounded-ios-lg p-5 sm:p-8 border border-theme shadow-lg min-h-[400px] flex flex-col fade-in">
@@ -301,7 +312,9 @@
                         <p id="userChatStatusText" class="text-[11px] font-bold text-muted mt-0.5">غير متصلة</p>
                     </div>
                 </div>
+                
                 <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
+                
                 <div class="p-3 bg-card border-t border-theme flex gap-2 items-center z-10 pb-safe">
                     <label class="cursor-pointer text-muted bg-input w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full border border-theme shadow-sm transition-transform active:scale-95">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
@@ -412,7 +425,7 @@
 
                 <div id="adminTabMeals" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
                     <div class="flex justify-between items-center mb-4">
-                        <label class="text-base font-bold text-primary">🍎 التغذية (جدولة الأيام)</label>
+                        <label class="text-base font-bold text-primary">🍎 التغذية (مربوطة بالتاريخ)</label>
                         <button id="addMealBtn" class="text-xs bg-input border border-theme text-primary font-bold px-5 py-3 rounded-xl shadow-sm transition-transform active:scale-95">+ إضافة وجبة</button>
                     </div>
                     <div id="adminMealsList" class="space-y-5"></div>
@@ -420,7 +433,7 @@
 
                 <div id="adminTabWorkouts" class="admin-tab hidden bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
                     <div class="flex justify-between items-center mb-4">
-                        <label class="text-base font-bold text-primary">🏋️‍♀️ التمارين (جدولة الأيام)</label>
+                        <label class="text-base font-bold text-primary">🏋️‍♀️ التمارين (مربوطة بالتاريخ)</label>
                         <button id="addExerciseBtn" class="text-xs bg-input border border-theme text-primary font-bold px-5 py-3 rounded-xl shadow-sm transition-transform active:scale-95">+ إضافة تمرين</button>
                     </div>
                     <div id="adminExercisesList" class="space-y-4"></div>
@@ -532,7 +545,7 @@
     <div id="groceryListModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
-                <h3 class="text-lg font-bold text-primary flex items-center gap-2">🛒 مقاضي الشهر للوجبات</h3>
+                <h3 class="text-lg font-bold text-primary flex items-center gap-2">🛒 مقاضي الشهر</h3>
                 <button onclick="document.getElementById('groceryListModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
             </div>
             <div id="groceryModalBody" class="space-y-3 max-h-[50vh] overflow-y-auto pr-2"></div>
@@ -587,6 +600,14 @@
 
         let globalWorkHours = { start: '09:00', end: '17:00' };
         let lastAutoReplyTime = 0;
+
+        function getTodayStr() { 
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
         window.fireConfetti = () => {
             const colors = ['#C6F432', '#ff4b4b', '#4CAF50', '#2196F3', '#FFC107', '#E91E63', '#9C27B0'];
@@ -692,8 +713,6 @@
             document.getElementById('btnSubNut').className = sub === 'nutrition' ? 'flex-1 bg-accent font-bold py-3.5 rounded-xl text-sm transition-all text-accent-text shadow-sm' : 'flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all';
             document.getElementById('btnSubWork').className = sub === 'workouts' ? 'flex-1 bg-accent font-bold py-3.5 rounded-xl text-sm transition-all text-accent-text shadow-sm' : 'flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all';
         };
-
-        function getTodayStr() { return new Date().toISOString().split('T')[0]; }
 
         function handleImageUpload(event, uid, sender) {
             const file = event.target.files[0];
@@ -959,17 +978,13 @@
             return `<a href="${url}" target="_blank" class="block w-full bg-input text-accent text-center py-4 rounded-xl text-sm font-bold my-4 border border-theme shadow-sm transition-transform active:scale-95">فتح الرابط المرفق</a>`;
         }
 
-        // ================= الدالة الأساسية للمتدربة (فلترة الأيام) =================
+        // ================= الدالة الأساسية للمتدربة =================
         function renderUserDashboard(data) {
             activeUserData = data;
-
-            // حساب اليوم الحالي للمتدربة
-            const start = data.startDate ? new Date(data.startDate) : new Date();
-            const now = new Date();
-            let currentDayNum = Math.floor(Math.abs(now - start) / 86400000) + 1;
-            if(currentDayNum < 1) currentDayNum = 1;
             
-            document.getElementById('currentDayBanner').innerHTML = `اليوم رقم <span class="text-3xl">${currentDayNum}</span> من البرنامج 🚀`;
+            const todayStr = getTodayStr();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('ar-SA', dateOptions);
 
             if(data.profile?.height) {
                 document.getElementById('userHeightInput').value = data.profile.height;
@@ -989,24 +1004,24 @@
                 }
             }
 
-            const badgesArr = Array.isArray(data.badges) ? data.badges : Object.values(data.badges || {}).filter(b => b != null);
-            const customTimeline = Array.isArray(data.plan?.timeline) ? data.plan?.timeline : Object.values(data.plan?.timeline || {}).filter(x => x != null);
+            const badgesArr = Array.isArray(data.badges) ? data.badges : Object.values(data.badges || {}).filter(b => b != null && b.title);
+            const customTimeline = Array.isArray(data.plan?.timeline) ? data.plan?.timeline : Object.values(data.plan?.timeline || {}).filter(x => x != null && x.title);
 
-            renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, customTimeline);
             renderUserBadges(badgesArr);
+            renderDetailedGoalTimeline(data.goalPlan, data.progress?.currentWeight, customTimeline);
 
             if(!leaderboardListenerAttached) {
                 loadLeaderboardAuto();
                 leaderboardListenerAttached = true;
             }
 
-            // فلترة الوجبات حسب اليوم
+            // فلترة الوجبات حسب تاريخ اليوم
             const allMeals = Array.isArray(data.plan?.meals || data.meals) ? (data.plan?.meals || data.meals) : Object.values(data.plan?.meals || data.meals || {}).filter(x => x != null);
-            const todayMeals = allMeals.map((m, i) => ({...m, _idx: i})).filter(m => !m.dayNum || m.dayNum == currentDayNum);
+            const todayMeals = allMeals.map((m, i) => ({...m, _idx: i})).filter(m => !m.date || m.date === todayStr);
 
-            // فلترة التمارين حسب اليوم
+            // فلترة التمارين حسب تاريخ اليوم
             const allExercises = Array.isArray(data.plan?.exercises || data.exercises) ? (data.plan?.exercises || data.exercises) : Object.values(data.plan?.exercises || data.exercises || {}).filter(x => x != null);
-            todayExercisesList = allExercises.map((ex, i) => ({...ex, _idx: i})).filter(ex => !ex.dayNum || ex.dayNum == currentDayNum);
+            todayExercisesList = allExercises.map((ex, i) => ({...ex, _idx: i})).filter(ex => !ex.date || ex.date === todayStr);
 
             renderUserNutritionCourse(todayMeals, data.progress?.meals, data.progress?.swaps, data.targets);
             renderUserWorkoutSummary(todayExercisesList, data.progress?.workouts);
@@ -1143,7 +1158,10 @@
                     const wDone = val.progress?.workouts?.[today] || {};
                     const mDone = val.progress?.meals?.[today] || {};
                     score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
-                    if(val.badges) score += val.badges.length * 50; 
+                    if(val.badges) {
+                        const bList = Array.isArray(val.badges) ? val.badges : Object.values(val.badges);
+                        score += bList.filter(b=>b!=null).length * 50; 
+                    }
 
                     usersArr.push({ email: val.email.split('@')[0], score });
                 });
@@ -1595,7 +1613,7 @@
         window.endSub = async () => {
             if(!confirm("هل أنت متأكدة من إنهاء الاشتراك الآن؟ سيتم إغلاق حساب المتدربة فوراً.")) return;
             const end = new Date();
-            end.setDate(end.getDate() - 1); // تاريخ بالماضي للإنهاء الفوري
+            end.setDate(end.getDate() - 1); 
             await update(ref(db, `users/${currentAdminViewUid}`), { endDate: end.toISOString() });
             if(activeUserData) activeUserData.endDate = end.toISOString();
             document.getElementById('adminSubEndText').innerText = 'منتهي (مغلق)';
@@ -1691,7 +1709,7 @@
             document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--';
             document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
 
-            // معالجة قوية للمصفوفات لحل مشكلة Object Firebase
+            // تنظيف دقيق لحل مشكلة Object Firebase
             currentAdminExercises = Array.isArray(d.plan?.exercises || d.exercises) ? (d.plan?.exercises || d.exercises) : Object.values(d.plan?.exercises || d.exercises || {});
             currentAdminMeals = Array.isArray(d.plan?.meals || d.meals) ? (d.plan?.meals || d.meals) : Object.values(d.plan?.meals || d.meals || {});
             currentAdminBadges = Array.isArray(d.badges) ? d.badges : Object.values(d.badges || {});
@@ -1760,11 +1778,11 @@
             renderAdminTimeline();
         };
 
-        document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5, period:'', dayNum:''}); renderAdminExercises(); };
-        document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, period:'', dayNum:'', ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
+        document.getElementById('addExerciseBtn').onclick = () => { currentAdminExercises.push({title:'', media:'', type:'sets', sets:3, timerMins:5, period:'', date:''}); renderAdminExercises(); };
+        document.getElementById('addMealBtn').onclick = () => { currentAdminMeals.push({title:'', image:'', recipe:'', media:'', cal:400, pro:30, carb:40, fat:10, period:'', date:'', ingredients:[{name:'', amount:''}]}); renderAdminMeals(); };
         
         document.getElementById('addBadgeBtn').onclick = () => { 
-            currentAdminBadges.push({icon:'🏆', title:'إنجاز جديد'}); 
+            currentAdminBadges.push({icon:'🏆', title:''}); 
             renderAdminBadges(); 
         };
 
@@ -1778,7 +1796,7 @@
                 list.innerHTML += `
                     <div class="flex items-center gap-3 bg-input p-4 rounded-xl border border-theme relative shadow-sm fade-in">
                         <button onclick="window.remBadge(${idx})" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-500 font-bold px-2 py-1 text-lg">✕</button>
-                        <select oninput="currentAdminBadges[${idx}].icon=this.value" class="bg-card px-3 py-3 rounded-xl text-2xl border border-theme shadow-inner">
+                        <select onchange="window.updateBadgeIcon(${idx}, this.value)" class="bg-card px-3 py-3 rounded-xl text-2xl border border-theme shadow-inner">
                             <option value="🏆" ${b.icon==='🏆'?'selected':''}>🏆</option>
                             <option value="🌟" ${b.icon==='🌟'?'selected':''}>🌟</option>
                             <option value="🔥" ${b.icon==='🔥'?'selected':''}>🔥</option>
@@ -1788,12 +1806,14 @@
                             <option value="🏅" ${b.icon==='🏅'?'selected':''}>🏅</option>
                             <option value="💯" ${b.icon==='💯'?'selected':''}>💯</option>
                         </select>
-                        <input type="text" oninput="currentAdminBadges[${idx}].title=this.value" value="${b.title}" class="flex-grow bg-card px-4 py-3 rounded-xl text-sm text-primary shadow-inner" placeholder="اسم الوسام">
+                        <input type="text" onchange="window.updateBadgeTitle(${idx}, this.value)" value="${b.title||''}" class="flex-grow bg-card px-4 py-3 rounded-xl text-sm text-primary shadow-inner" placeholder="اسم الوسام">
                     </div>
                 `;
             });
         }
         window.remBadge = (idx) => { currentAdminBadges.splice(idx, 1); renderAdminBadges(); };
+        window.updateBadgeIcon = (idx, val) => { currentAdminBadges[idx].icon = val; };
+        window.updateBadgeTitle = (idx, val) => { currentAdminBadges[idx].title = val; };
 
         function renderAdminExercises() {
             const list = document.getElementById('adminExercisesList');
@@ -1803,31 +1823,31 @@
                 list.innerHTML += `
                     <div class="bg-input p-5 rounded-ios-lg border border-theme relative text-sm space-y-4 shadow-sm fade-in">
                         <button onclick="window.remEx(${idx})" class="absolute top-4 left-4 text-red-500 font-bold px-2 py-1 text-lg leading-none z-10">✕</button>
-                        <input type="text" oninput="currentAdminExercises[${idx}].title=this.value" value="${ex.title}" class="w-full bg-card px-4 py-3 rounded-xl font-bold text-primary shadow-inner pr-12" placeholder="اسم التمرين">
+                        <input type="text" onchange="currentAdminExercises[${idx}].title=this.value" value="${ex.title}" class="w-full bg-card px-4 py-3 rounded-xl font-bold text-primary shadow-inner pr-12" placeholder="اسم التمرين">
                         
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-[10px] text-muted font-bold block mb-1">يظهر في اليوم رقم (1-30)</label>
-                                <input type="number" oninput="currentAdminExercises[${idx}].dayNum=parseInt(this.value)" value="${ex.dayNum||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="فارغ = كل الأيام">
+                                <label class="text-[10px] text-muted font-bold block mb-1">تاريخ العرض (فارغ = دائم)</label>
+                                <input type="date" onchange="currentAdminExercises[${idx}].date=this.value" value="${ex.date||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner">
                             </div>
                             <div>
                                 <label class="text-[10px] text-muted font-bold block mb-1">الفترة (توضيحي)</label>
-                                <input type="text" oninput="currentAdminExercises[${idx}].period=this.value" value="${ex.period||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="مثال: الأسبوع الأول">
+                                <input type="text" onchange="currentAdminExercises[${idx}].period=this.value" value="${ex.period||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="مثال: الأسبوع الأول">
                             </div>
                         </div>
 
-                        <input type="text" oninput="currentAdminExercises[${idx}].media=this.value" value="${ex.media}" class="w-full bg-card px-4 py-3 rounded-xl text-accent font-medium text-xs shadow-inner" placeholder="رابط فيديو">
+                        <input type="text" onchange="currentAdminExercises[${idx}].media=this.value" value="${ex.media}" class="w-full bg-card px-4 py-3 rounded-xl text-accent font-medium text-xs shadow-inner" placeholder="رابط فيديو">
                         
                         <div class="flex flex-col sm:flex-row gap-3 bg-card p-3 rounded-xl border border-theme shadow-inner">
-                            <select oninput="window.toggleExType(${idx}, this.value)" class="bg-input px-3 py-3 rounded-lg text-primary font-bold text-sm border border-theme sm:w-1/2">
+                            <select onchange="window.toggleExType(${idx}, this.value)" class="bg-input px-3 py-3 rounded-lg text-primary font-bold text-sm border border-theme sm:w-1/2">
                                 <option value="sets" ${!isTimer?'selected':''}>جولات</option>
                                 <option value="timer" ${isTimer?'selected':''}>مؤقت زمني</option>
                             </select>
 
                             ${isTimer ? `
-                                <div class="flex items-center justify-between sm:justify-start gap-3 sm:w-1/2 sm:border-r border-theme sm:pr-4"><span class="text-xs text-muted font-bold">المدة (دقائق):</span><input type="number" oninput="currentAdminExercises[${idx}].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-20 bg-input px-2 py-2 text-center rounded-lg text-primary font-bold border border-theme shadow-inner"></div>
+                                <div class="flex items-center justify-between sm:justify-start gap-3 sm:w-1/2 sm:border-r border-theme sm:pr-4"><span class="text-xs text-muted font-bold">المدة (دقائق):</span><input type="number" onchange="currentAdminExercises[${idx}].timerMins=parseInt(this.value)" value="${ex.timerMins||5}" class="w-20 bg-input px-2 py-2 text-center rounded-lg text-primary font-bold border border-theme shadow-inner"></div>
                             ` : `
-                                <div class="flex items-center justify-between sm:justify-start gap-3 sm:w-1/2 sm:border-r border-theme sm:pr-4"><span class="text-xs text-muted font-bold">عدد الجولات:</span><input type="number" oninput="currentAdminExercises[${idx}].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-20 bg-input px-2 py-2 text-center rounded-lg text-primary font-bold border border-theme shadow-inner"></div>
+                                <div class="flex items-center justify-between sm:justify-start gap-3 sm:w-1/2 sm:border-r border-theme sm:pr-4"><span class="text-xs text-muted font-bold">عدد الجولات:</span><input type="number" onchange="currentAdminExercises[${idx}].sets=parseInt(this.value)" value="${ex.sets||3}" class="w-20 bg-input px-2 py-2 text-center rounded-lg text-primary font-bold border border-theme shadow-inner"></div>
                             `}
                         </div>
                     </div>`;
@@ -1842,8 +1862,8 @@
             currentAdminMeals.forEach((m, idx) => {
                 let ingredientsHtml = (m.ingredients || []).map((ing, iIdx) => `
                     <div class="flex gap-2 mb-3 items-center">
-                        <input type="text" oninput="currentAdminMeals[${idx}].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="flex-grow bg-card px-3 py-2.5 rounded-lg text-xs text-primary shadow-inner" placeholder="المكون">
-                        <input type="text" oninput="currentAdminMeals[${idx}].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-24 bg-card px-3 py-2.5 rounded-lg text-xs text-center text-primary shadow-inner" placeholder="الكمية">
+                        <input type="text" onchange="currentAdminMeals[${idx}].ingredients[${iIdx}].name=this.value" value="${ing.name}" class="flex-grow bg-card px-3 py-2.5 rounded-lg text-xs text-primary shadow-inner" placeholder="المكون">
+                        <input type="text" onchange="currentAdminMeals[${idx}].ingredients[${iIdx}].amount=this.value" value="${ing.amount}" class="w-24 bg-card px-3 py-2.5 rounded-lg text-xs text-center text-primary shadow-inner" placeholder="الكمية">
                         <button onclick="window.remIng(${idx}, ${iIdx})" class="text-red-500 font-bold px-2 py-1 text-lg">✕</button>
                     </div>
                 `).join('');
@@ -1852,24 +1872,24 @@
                     <div class="bg-input p-5 rounded-ios-lg border border-theme relative text-sm space-y-4 shadow-sm fade-in">
                         <button onclick="window.remMeal(${idx})" class="absolute top-4 left-4 text-red-500 font-bold px-2 py-1 text-lg leading-none z-10">✕</button>
                         
-                        <input type="text" oninput="currentAdminMeals[${idx}].title=this.value" value="${m.title}" class="w-full bg-card px-4 py-3.5 rounded-xl font-bold text-primary pr-12 shadow-inner" placeholder="اسم الوجبة">
+                        <input type="text" onchange="currentAdminMeals[${idx}].title=this.value" value="${m.title}" class="w-full bg-card px-4 py-3.5 rounded-xl font-bold text-primary pr-12 shadow-inner" placeholder="اسم الوجبة">
                         
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-[10px] text-muted font-bold block mb-1">يظهر في اليوم رقم (1-30)</label>
-                                <input type="number" oninput="currentAdminMeals[${idx}].dayNum=parseInt(this.value)" value="${m.dayNum||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="فارغ = كل الأيام">
+                                <label class="text-[10px] text-muted font-bold block mb-1">تاريخ العرض (فارغ = دائم)</label>
+                                <input type="date" onchange="currentAdminMeals[${idx}].date=this.value" value="${m.date||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner">
                             </div>
                             <div>
                                 <label class="text-[10px] text-muted font-bold block mb-1">الفترة (توضيحي)</label>
-                                <input type="text" oninput="currentAdminMeals[${idx}].period=this.value" value="${m.period||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="مثال: الإفطار">
+                                <input type="text" onchange="currentAdminMeals[${idx}].period=this.value" value="${m.period||''}" class="w-full bg-card px-3 py-2 rounded-lg text-primary text-xs shadow-inner" placeholder="مثال: الإفطار">
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-4 gap-3 bg-card p-3 rounded-xl border border-theme text-center shadow-inner">
-                            <div><label class="text-[10px] text-muted block mb-2 font-bold">سعرات</label><input type="number" oninput="currentAdminMeals[${idx}].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent font-bold text-primary text-base outline-none text-center"></div>
-                            <div><label class="text-[10px] text-muted block mb-2 font-bold">بروتين</label><input type="number" oninput="currentAdminMeals[${idx}].pro=this.value" value="${m.pro||0}" class="w-full bg-transparent font-bold text-accent text-base outline-none text-center"></div>
-                            <div><label class="text-[10px] text-muted block mb-2 font-bold">كارب</label><input type="number" oninput="currentAdminMeals[${idx}].carb=this.value" value="${m.carb||0}" class="w-full bg-transparent font-bold text-blue-500 text-base outline-none text-center"></div>
-                            <div><label class="text-[10px] text-muted block mb-2 font-bold">دهون</label><input type="number" oninput="currentAdminMeals[${idx}].fat=this.value" value="${m.fat||0}" class="w-full bg-transparent font-bold text-yellow-500 text-base outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-2 font-bold">سعرات</label><input type="number" onchange="currentAdminMeals[${idx}].cal=this.value" value="${m.cal||0}" class="w-full bg-transparent font-bold text-primary text-base outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-2 font-bold">بروتين</label><input type="number" onchange="currentAdminMeals[${idx}].pro=this.value" value="${m.pro||0}" class="w-full bg-transparent font-bold text-accent text-base outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-2 font-bold">كارب</label><input type="number" onchange="currentAdminMeals[${idx}].carb=this.value" value="${m.carb||0}" class="w-full bg-transparent font-bold text-blue-500 text-base outline-none text-center"></div>
+                            <div><label class="text-[10px] text-muted block mb-2 font-bold">دهون</label><input type="number" onchange="currentAdminMeals[${idx}].fat=this.value" value="${m.fat||0}" class="w-full bg-transparent font-bold text-yellow-500 text-base outline-none text-center"></div>
                         </div>
 
                         <div class="p-4 border border-theme rounded-xl bg-card shadow-sm">
@@ -1878,9 +1898,9 @@
                             <button onclick="window.addIng(${idx})" class="w-full text-xs bg-input text-primary font-bold py-3 rounded-lg mt-2 border border-theme shadow-sm transition-transform active:scale-95">+ إضافة مكون</button>
                         </div>
 
-                        <input type="text" oninput="currentAdminMeals[${idx}].image=this.value" value="${m.image||''}" class="w-full bg-card px-4 py-3 rounded-xl text-xs text-accent shadow-inner" placeholder="رابط الصورة (اختياري)">
-                        <textarea oninput="currentAdminMeals[${idx}].recipe=this.value" rows="3" class="w-full bg-card px-4 py-3 rounded-xl text-sm text-primary leading-relaxed shadow-inner" placeholder="طريقة التحضير...">${m.recipe||''}</textarea>
-                        <input type="text" oninput="currentAdminMeals[${idx}].media=this.value" value="${m.media||''}" class="w-full bg-card px-4 py-3 rounded-xl text-xs text-accent shadow-inner" placeholder="رابط فيديو (اختياري)">
+                        <input type="text" onchange="currentAdminMeals[${idx}].image=this.value" value="${m.image||''}" class="w-full bg-card px-4 py-3 rounded-xl text-xs text-accent shadow-inner" placeholder="رابط الصورة (اختياري)">
+                        <textarea onchange="currentAdminMeals[${idx}].recipe=this.value" rows="3" class="w-full bg-card px-4 py-3 rounded-xl text-sm text-primary leading-relaxed shadow-inner" placeholder="طريقة التحضير...">${m.recipe||''}</textarea>
+                        <input type="text" onchange="currentAdminMeals[${idx}].media=this.value" value="${m.media||''}" class="w-full bg-card px-4 py-3 rounded-xl text-xs text-accent shadow-inner" placeholder="رابط فيديو (اختياري)">
                     </div>`;
             });
         }
@@ -1898,12 +1918,14 @@
             const btn = document.getElementById('adminSaveAllBtn');
             btn.innerText = 'جاري الحفظ...';
 
+            const cleanBadges = currentAdminBadges.filter(b => b != null && b.title && b.title.trim() !== '');
+
             await update(ref(db, `users/${currentAdminViewUid}`), { 
                 targets: targets,
                 'plan/exercises': currentAdminExercises.length ? currentAdminExercises : null, 
                 'plan/meals': currentAdminMeals.length ? currentAdminMeals : null,
                 'plan/timeline': currentAdminTimeline.length ? currentAdminTimeline : null,
-                badges: currentAdminBadges.length ? currentAdminBadges : null
+                badges: cleanBadges.length > 0 ? cleanBadges : null
             });
             showMsg("تم الحفظ والنشر بنجاح!", false);
             btn.innerText = 'حفظ ونشر الكل ✔️';

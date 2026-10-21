@@ -1,4 +1,4 @@
-import { db } from './firebase-config.js';
+import { db, firebaseConfig } from './firebase-config.js';
 import { ref, set, get, child, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 export function initAdmin() {
@@ -36,24 +36,26 @@ export function initAdmin() {
         snap.forEach(uSnap => { 
             const uid = uSnap.key; const d = uSnap.val(); 
             if(d.email === window.adminEmail) return;
+            const name = d.profile?.name || 'بدون اسم';
             const unreadBadge = d.hasUnread ? `<span class="absolute -top-1 -right-2 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>` : '';
-            list.innerHTML += `<div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme transition-colors" onclick="window.openUserDetail('${uid}')"><div class="relative"><p class="font-bold text-primary text-sm">${d.email}</p>${unreadBadge}<span class="text-[11px] text-accent font-bold mt-1 inline-block">${d.usedCode || 'بدون كود'}</span></div><span class="text-xl text-muted font-bold">›</span></div>`; 
+            list.innerHTML += `<div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme transition-colors" onclick="window.openUserDetail('${uid}')"><div class="relative"><p class="font-bold text-primary text-sm">${name} <span class="text-[10px] text-muted font-normal ml-2">(${d.email})</span></p>${unreadBadge}<span class="text-[11px] text-accent font-bold mt-1 inline-block">${d.usedCode || 'بدون كود'}</span></div><span class="text-xl text-muted font-bold">›</span></div>`; 
         });
     };
 
     window.openUserDetail = async (uid) => {
         window.currentAdminViewUid = uid; const snap = await get(child(ref(db), `users/${uid}`)); const d = snap.val(); window.activeUserData = d; 
         
-        await update(ref(db, `users/${uid}`), { hasUnread: false }); // إخفاء النقطة الحمراء بعد قراءة الرسالة
+        await update(ref(db, `users/${uid}`), { hasUnread: false }); 
 
-        document.getElementById('adminMainView').classList.add('hidden'); document.getElementById('adminUserDetailView').classList.remove('hidden'); document.getElementById('detailUserEmail').innerText = d.email;
+        document.getElementById('adminMainView').classList.add('hidden'); document.getElementById('adminUserDetailView').classList.remove('hidden'); 
+        document.getElementById('detailUserEmail').innerText = d.profile?.name ? `${d.profile.name} (${d.email})` : d.email;
+        
         if(d.endDate) { const isExpired = new Date(d.endDate) < new Date(); const endTxt = document.getElementById('adminSubEndText'); endTxt.innerText = new Date(d.endDate).toLocaleDateString('ar-SA'); endTxt.className = isExpired ? 'text-red-500 font-black text-sm bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/30 inline-block mr-2 ml-2' : 'text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2'; }
         
         const targets = d.targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
         document.getElementById('targetCalInput').value = targets.cal; document.getElementById('targetProInput').value = targets.pro; document.getElementById('targetCarbInput').value = targets.carb; document.getElementById('targetFatInput').value = targets.fat;
         document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--'; document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
 
-        // حساب ملخص أداء اليوم
         const todayStr = window.getTodayStr();
         const doneMeals = d.progress?.meals?.[todayStr] || {};
         const todaySwaps = d.progress?.swaps?.[todayStr] || [];
@@ -186,6 +188,50 @@ export function initAdmin() {
     const btnAddEx = document.getElementById('addExerciseBtn'); if(btnAddEx) btnAddEx.onclick = window.addExercise; 
     const btnAddMl = document.getElementById('addMealBtn'); if(btnAddMl) btnAddMl.onclick = window.addMeal; 
     const btnAddBg = document.getElementById('addBadgeBtn'); if(btnAddBg) btnAddBg.onclick = window.addBadge;
+
+    const btnAdmCreate = document.getElementById('adminCreateUserBtn');
+    if(btnAdmCreate) {
+        btnAdmCreate.onclick = async () => {
+            const name = document.getElementById('adminAddUserName').value.trim();
+            const email = document.getElementById('adminAddUserEmail').value.trim();
+            const pass = document.getElementById('adminAddUserPass').value.trim();
+
+            if(!name || !email || !pass) return window.showMsg("الرجاء تعبئة جميع الحقول", true);
+
+            btnAdmCreate.innerText = 'جاري الإنشاء...';
+            try {
+                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+                const { getAuth, createUserWithEmailAndPassword, signOut } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+                const { firebaseConfig } = await import('./firebase-config.js');
+                
+                let secApp;
+                try { secApp = initializeApp(firebaseConfig, "SecondaryApp" + Date.now()); } catch(e) {}
+                const secAuth = getAuth(secApp);
+
+                const userCred = await createUserWithEmailAndPassword(secAuth, email, pass);
+                const newUid = userCred.user.uid;
+
+                const d = new Date(); 
+                const timestamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+                await set(ref(db, `users/${newUid}`), {
+                    email: email,
+                    onboardingCompleted: true,
+                    startDate: new Date().toISOString(),
+                    endDate: new Date(Date.now() + 30*86400000).toISOString(),
+                    usedCode: 'إضافة يدوية',
+                    profile: { name: name, weight: 0, height: 0, goal: '' },
+                    progress: { currentWeight: 0, weightHistory: { [timestamp]: 0 } }
+                });
+
+                await signOut(secAuth);
+                window.showMsg("تم إنشاء حساب المتدربة بنجاح ✔️", false);
+                document.getElementById('adminAddUserName').value = ''; document.getElementById('adminAddUserEmail').value = ''; document.getElementById('adminAddUserPass').value = '';
+                btnAdmCreate.innerText = 'إنشاء وتفعيل الحساب';
+                window.loadAdminUsers();
+            } catch(e) { window.showMsg(e.message, true); btnAdmCreate.innerText = 'إنشاء وتفعيل الحساب'; }
+        };
+    }
 
     const btnAdmSend = document.getElementById('adminSendChatBtn');
     if(btnAdmSend) {

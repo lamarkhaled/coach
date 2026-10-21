@@ -33,16 +33,63 @@ export function initAdmin() {
     window.loadAdminUsers = async () => {
         const list = document.getElementById('usersList'); const snap = await get(child(ref(db), 'users')); list.innerHTML = '';
         if(!snap.exists()) return list.innerHTML = '<p class="text-center py-8 text-sm text-muted">لا يوجد متدربات</p>';
-        snap.forEach(uSnap => { const uid = uSnap.key; const d = uSnap.val(); list.innerHTML += `<div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme transition-colors" onclick="window.openUserDetail('${uid}')"><div><p class="font-bold text-primary text-sm">${d.email}</p><span class="text-[11px] text-accent font-bold mt-1 inline-block">${d.usedCode || 'بدون كود'}</span></div><span class="text-xl text-muted font-bold">›</span></div>`; });
+        snap.forEach(uSnap => { 
+            const uid = uSnap.key; const d = uSnap.val(); 
+            if(d.email === window.adminEmail) return;
+            const unreadBadge = d.hasUnread ? `<span class="absolute -top-1 -right-2 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>` : '';
+            list.innerHTML += `<div class="p-5 flex justify-between items-center cursor-pointer hover:bg-input border-b border-theme transition-colors" onclick="window.openUserDetail('${uid}')"><div class="relative"><p class="font-bold text-primary text-sm">${d.email}</p>${unreadBadge}<span class="text-[11px] text-accent font-bold mt-1 inline-block">${d.usedCode || 'بدون كود'}</span></div><span class="text-xl text-muted font-bold">›</span></div>`; 
+        });
     };
 
     window.openUserDetail = async (uid) => {
         window.currentAdminViewUid = uid; const snap = await get(child(ref(db), `users/${uid}`)); const d = snap.val(); window.activeUserData = d; 
+        
+        await update(ref(db, `users/${uid}`), { hasUnread: false }); // إخفاء النقطة الحمراء بعد قراءة الرسالة
+
         document.getElementById('adminMainView').classList.add('hidden'); document.getElementById('adminUserDetailView').classList.remove('hidden'); document.getElementById('detailUserEmail').innerText = d.email;
         if(d.endDate) { const isExpired = new Date(d.endDate) < new Date(); const endTxt = document.getElementById('adminSubEndText'); endTxt.innerText = new Date(d.endDate).toLocaleDateString('ar-SA'); endTxt.className = isExpired ? 'text-red-500 font-black text-sm bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/30 inline-block mr-2 ml-2' : 'text-primary text-sm bg-input px-3 py-1 rounded-lg border border-theme inline-block mr-2 ml-2'; }
+        
         const targets = d.targets || { cal: 2000, pro: 150, carb: 200, fat: 60 };
         document.getElementById('targetCalInput').value = targets.cal; document.getElementById('targetProInput').value = targets.pro; document.getElementById('targetCarbInput').value = targets.carb; document.getElementById('targetFatInput').value = targets.fat;
         document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--'; document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
+
+        // حساب ملخص أداء اليوم
+        const todayStr = window.getTodayStr();
+        const doneMeals = d.progress?.meals?.[todayStr] || {};
+        const todaySwaps = d.progress?.swaps?.[todayStr] || [];
+        const allMeals = Array.isArray(d.plan?.meals || d.meals) ? (d.plan?.meals || d.meals) : Object.values(d.plan?.meals || d.meals || {});
+        const todayMeals = allMeals.map((m, i) => ({...m, _idx: i})).filter(m => (!m.date || m.date === todayStr) && m.title);
+        
+        let totalCal = 0;
+        todayMeals.forEach(m => { if(doneMeals[m._idx]) totalCal += Number(m.cal||0); });
+        todaySwaps.forEach(sw => { totalCal += Number(sw.cal||0); });
+
+        const isExceeded = totalCal > targets.cal;
+        const allMealsDone = todayMeals.length > 0 && todayMeals.every(m => doneMeals[m._idx]);
+
+        const doneWorkouts = d.progress?.workouts?.[todayStr] || {};
+        const allEx = Array.isArray(d.plan?.exercises || d.exercises) ? (d.plan?.exercises || d.exercises) : Object.values(d.plan?.exercises || d.exercises || {});
+        const todayEx = allEx.map((ex, i) => ({...ex, _idx: i})).filter(ex => (!ex.date || ex.date === todayStr) && ex.title);
+
+        let allExDone = todayEx.length > 0;
+        if(todayEx.length > 0) {
+            todayEx.forEach(ex => {
+                if(ex.type === 'timer') { if(!doneWorkouts[ex._idx]?.completed) allExDone = false; } 
+                else { if((doneWorkouts[ex._idx] || 0) < ex.sets) allExDone = false; }
+            });
+        } else { allExDone = false; }
+
+        const sumHTML = `
+            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner">
+                <span class="text-xl block mb-2">${allExDone ? '✅' : '⏳'}</span><span class="text-[11px] font-bold text-muted block mb-1">التمارين</span><span class="text-xs font-black ${allExDone ? 'text-green-500' : 'text-yellow-500'}">${allExDone ? 'مكتملة' : 'غير مكتملة'}</span>
+            </div>
+            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner">
+                <span class="text-xl block mb-2">${allMealsDone ? '✅' : '⏳'}</span><span class="text-[11px] font-bold text-muted block mb-1">الوجبات</span><span class="text-xs font-black ${allMealsDone ? 'text-green-500' : 'text-yellow-500'}">${allMealsDone ? 'مكتملة' : 'غير مكتملة'}</span>
+            </div>
+            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner">
+                <span class="text-xl block mb-2">${isExceeded ? '⚠️' : '👌'}</span><span class="text-[11px] font-bold text-muted block mb-1">السعرات</span><span class="text-xs font-black ${isExceeded ? 'text-red-500' : 'text-accent'}">${isExceeded ? 'متجاوزة' : 'بالسليم'}</span>
+            </div>`;
+        document.getElementById('adminUserDailySummary').innerHTML = sumHTML;
 
         window.currentAdminExercises = Array.isArray(d.plan?.exercises || d.exercises) ? (d.plan?.exercises || d.exercises) : Object.values(d.plan?.exercises || d.exercises || {});
         window.currentAdminMeals = Array.isArray(d.plan?.meals || d.meals) ? (d.plan?.meals || d.meals) : Object.values(d.plan?.meals || d.meals || {});
@@ -142,7 +189,7 @@ export function initAdmin() {
 
     const btnAdmSend = document.getElementById('adminSendChatBtn');
     if(btnAdmSend) {
-        btnAdmSend.onclick = () => { const inp = document.getElementById('adminChatInput'); if(inp.value.trim() && window.currentAdminViewUid){ push(ref(db, `chats/${window.currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; } };
+        btnAdmSend.onclick = () => { const inp = document.getElementById('adminChatInput'); if(inp.value.trim() && window.currentAdminViewUid){ push(ref(db, `chats/${window.currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; update(ref(db, `users/${window.currentAdminViewUid}`), { hasUnread: false }); } };
         document.getElementById('adminChatInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') btnAdmSend.click(); });
         document.getElementById('adminChatFile').onchange = (e) => window.handleImageUpload(e, window.currentAdminViewUid, 'admin');
     }

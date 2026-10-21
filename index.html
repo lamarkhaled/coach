@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>كوتش صحة</title>
     
-    <!-- الخطوط من جوجل -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- مكتبة التصميم (Tailwind) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     
-    <!-- ملفات التنسيق (CSS) المقسمة -->
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/layout.css">
@@ -36,7 +33,6 @@
 
     <main class="flex-grow flex flex-col items-center justify-start p-4 w-full max-w-3xl mx-auto overflow-x-hidden">
         
-        <!-- ================= AUTH ================= -->
         <div id="welcomeSection" class="w-full flex flex-col items-center text-center mt-12 fade-in">
             <img src="https://i.ibb.co/v4smnwP/image.png" onerror="this.src='https://files.catbox.moe/v4smnw.png'" alt="كوتش صحة" class="w-52 mb-8 object-contain">
             <h1 class="text-3xl font-black mb-4 text-primary">منصة كوتش صحة</h1>
@@ -47,7 +43,6 @@
                 <button id="showRegisterBtn" class="w-full bg-card border border-theme text-primary font-bold py-4 rounded-ios text-base shadow-sm transition-transform active:scale-95">حساب جديد</button>
             </div>
 
-            <!-- روابط السوشال ميديا -->
             <div class="flex justify-center gap-5 mt-10">
                 <a href="https://x.com/health_coaach?s=11" target="_blank" class="w-12 h-12 bg-input border border-theme rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-accent hover:text-accent-text hover:border-accent transition-all duration-300 active:scale-90">
                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -103,18 +98,15 @@
         <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl fade-in">
             
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
-                <!-- بانر التاريخ -->
                 <div id="currentDayBanner" class="bg-accent text-accent-text p-4 rounded-2xl font-black text-center text-lg shadow-lg"></div>
 
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
-                <!-- 1. الأوسمة -->
                 <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2 mb-5">🌟 أوسمة الإنجاز</h2>
                     <div id="userBadgesContainer" class="flex flex-wrap gap-4"></div>
                 </div>
 
-                <!-- 2. التايم لاين -->
                 <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
                     <div class="flex justify-between items-center border-b border-theme pb-4">
                         <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
@@ -123,7 +115,6 @@
                     <div class="timeline-container mt-5" id="timelineContainerArea"></div>
                 </div>
 
-                <!-- 3. القياسات -->
                 <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
                     <h2 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">⚖️</span> تحديث القياسات</h2>
                     <div id="weightRoastBanner" class="hidden p-4 rounded-xl text-sm font-bold mb-3 shadow-sm"></div>
@@ -163,7 +154,6 @@
                 </div>
             </div>
 
-            <!-- البرنامج لليوم الفعلي -->
             <div id="tabPlan" class="user-tab hidden w-full space-y-6 fade-in">
                 <h1 class="text-2xl font-black px-1 text-primary">برنامج <span class="text-accent">اليوم</span></h1>
                 
@@ -172,7 +162,6 @@
                     <button onclick="window.switchPlanSubTab('workouts')" id="btnSubWork" class="flex-1 bg-transparent text-muted font-bold py-3.5 rounded-xl text-sm transition-all">🏋️‍♀️ تمارين اليوم</button>
                 </div>
 
-                <!-- التغذية -->
                 <div id="subTabNutrition" class="plan-sub-tab block space-y-6 fade-in">
                     <button onclick="window.openGroceryList()" class="w-full bg-card border border-theme text-primary font-black text-sm py-4 rounded-xl shadow-sm transition-transform active:scale-95 mb-2 flex items-center justify-center gap-2">
                         <span class="text-xl">🛒</span> عرض قائمة المقاضي للوصفات
@@ -194,7 +183,6 @@
                     <div id="userNutritionCourse" class="space-y-5"></div>
                 </div>
 
-                <!-- التمارين -->
                 <div id="subTabWorkouts" class="plan-sub-tab hidden fade-in w-full">
                     <div id="userWorkoutCourseSummary" class="bg-card rounded-ios-lg p-8 border border-theme shadow-sm min-h-[300px] flex flex-col justify-center text-center fade-in"></div>
                     <div id="inlinePlayerView" class="hidden bg-card rounded-ios-lg p-5 sm:p-8 border border-theme shadow-lg min-h-[400px] flex flex-col fade-in">
@@ -207,7 +195,6 @@
                 </div>
             </div>
 
-            <!-- الشات -->
             <div id="tabChat" class="user-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
                 <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
                     <div class="relative">
@@ -353,9 +340,10 @@
                     </div>
                     <div class="space-y-3 mt-5 bg-input p-5 rounded-xl border border-theme shadow-inner">
                         <h4 class="text-xs font-bold text-primary mb-3">إضافة مرحلة جديدة:</h4>
-                        <input type="text" id="msTitle" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm" placeholder="اسم المرحلة">
-                        <input type="number" id="msWeight" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm" placeholder="الوزن المتوقع الوصول له">
-                        <input type="text" id="msNote" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm" placeholder="رسالة للمتدربة (ملاحظة)">
+                        <input type="text" id="msTitle" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm mb-2" placeholder="اسم المرحلة (مثال: كسر حاجز الـ 70)">
+                        <input type="number" id="msWeight" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm mb-2" placeholder="الوزن الهدف للمرحلة">
+                        <textarea id="msPreNote" rows="2" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm mb-2" placeholder="رسالة للمتدربة تظهر قبل الوصول (تشجيعية)"></textarea>
+                        <textarea id="msPostNote" rows="2" class="w-full bg-card px-4 py-3.5 rounded-xl border border-theme text-sm text-primary shadow-sm mb-2" placeholder="رسالة للمتدربة تظهر بعد الوصول (مكافأة واحتفال)"></textarea>
                         <button onclick="window.addMilestone()" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-3 shadow-sm transition-transform active:scale-95 text-accent-text">إضافة المرحلة</button>
                     </div>
                     <div id="adminTimelineList" class="space-y-4 mt-5"></div>
@@ -395,7 +383,6 @@
 
     </main>
 
-    <!-- الشريط السفلي -->
     <div id="bottomNavBar" class="fixed bottom-0 left-0 w-full glass-nav border-t border-theme flex justify-around items-center py-3 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.15)] hidden">
         <button onclick="window.switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
             <span class="text-2xl drop-shadow-sm">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
@@ -408,7 +395,6 @@
         </button>
     </div>
 
-    <!-- النوافذ المنبثقة -->
     <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
@@ -447,7 +433,6 @@
         </div>
     </div>
 
-    <!-- قائمة المقاضي -->
     <div id="groceryListModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
@@ -459,7 +444,6 @@
         </div>
     </div>
 
-    <!-- نافذة الاحتفال -->
     <div id="milestoneModal" class="hidden fixed inset-0 z-[110] bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center items-center fade-in">
         <div class="max-w-sm w-full bg-card rounded-[32px] p-8 border border-theme text-center shadow-2xl transform scale-100 transition-transform">
             <div class="text-7xl mb-6 filter drop-shadow-lg">🎉</div>
@@ -469,7 +453,6 @@
         </div>
     </div>
 
-    <!-- استدعاء ملف الجافاسكربت الرئيسي -->
     <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>

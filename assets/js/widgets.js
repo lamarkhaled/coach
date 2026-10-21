@@ -151,7 +151,6 @@ export function initWidgets() {
         }
     }
 
-    // تم حل مشكلة حفظ الوزن هنا بتصحيح صيغة التاريخ المطلوبة لفايربيس
     window.saveWeightUpdate = async () => {
         const btnUpdateW = document.getElementById('updateProgressBtn');
         const newW = parseFloat(document.getElementById('userCurrentWeight').value); 
@@ -171,7 +170,6 @@ export function initWidgets() {
             let lastWeight = window.activeUserData.profile?.weight || newW; 
             if(dates.length > 0) lastWeight = weightHistory[dates[dates.length - 1]];
             
-            // الحل الجذري لصيغة التاريخ بدون الشرطة المائلة /
             const d = new Date();
             const timestamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
             
@@ -414,7 +412,7 @@ export function initWidgets() {
                 const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 const base64 = canvas.toDataURL('image/jpeg', 0.5);
                 push(ref(db, `chats/${uid}`), { text: base64, type: 'image', sender: sender, time: Date.now() });
-                if(sender === 'user') window.checkAndSendAutoReply();
+                if(sender === 'user') { update(ref(db, `users/${uid}`), { hasUnread: true }); window.checkAndSendAutoReply(); }
             };
             img.src = e.target.result;
         };
@@ -441,7 +439,11 @@ export function initWidgets() {
     if(userSendChatBtn) {
         userSendChatBtn.onclick = () => {
             const inp = document.getElementById('userChatInput'); const text = inp.value.trim();
-            if(text){ push(ref(db, `chats/${auth.currentUser.uid}`), { text: text, type: 'text', sender: 'user', time: Date.now() }); inp.value = ''; window.checkAndSendAutoReply(); }
+            if(text){ 
+                push(ref(db, `chats/${auth.currentUser.uid}`), { text: text, type: 'text', sender: 'user', time: Date.now() }); 
+                update(ref(db, `users/${auth.currentUser.uid}`), { hasUnread: true });
+                inp.value = ''; window.checkAndSendAutoReply(); 
+            }
         };
         document.getElementById('userChatInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') userSendChatBtn.click(); });
         document.getElementById('userChatFile').onchange = (e) => window.handleImageUpload(e, auth.currentUser.uid, 'user');

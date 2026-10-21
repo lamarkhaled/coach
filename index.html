@@ -68,48 +68,16 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-        /* Timeline Styles */
         .timeline-container { position: relative; padding-right: 24px; border-right: 2px dashed var(--border-color); margin-right: 12px; }
         .timeline-step { position: relative; margin-bottom: 24px; }
         .timeline-step:last-child { margin-bottom: 0; }
         .timeline-dot { position: absolute; right: -31px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--border-color); transition: all 0.3s ease; }
         .timeline-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
 
-        /* Pro Chat Styles */
         .chat-container { display: flex; flex-direction: column; gap: 14px; padding: 16px; background-image: radial-gradient(var(--border-color) 1px, transparent 1px); background-size: 20px 20px; }
-        .chat-bubble { 
-            max-width: 80%; 
-            padding: 10px 14px; 
-            font-size: 13px; 
-            line-height: 1.6; 
-            font-weight: 600; 
-            word-wrap: break-word; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.06); 
-            position: relative;
-        }
-        /* رسائلي (تظهر على اليمين) - الزاوية الحادة أسفل يمين */
-        .msg-me { 
-            background: var(--accent); 
-            color: var(--accent-text); 
-            align-self: flex-start; 
-            border-top-right-radius: 18px;
-            border-top-left-radius: 18px;
-            border-bottom-right-radius: 4px;
-            border-bottom-left-radius: 18px;
-        }
-        /* رسائل الطرف الآخر (تظهر على اليسار) - الزاوية الحادة أسفل يسار */
-        .msg-other { 
-            background: var(--bg-input); 
-            color: var(--txt-main); 
-            align-self: flex-end; 
-            border: 1px solid var(--border-color);
-            border-top-right-radius: 18px;
-            border-top-left-radius: 18px;
-            border-bottom-right-radius: 18px;
-            border-bottom-left-radius: 4px;
-        }
+        .chat-bubble { max-width: 80%; padding: 10px 14px; font-size: 13px; line-height: 1.6; font-weight: 600; word-wrap: break-word; display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.06); position: relative; }
+        .msg-me { background: var(--accent); color: var(--accent-text); align-self: flex-start; border-top-right-radius: 18px; border-top-left-radius: 18px; border-bottom-right-radius: 4px; border-bottom-left-radius: 18px; }
+        .msg-other { background: var(--bg-input); color: var(--txt-main); align-self: flex-end; border: 1px solid var(--border-color); border-top-right-radius: 18px; border-top-left-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 4px; }
         .chat-img { border-radius: 12px; max-width: 100%; margin-top: 4px; border: 1px solid var(--border-color); margin-bottom: 4px; }
         .chat-meta { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: 10px; margin-top: 4px; opacity: 0.75; font-weight: 700; }
         .chat-ticks { color: #2196F3; font-weight: 900; letter-spacing: -2px; font-size: 12px; } 
@@ -202,7 +170,6 @@
         <!-- ================= USER DASHBOARD ================= -->
         <div id="userDashboard" class="hidden w-full h-full flex flex-col max-w-xl fade-in">
             
-            <!-- الخلاصة -->
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
@@ -300,23 +267,21 @@
                 </div>
             </div>
 
-            <!-- الشات المحدث كلياً للجوال (Edge to Edge Design) -->
+            <!-- الشات المحدث كلياً للعميلة (متصل / غير متصل) -->
             <div id="tabChat" class="user-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
-                <!-- الهيدر الزجاجي الأنيق -->
                 <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
                     <div class="relative">
                         <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-accent to-green-500 flex items-center justify-center font-black text-accent-text text-xl shadow-sm">ص</div>
-                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-card rounded-full"></div>
+                        <div id="userChatStatusDot" class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-card rounded-full transition-colors duration-300"></div>
                     </div>
                     <div>
                         <h3 class="font-black text-base text-primary">كوتش صحة</h3>
-                        <p class="text-[11px] font-bold text-muted mt-0.5">متصل الآن للمساعدة</p>
+                        <p id="userChatStatusText" class="text-[11px] font-bold text-muted mt-0.5">غير متصلة</p>
                     </div>
                 </div>
                 
                 <div id="userChatArea" class="chat-container flex-grow overflow-y-auto bg-main-solid"></div>
                 
-                <!-- حقل الإدخال بتصميم الكبسولة العائمة -->
                 <div class="p-3 bg-card border-t border-theme flex gap-2 items-center z-10 pb-safe">
                     <label class="cursor-pointer text-muted bg-input w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-full border border-theme shadow-sm transition-transform active:scale-95">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
@@ -337,23 +302,37 @@
                 <h1 class="text-2xl font-black mb-6 text-primary">لوحة الإدارة المركزية</h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     
-                    <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
-                        <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">🔑</span> إدارة الأكواد</h3>
-                        <div class="space-y-4">
-                            <input type="text" id="adminNewCode" class="w-full px-4 py-4 bg-input border border-theme rounded-xl text-sm uppercase text-accent font-bold shadow-inner" placeholder="أدخلي الكود">
-                            <div class="grid grid-cols-3 gap-3">
-                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">أيام</label><input type="number" id="codeDays" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="30"></div>
-                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">ساعات</label><input type="number" id="codeHours" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="0"></div>
-                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">دقائق</label><input type="number" id="codeMins" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="0"></div>
+                    <div class="space-y-5">
+                        <!-- إدارة الأكواد -->
+                        <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
+                            <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">🔑</span> إدارة الأكواد</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="adminNewCode" class="w-full px-4 py-4 bg-input border border-theme rounded-xl text-sm uppercase text-accent font-bold shadow-inner" placeholder="أدخلي الكود">
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">أيام</label><input type="number" id="codeDays" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="30"></div>
+                                    <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">ساعات</label><input type="number" id="codeHours" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="0"></div>
+                                    <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">دقائق</label><input type="number" id="codeMins" class="w-full p-3 bg-input border border-theme rounded-xl text-center text-primary text-sm font-bold shadow-inner" value="0"></div>
+                                </div>
+                                <button id="generateCodeBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-2 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الكود</button>
                             </div>
-                            <button id="generateCodeBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-2 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الكود</button>
+                            <div class="mt-6 pt-4 border-t border-theme">
+                                <div id="adminCodesList" class="space-y-3 max-h-48 overflow-y-auto pr-1"></div>
+                            </div>
                         </div>
-                        <div class="mt-6 pt-4 border-t border-theme">
-                            <div id="adminCodesList" class="space-y-3 max-h-48 overflow-y-auto pr-1"></div>
+
+                        <!-- إعداد أوقات العمل للرد الآلي -->
+                        <div class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
+                            <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2"><span class="text-accent text-lg">⏰</span> أوقات العمل (للرد الآلي)</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">من الساعة</label><input type="time" id="workStart" class="w-full p-4 bg-input border border-theme rounded-xl text-primary font-bold shadow-inner text-center"></div>
+                                <div><label class="text-[11px] text-muted font-bold block mb-1 px-1">إلى الساعة</label><input type="time" id="workEnd" class="w-full p-4 bg-input border border-theme rounded-xl text-primary font-bold shadow-inner text-center"></div>
+                            </div>
+                            <button id="saveWorkHoursBtn" class="w-full bg-accent font-bold py-4 rounded-xl text-sm mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">حفظ الأوقات</button>
                         </div>
                     </div>
 
-                    <div class="bg-card rounded-ios-lg overflow-hidden border border-theme shadow-sm flex flex-col h-[500px]">
+                    <!-- قائمة المتدربات -->
+                    <div class="bg-card rounded-ios-lg overflow-hidden border border-theme shadow-sm flex flex-col h-[600px]">
                         <div class="flex justify-between items-center p-5 border-b border-theme bg-input">
                             <h3 class="text-sm font-bold text-primary flex items-center gap-2"><span class="text-accent text-lg">👥</span> المتدربات</h3>
                             <button id="refreshUsersBtn" class="text-xs bg-card px-4 py-2 rounded-lg border border-theme font-bold text-primary shadow-sm transition-transform active:scale-95">تحديث</button>
@@ -390,6 +369,7 @@
                     <button onclick="window.switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الأوسمة</button>
                 </div>
 
+                <!-- ... بقية التبويبات زي ما هي ... -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
                     <h3 class="text-sm font-bold text-primary mb-3">أهداف السعرات اليومية</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -420,7 +400,7 @@
                     <h3 class="text-sm font-bold text-primary mb-3">🎯 بناء خطة مسار المتدربة</h3>
                     <div class="bg-input p-4 rounded-xl border border-theme flex flex-col sm:flex-row justify-between sm:items-center gap-3 shadow-inner">
                         <span class="text-xs font-bold text-muted">الوزن الحالي: <span id="admCurrentW" class="text-primary text-base">--</span> كج</span>
-                        <span class="text-xs font-bold text-muted">الوزن الهدف (اللي تبيه): <span id="admTargetW" class="text-accent text-base">--</span> كج</span>
+                        <span class="text-xs font-bold text-muted">الوزن الهدف: <span id="admTargetW" class="text-accent text-base">--</span> كج</span>
                     </div>
                     <div class="space-y-3 mt-5 bg-input p-5 rounded-xl border border-theme shadow-inner">
                         <h4 class="text-xs font-bold text-primary mb-3">إضافة مرحلة جديدة:</h4>
@@ -432,7 +412,7 @@
                     <div id="adminTimelineList" class="space-y-4 mt-5"></div>
                 </div>
 
-                <!-- شات الإدارة (تصميم الجوال الممتد) -->
+                <!-- شات الإدارة -->
                 <div id="adminTabChat" class="admin-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
                     <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
                         <div class="w-11 h-11 rounded-full bg-input flex items-center justify-center font-bold text-primary text-lg border border-theme shadow-sm">م</div>
@@ -469,7 +449,7 @@
 
     </main>
 
-    <!-- الشريط السفلي الثابت للعميلة (يختفي عند بدء التمارين لزيادة التركيز) -->
+    <!-- الشريط السفلي للعميلة -->
     <div id="bottomNavBar" class="fixed bottom-0 left-0 w-full glass-nav border-t border-theme flex justify-around items-center py-3 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.15)] hidden">
         <button onclick="window.switchTab('tabHome')" id="navBtnHome" class="nav-btn active flex flex-col items-center gap-1.5 py-1 px-5 transition-transform active:scale-95">
             <span class="text-2xl drop-shadow-sm">📊</span><span class="text-[11px] font-bold">الخلاصة</span>
@@ -482,7 +462,7 @@
         </button>
     </div>
 
-    <!-- سجل الأوزان التاريخية / المودلز مخفية هنا -->
+    <!-- النوافذ المنبثقة -->
     <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
@@ -525,7 +505,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, child, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, get, child, update, remove, onValue, push, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCGNgq99LU300dMjBA-quKFe04VQwRVQvM",
@@ -553,6 +533,10 @@
         let exerciseRemainingSeconds = 0;
         let isTimerRunning = false;
         let leaderboardListenerAttached = false; 
+
+        // متغيرات للرد الآلي وأوقات العمل
+        let globalWorkHours = { start: '09:00', end: '17:00' };
+        let lastAutoReplyTime = 0;
 
         window.toggleThemeMode = () => {
             const html = document.documentElement;
@@ -637,6 +621,7 @@
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     const base64 = canvas.toDataURL('image/jpeg', 0.5);
                     push(ref(db, `chats/${uid}`), { text: base64, type: 'image', sender: sender, time: Date.now() });
+                    if(sender === 'user') checkAndSendAutoReply();
                 };
                 img.src = e.target.result;
             };
@@ -646,7 +631,14 @@
         document.getElementById('showLoginBtn').onclick = () => { isRegisterMode = false; document.getElementById('authTitle').innerText = 'تسجيل الدخول'; showSection('authSection'); };
         document.getElementById('showRegisterBtn').onclick = () => { isRegisterMode = true; document.getElementById('authTitle').innerText = 'حساب جديد'; showSection('authSection'); };
         document.getElementById('backToWelcomeBtn').onclick = () => showSection('welcomeSection');
-        document.getElementById('logoutBtn').onclick = () => signOut(auth);
+        
+        document.getElementById('logoutBtn').onclick = async () => {
+            if(auth.currentUser && auth.currentUser.email === adminEmail) {
+                // إذا كانت الإدارة، خليها غير متصلة أولاً
+                await set(ref(db, 'admin_status'), { online: false, lastSeen: serverTimestamp() });
+            }
+            signOut(auth);
+        };
 
         document.getElementById('mainAuthBtn').onclick = async () => {
             const email = document.getElementById('emailInput').value.trim();
@@ -663,12 +655,47 @@
             }
         };
 
+        // استماع لحالة الإدارة المتصلة للمستخدمين
+        onValue(ref(db, 'admin_status'), (snap) => {
+            const statusText = document.getElementById('userChatStatusText');
+            const statusDot = document.getElementById('userChatStatusDot');
+            if(snap.exists()) {
+                const data = snap.val();
+                if(data.online) {
+                    if(statusText) { statusText.innerText = 'متصلة الآن 🟢'; statusText.className = 'text-[11px] font-bold text-green-500 mt-0.5'; }
+                    if(statusDot) statusDot.className = 'absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-card rounded-full transition-colors duration-300';
+                } else {
+                    let timeStr = 'سابقاً';
+                    if(data.lastSeen) {
+                        timeStr = new Date(data.lastSeen).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    if(statusText) { statusText.innerText = `آخر ظهور عند ${timeStr} ⚪`; statusText.className = 'text-[11px] font-bold text-muted mt-0.5'; }
+                    if(statusDot) statusDot.className = 'absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-card rounded-full transition-colors duration-300';
+                }
+            }
+        });
+
+        // استماع لأوقات العمل المحددة
+        onValue(ref(db, 'admin_settings/workHours'), (snap) => {
+            if(snap.exists()) {
+                globalWorkHours = snap.val();
+                if(document.getElementById('workStart')) document.getElementById('workStart').value = globalWorkHours.start;
+                if(document.getElementById('workEnd')) document.getElementById('workEnd').value = globalWorkHours.end;
+            }
+        });
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) return showSection('welcomeSection');
             if (user.email === adminEmail) {
                 showSection('adminDashboard');
                 document.getElementById('adminMainView').classList.remove('hidden');
                 document.getElementById('adminUserDetailView').classList.add('hidden');
+                
+                // تحديث حالة اتصال الإدارة
+                const adminStatusRef = ref(db, 'admin_status');
+                onDisconnect(adminStatusRef).set({ online: false, lastSeen: serverTimestamp() });
+                set(adminStatusRef, { online: true, lastSeen: serverTimestamp() });
+
                 loadAdminCodes();
                 loadAdminUsers();
                 return;
@@ -898,7 +925,7 @@
             const badge = document.getElementById('goalStatusBadge');
             if(isGoalReached) {
                 badge.innerText = 'أتممت الهدف 👑';
-                badge.className = 'text-[10px] bg-accent px-3 py-1.5 rounded-lg font-bold text-accent-text shadow-sm';
+                badge.className = 'text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold shadow-sm';
             } else {
                 badge.innerText = 'مستمر 🔥';
                 badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-3 py-1.5 rounded-lg font-bold shadow-sm';
@@ -1377,6 +1404,13 @@
             }
         };
 
+        document.getElementById('saveWorkHoursBtn').onclick = async () => {
+            const start = document.getElementById('workStart').value;
+            const end = document.getElementById('workEnd').value;
+            await set(ref(db, 'admin_settings/workHours'), { start, end });
+            showMsg("تم حفظ أوقات العمل بنجاح ⏰", false);
+        };
+
         async function loadAdminCodes() {
             const list = document.getElementById('adminCodesList');
             const snap = await get(child(ref(db), 'codes'));
@@ -1650,16 +1684,56 @@
                     snap.forEach(c => {
                         area.innerHTML += formatChatMsg(c.val(), isAdminContext);
                     });
-                    // نزول للأسفل بسلاسة
                     setTimeout(() => area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' }), 100);
                 }
             });
         }
 
+        // دالة الرد الآلي
+        window.checkAndSendAutoReply = () => {
+            const now = new Date();
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const currentMins = h * 60 + m;
+            let isOutside = false;
+            
+            if(globalWorkHours && globalWorkHours.start && globalWorkHours.end) {
+                const [sH, sM] = globalWorkHours.start.split(':').map(Number);
+                const [eH, eM] = globalWorkHours.end.split(':').map(Number);
+                const startMins = sH * 60 + sM;
+                const endMins = eH * 60 + eM;
+                
+                if (startMins <= endMins) {
+                    if (currentMins < startMins || currentMins >= endMins) isOutside = true;
+                } else {
+                    if (currentMins < startMins && currentMins >= endMins) isOutside = true;
+                }
+            }
+
+            // إرسال الرد إذا كانت خارج أوقات العمل ولم يتم إرسال رد في آخر 5 دقائق
+            if(isOutside && (Date.now() - lastAutoReplyTime > 5 * 60 * 1000)) {
+                lastAutoReplyTime = Date.now();
+                setTimeout(() => {
+                    push(ref(db, `chats/${auth.currentUser.uid}`), { 
+                        text: "عذراً، كوتش صحة خارج أوقات العمل حالياً 🌙. سيتم الرد عليك فور عودتنا خلال أوقات العمل الرسمية 💛.", 
+                        type: 'text', 
+                        sender: 'admin', 
+                        time: Date.now() 
+                    });
+                }, 1500); // تأخير ثانية ونص عشان يبان طبيعي
+            }
+        };
+
         document.getElementById('userSendChatBtn').onclick = () => {
             const inp = document.getElementById('userChatInput');
-            if(inp.value.trim()){ push(ref(db, `chats/${auth.currentUser.uid}`), { text: inp.value, type: 'text', sender: 'user', time: Date.now() }); inp.value = ''; }
+            const text = inp.value.trim();
+            if(text){ 
+                push(ref(db, `chats/${auth.currentUser.uid}`), { text: text, type: 'text', sender: 'user', time: Date.now() }); 
+                inp.value = ''; 
+                window.checkAndSendAutoReply();
+            }
         };
+        
         document.getElementById('adminSendChatBtn').onclick = () => {
             const inp = document.getElementById('adminChatInput');
             if(inp.value.trim() && currentAdminViewUid){ push(ref(db, `chats/${currentAdminViewUid}`), { text: inp.value, type: 'text', sender: 'admin', time: Date.now() }); inp.value = ''; }

@@ -1,0 +1,20 @@
+:root {
+    --bg-main: #000000;
+    --bg-card: #141416;
+    --bg-input: #1C1C1E;
+    --border-color: #2C2C2E;
+    --txt-main: #FFFFFF;
+    --txt-muted: #9CA3AF; 
+    --accent: #C6F432; 
+    --accent-text: #000000;
+}
+html.light {
+    --bg-main: #F3F4F6;
+    --bg-card: #FFFFFF;
+    --bg-input: #F9FAFB;
+    --border-color: #E5E7EB;
+    --txt-main: #111827;
+    --txt-muted: #6B7280;
+    --accent: #059669; 
+    --accent-text: #FFFFFF;
+}

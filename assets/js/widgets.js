@@ -151,6 +151,7 @@ export function initWidgets() {
         }
     }
 
+    // تم حل مشكلة حفظ الوزن هنا بتصحيح صيغة التاريخ المطلوبة لفايربيس
     window.saveWeightUpdate = async () => {
         const btnUpdateW = document.getElementById('updateProgressBtn');
         const newW = parseFloat(document.getElementById('userCurrentWeight').value); 
@@ -170,7 +171,10 @@ export function initWidgets() {
             let lastWeight = window.activeUserData.profile?.weight || newW; 
             if(dates.length > 0) lastWeight = weightHistory[dates[dates.length - 1]];
             
-            const timestamp = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }); 
+            // الحل الجذري لصيغة التاريخ بدون الشرطة المائلة /
+            const d = new Date();
+            const timestamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+            
             weightHistory[timestamp] = newW;
             
             window.activeUserData.progress = window.activeUserData.progress || {}; 

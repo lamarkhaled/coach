@@ -68,11 +68,15 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-        .timeline-container { position: relative; padding-right: 24px; border-right: 2px dashed var(--border-color); margin-right: 12px; }
-        .timeline-step { position: relative; margin-bottom: 24px; }
-        .timeline-step:last-child { margin-bottom: 0; }
-        .timeline-dot { position: absolute; right: -31px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--border-color); transition: all 0.3s ease; }
-        .timeline-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
+        /* ستايل التايم لاين الجديد (الأقفال والخط) */
+        .timeline-wrapper { position: relative; padding-right: 36px; margin-top: 10px; margin-bottom: 10px; }
+        .timeline-line { position: absolute; right: 14px; top: 10px; bottom: 10px; width: 4px; background: var(--bg-input); border-radius: 4px; z-index: 0; }
+        .timeline-line-progress { position: absolute; right: 14px; top: 10px; width: 4px; background: var(--accent); border-radius: 4px; z-index: 1; transition: height 1s ease; box-shadow: 0 0 8px var(--accent); }
+        .timeline-step-pro { position: relative; z-index: 2; margin-bottom: 28px; }
+        .timeline-icon-pro { position: absolute; right: -48px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .timeline-icon-locked { background: var(--bg-card); border: 3px solid var(--border-color); color: var(--txt-muted); }
+        .timeline-icon-unlocked { background: var(--accent); border: 3px solid var(--bg-card); cursor: pointer; animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(198, 244, 50, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(198, 244, 50, 0); } 100% { box-shadow: 0 0 0 0 rgba(198, 244, 50, 0); } }
 
         .chat-container { display: flex; flex-direction: column; gap: 14px; padding: 16px; background-image: radial-gradient(var(--border-color) 1px, transparent 1px); background-size: 20px 20px; }
         .chat-bubble { max-width: 80%; padding: 10px 14px; font-size: 13px; line-height: 1.6; font-weight: 600; word-wrap: break-word; display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.06); position: relative; }
@@ -173,12 +177,13 @@
             <div id="tabHome" class="user-tab block w-full space-y-6 fade-in">
                 <h1 class="text-2xl font-black px-1 text-primary">الخلاصة والمتابعة</h1>
                 
-                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-5">
+                <!-- التايم لاين المطور -->
+                <div id="goalTimelineCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm space-y-2">
                     <div class="flex justify-between items-center border-b border-theme pb-4">
                         <span class="text-sm font-bold text-primary flex items-center gap-2">🎯 مسار رحلة التغيير</span>
                         <span id="goalStatusBadge" class="text-[10px] bg-accent text-accent-text px-3 py-1.5 rounded-lg font-bold">نشط</span>
                     </div>
-                    <div class="timeline-container mt-5" id="timelineContainerArea"></div>
+                    <div id="timelineContainerArea" class="w-full"></div>
                 </div>
 
                 <div id="badgesSectionCard" class="bg-card rounded-ios-lg p-6 border border-theme shadow-sm">
@@ -267,7 +272,7 @@
                 </div>
             </div>
 
-            <!-- الشات المحدث كلياً للعميلة (متصل / غير متصل) -->
+            <!-- الشات المحدث للعميلة -->
             <div id="tabChat" class="user-tab hidden flex-col bg-card overflow-hidden shadow-sm fade-in h-[calc(100vh-140px)] -mx-4 w-[calc(100%+2rem)] sm:w-full sm:mx-0 sm:h-[75vh] sm:rounded-ios-lg sm:border sm:border-theme">
                 <div class="glass-nav px-5 py-4 border-b border-theme flex items-center gap-4 z-10 shadow-sm">
                     <div class="relative">
@@ -369,7 +374,7 @@
                     <button onclick="window.switchAdminTab('adminTabBadges')" id="btnAdmTabBadges" class="flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all">الأوسمة</button>
                 </div>
 
-                <!-- ... بقية التبويبات زي ما هي ... -->
+                <!-- ... بقية التبويبات ... -->
                 <div id="adminTabMacros" class="admin-tab block bg-card p-6 rounded-ios-lg border border-theme shadow-sm space-y-5 fade-in">
                     <h3 class="text-sm font-bold text-primary mb-3">أهداف السعرات اليومية</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -462,7 +467,8 @@
         </button>
     </div>
 
-    <!-- النوافذ المنبثقة -->
+    <!-- النوافذ المنبثقة (سجل، تفاصيل الوجبة، استبدال، و نافذة الإنجاز/الاحتفال) -->
+    
     <div id="weightHistoryModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
@@ -501,6 +507,16 @@
         </div>
     </div>
 
+    <!-- نافذة الاحتفال بالوصول لمرحلة (Milestone Celebration) -->
+    <div id="milestoneModal" class="hidden fixed inset-0 z-[110] bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center items-center fade-in">
+        <div class="max-w-sm w-full bg-card rounded-[32px] p-8 border border-theme text-center shadow-2xl transform scale-100 transition-transform">
+            <div class="text-7xl mb-6 filter drop-shadow-lg">🎉</div>
+            <h3 id="milestoneModalTitle" class="text-2xl font-black text-accent mb-4">إنجاز جديد!</h3>
+            <p id="milestoneModalNote" class="text-sm text-primary font-bold leading-relaxed mb-8 bg-input p-4 rounded-xl border border-theme border-opacity-50 shadow-inner">الملاحظة تظهر هنا</p>
+            <button onclick="document.getElementById('milestoneModal').classList.add('hidden')" class="w-full bg-accent text-accent-text font-black py-4 rounded-xl shadow-lg active:scale-95 transition-transform text-lg">روعة! 😍</button>
+        </div>
+    </div>
+
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -534,9 +550,50 @@
         let isTimerRunning = false;
         let leaderboardListenerAttached = false; 
 
-        // متغيرات للرد الآلي وأوقات العمل
         let globalWorkHours = { start: '09:00', end: '17:00' };
         let lastAutoReplyTime = 0;
+
+        // دالة الدنانيش (Confetti) الرهيبة
+        window.fireConfetti = () => {
+            const colors = ['#C6F432', '#ff4b4b', '#4CAF50', '#2196F3', '#FFC107', '#E91E63', '#9C27B0'];
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.inset = '0';
+            container.style.pointerEvents = 'none';
+            container.style.zIndex = '99999';
+            container.style.overflow = 'hidden';
+            document.body.appendChild(container);
+            
+            for(let i=0; i<90; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'absolute';
+                conf.style.width = (Math.random() * 8 + 6) + 'px';
+                conf.style.height = (Math.random() * 16 + 8) + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.left = (Math.random() * 100) + 'vw';
+                conf.style.top = '-20px';
+                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                container.appendChild(conf);
+
+                const duration = Math.random() * 2000 + 2000;
+                const delay = Math.random() * 400;
+                
+                conf.animate([
+                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random()*300 - 150}px, 110vh, 0) rotate(${Math.random()*1080}deg)`, opacity: 1 }
+                ], { duration: duration, delay: delay, easing: 'cubic-bezier(.25,.46,.45,.94)', fill: 'forwards' });
+            }
+            setTimeout(() => container.remove(), 4500);
+        };
+
+        // فتح نافذة الإنجاز مع الاحتفال
+        window.openMilestone = (title, note) => {
+            document.getElementById('milestoneModalTitle').innerText = title;
+            document.getElementById('milestoneModalNote').innerText = note || 'ألف مبروك! إنجاز رائع واصلي يا بطلة 💪';
+            document.getElementById('milestoneModal').classList.remove('hidden');
+            window.fireConfetti();
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100]); // اهتزاز خفيف للموبايل
+        };
 
         window.toggleThemeMode = () => {
             const html = document.documentElement;
@@ -634,7 +691,6 @@
         
         document.getElementById('logoutBtn').onclick = async () => {
             if(auth.currentUser && auth.currentUser.email === adminEmail) {
-                // إذا كانت الإدارة، خليها غير متصلة أولاً
                 await set(ref(db, 'admin_status'), { online: false, lastSeen: serverTimestamp() });
             }
             signOut(auth);
@@ -655,7 +711,6 @@
             }
         };
 
-        // استماع لحالة الإدارة المتصلة للمستخدمين
         onValue(ref(db, 'admin_status'), (snap) => {
             const statusText = document.getElementById('userChatStatusText');
             const statusDot = document.getElementById('userChatStatusDot');
@@ -675,7 +730,6 @@
             }
         });
 
-        // استماع لأوقات العمل المحددة
         onValue(ref(db, 'admin_settings/workHours'), (snap) => {
             if(snap.exists()) {
                 globalWorkHours = snap.val();
@@ -691,7 +745,6 @@
                 document.getElementById('adminMainView').classList.remove('hidden');
                 document.getElementById('adminUserDetailView').classList.add('hidden');
                 
-                // تحديث حالة اتصال الإدارة
                 const adminStatusRef = ref(db, 'admin_status');
                 onDisconnect(adminStatusRef).set({ online: false, lastSeen: serverTimestamp() });
                 set(adminStatusRef, { online: true, lastSeen: serverTimestamp() });
@@ -906,6 +959,7 @@
             checkWorkoutReminder(exercisesList, data.progress?.workouts);
         }
 
+        // ================= التايم لاين المطور مع الخط العمودي =================
         function renderDetailedGoalTimeline(goalPlan, currentWeight, customTimeline) {
             const card = document.getElementById('goalTimelineCard');
             const container = document.getElementById('timelineContainerArea');
@@ -931,53 +985,79 @@
                 badge.className = 'text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-3 py-1.5 rounded-lg font-bold shadow-sm';
             }
 
-            container.innerHTML = `
-                <div class="timeline-step fade-in">
-                    <div class="timeline-dot ${curW !== startW ? 'active' : ''}"></div>
-                    <p class="text-[11px] text-muted font-bold mb-2">نقطة الانطلاق</p>
-                    <div class="bg-input border border-theme p-4 rounded-xl shadow-inner">
-                        <span class="text-base font-black text-primary">${startW} كج</span>
-                    </div>
-                </div>
-            `;
+            let passedCount = 0;
+            let totalSteps = customTimeline ? customTimeline.length : 1; 
 
             if(customTimeline && customTimeline.length > 0) {
                 customTimeline.forEach(m => {
+                    if((!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight)) passedCount++;
+                });
+                
+                // حساب طول الخط الملون
+                let progressPercent = totalSteps > 0 ? (passedCount / totalSteps) * 100 : 0;
+                if(progressPercent > 100) progressPercent = 100;
+
+                let htmlStr = `
+                    <div class="timeline-wrapper fade-in">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-line-progress" style="height: ${progressPercent}%;"></div>
+                `;
+
+                customTimeline.forEach((m) => {
                     const isPassed = (!isGaining && curW <= m.targetWeight) || (isGaining && curW >= m.targetWeight);
-                    container.innerHTML += `
-                        <div class="timeline-step fade-in">
-                            <div class="timeline-dot ${isPassed ? 'active' : ''}"></div>
-                            <p class="text-[11px] text-muted font-bold mb-2">${m.title}</p>
-                            <div class="bg-card border ${isPassed ? 'border-accent shadow-md' : 'border-theme shadow-sm'} p-4 rounded-xl transition-all">
+                    const iconClass = isPassed ? 'timeline-icon-unlocked' : 'timeline-icon-locked';
+                    const iconSymbol = isPassed ? '🔓' : '🔒';
+                    // تمرير البيانات بدون أخطاء اقتباس
+                    const safeTitle = m.title.replace(/'/g, "\\'");
+                    const safeNote = m.note ? m.note.replace(/'/g, "\\'") : '';
+                    const clickAttr = isPassed ? `onclick="window.openMilestone('${safeTitle}', '${safeNote}')"` : '';
+
+                    htmlStr += `
+                        <div class="timeline-step-pro">
+                            <div class="timeline-icon-pro ${iconClass}" ${clickAttr}>${iconSymbol}</div>
+                            <div class="bg-card p-5 rounded-2xl border ${isPassed ? 'border-accent shadow-lg' : 'border-theme shadow-sm'} ${isPassed ? 'cursor-pointer active:scale-95 transition-transform' : ''}" ${clickAttr}>
                                 <div class="flex justify-between items-center mb-1">
-                                    <span class="text-base font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.targetWeight} كج</span>
-                                    ${isPassed ? '<span class="text-[10px] bg-accent text-accent-text px-2 py-1 rounded-md font-bold shadow-sm">تم الإنجاز ✔️</span>' : ''}
+                                    <h4 class="text-sm font-black ${isPassed ? 'text-accent' : 'text-primary'}">${m.title}</h4>
+                                    <span class="text-[11px] bg-input border border-theme px-3 py-1 rounded-lg font-bold">${m.targetWeight} كج</span>
                                 </div>
-                                ${m.note ? `<p class="text-xs text-muted font-bold mt-3 pt-3 border-t border-theme">${m.note}</p>` : ''}
+                                ${isPassed ? '<span class="text-[11px] text-accent font-bold mt-2 block">اضغطي لفتح القفل واستلام رسالتك 🎁</span>' : '<span class="text-[10px] text-muted block mt-2">مقفلة حتى الوصول للوزن الهدف</span>'}
                             </div>
                         </div>
                     `;
                 });
+
+                htmlStr += `</div>`;
+                container.innerHTML = htmlStr;
             } else {
                 let remaining = Math.abs(curW - targetW).toFixed(1);
                 let reached = Math.abs(startW - curW).toFixed(1);
                 if(isGoalReached) remaining = 0;
 
-                container.innerHTML += `
-                    <div class="timeline-step fade-in">
-                        <div class="timeline-dot active"></div>
-                        <p class="text-[11px] text-muted font-bold mb-2">الوضع الحالي</p>
-                        <div class="bg-input border border-theme p-4 rounded-xl flex justify-between items-center shadow-inner">
-                            <span class="text-base font-black text-accent">${curW} كج</span>
-                            <span class="text-[10px] text-primary bg-card border border-theme px-3 py-1.5 rounded-lg shadow-sm">قطعتِ: ${reached} كج</span>
+                container.innerHTML = `
+                    <div class="timeline-wrapper fade-in">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-line-progress" style="height: ${isGoalReached ? '100' : '50'}%;"></div>
+                        
+                        <div class="timeline-step-pro">
+                            <div class="timeline-icon-pro timeline-icon-unlocked">✅</div>
+                            <div class="bg-card p-4 rounded-xl border border-accent shadow-sm">
+                                <h4 class="text-[11px] text-muted font-bold mb-1">الوضع الحالي</h4>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-base font-black text-accent">${curW} كج</span>
+                                    <span class="text-[10px] text-primary bg-input px-3 py-1 rounded-lg shadow-sm">قطعتِ: ${reached} كج</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="timeline-step fade-in">
-                        <div class="timeline-dot ${isGoalReached ? 'active' : ''}"></div>
-                        <p class="text-[11px] text-muted font-bold mb-2">الهدف النهائي</p>
-                        <div class="bg-input border border-theme p-4 rounded-xl flex justify-between items-center shadow-inner">
-                            <span class="text-base font-black text-primary block">${targetW} كج</span>
-                            <span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg font-bold">المتبقي: ${remaining} كج</span>
+
+                        <div class="timeline-step-pro">
+                            <div class="timeline-icon-pro ${isGoalReached ? 'timeline-icon-unlocked' : 'timeline-icon-locked'}">${isGoalReached ? '👑' : '🎯'}</div>
+                            <div class="bg-card p-4 rounded-xl border ${isGoalReached ? 'border-accent shadow-md' : 'border-theme shadow-sm'}">
+                                <h4 class="text-[11px] text-muted font-bold mb-1">الهدف النهائي</h4>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-base font-black text-primary">${targetW} كج</span>
+                                    <span class="text-[10px] text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg font-bold">المتبقي: ${remaining} كج</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1482,25 +1562,6 @@
             loadAdminUsers();
         };
 
-        window.addMilestone = () => {
-            const title = document.getElementById('msTitle').value.trim();
-            const weight = parseFloat(document.getElementById('msWeight').value) || 0;
-            const note = document.getElementById('msNote').value.trim();
-
-            if(!title || !weight) {
-                showMsg("أدخلي اسم المرحلة والوزن المستهدف", true);
-                return;
-            }
-
-            currentAdminTimeline.push({ title, targetWeight: weight, note });
-            
-            document.getElementById('msTitle').value = '';
-            document.getElementById('msWeight').value = '';
-            document.getElementById('msNote').value = '';
-            
-            renderAdminTimeline();
-        };
-
         function renderAdminTimeline() {
             const list = document.getElementById('adminTimelineList');
             list.innerHTML = '';
@@ -1689,7 +1750,6 @@
             });
         }
 
-        // دالة الرد الآلي
         window.checkAndSendAutoReply = () => {
             const now = new Date();
             const h = now.getHours();
@@ -1710,7 +1770,6 @@
                 }
             }
 
-            // إرسال الرد إذا كانت خارج أوقات العمل ولم يتم إرسال رد في آخر 5 دقائق
             if(isOutside && (Date.now() - lastAutoReplyTime > 5 * 60 * 1000)) {
                 lastAutoReplyTime = Date.now();
                 setTimeout(() => {
@@ -1720,7 +1779,7 @@
                         sender: 'admin', 
                         time: Date.now() 
                     });
-                }, 1500); // تأخير ثانية ونص عشان يبان طبيعي
+                }, 1500);
             }
         };
 

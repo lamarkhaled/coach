@@ -9,6 +9,6 @@ const firebaseConfig = {
     databaseURL: "https://helth-c7e42-default-rtdb.firebaseio.com"
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);

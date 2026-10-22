@@ -5,6 +5,7 @@ import { ref, set, get, child, update, onValue, serverTimestamp, onDisconnect } 
 export function initAuth() {
     let isRegisterMode = false;
 
+    // دالة ترجمة أخطاء فايربيس للعربي
     const translateErr = (e) => {
         const msg = e.code || e.message || "";
         if (msg.includes('invalid-credential') || msg.includes('wrong-password') || msg.includes('user-not-found')) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
@@ -12,27 +13,15 @@ export function initAuth() {
         if (msg.includes('weak-password')) return 'كلمة المرور ضعيفة، يجب أن تكون 6 أحرف على الأقل.';
         if (msg.includes('invalid-email')) return 'صيغة البريد الإلكتروني غير صحيحة.';
         if (msg.includes('network-request-failed')) return 'تأكدي من اتصالك بالإنترنت.';
-        if (msg.includes('too-many-requests')) return 'تم حظر الحساب مؤقتاً لكثرة المحاولات، جربي بعد قليل.';
+        if (msg.includes('too-many-requests')) return 'تم حظر الإرسال مؤقتاً لكثرة المحاولات، يرجى المحاولة بعد قليل.';
         return 'حدث خطأ، يرجى المحاولة لاحقاً.';
     };
 
     const btnLogin = document.getElementById('showLoginBtn');
-    if(btnLogin) btnLogin.onclick = () => { 
-        isRegisterMode = false; 
-        document.getElementById('authTitle').innerText = 'تسجيل الدخول'; 
-        document.getElementById('nameInput').classList.add('hidden');
-        document.getElementById('authLinks').classList.remove('hidden');
-        window.showSection('authSection'); 
-    };
+    if(btnLogin) btnLogin.onclick = () => { isRegisterMode = false; document.getElementById('authTitle').innerText = 'تسجيل الدخول'; document.getElementById('nameInput').classList.add('hidden'); document.getElementById('authLinks').classList.remove('hidden'); window.showSection('authSection'); };
     
     const btnReg = document.getElementById('showRegisterBtn');
-    if(btnReg) btnReg.onclick = () => { 
-        isRegisterMode = true; 
-        document.getElementById('authTitle').innerText = 'حساب جديد'; 
-        document.getElementById('nameInput').classList.remove('hidden');
-        document.getElementById('authLinks').classList.add('hidden');
-        window.showSection('authSection'); 
-    };
+    if(btnReg) btnReg.onclick = () => { isRegisterMode = true; document.getElementById('authTitle').innerText = 'حساب جديد'; document.getElementById('nameInput').classList.remove('hidden'); document.getElementById('authLinks').classList.add('hidden'); window.showSection('authSection'); };
     
     const btnBack = document.getElementById('backToWelcomeBtn');
     if(btnBack) btnBack.onclick = () => window.showSection('welcomeSection');
@@ -57,20 +46,33 @@ export function initAuth() {
             const email = document.getElementById('emailInput').value.trim();
             if(!email) return window.showMsg("اكتبي إيميلك أولاً في الخانة فوق ☝️", true);
             try {
+                forgotPassBtn.innerText = 'جاري الإرسال...';
                 await sendPasswordResetEmail(auth, email);
                 window.showMsg("تم إرسال رابط استعادة كلمة المرور لإيميلك ✔️", false);
-            } catch(e) { window.showMsg(translateErr(e), true); }
+            } catch(e) { window.showMsg(translateErr(e), true); } finally {
+                forgotPassBtn.innerText = 'نسيت كلمة المرور؟';
+            }
         };
     }
 
     const resendVerifyEmailBtn = document.getElementById('resendVerifyEmailBtn');
     if(resendVerifyEmailBtn) {
         resendVerifyEmailBtn.onclick = async () => {
-            if(auth.currentUser) {
+            const user = auth.currentUser;
+            if(user) {
                 try {
-                    await sendEmailVerification(auth.currentUser);
-                    window.showMsg("تم إرسال رابط التفعيل مرة أخرى! شيكي إيميلك ✔️", false);
-                } catch(e) { window.showMsg(translateErr(e), true); }
+                    resendVerifyEmailBtn.innerText = 'جاري الإرسال...';
+                    resendVerifyEmailBtn.disabled = true;
+                    await sendEmailVerification(user);
+                    window.showMsg("تم الإرسال بنجاح! شيكي الإيميل ومجلد الرسائل المزعجة (Spam) ✔️", false);
+                } catch(e) { 
+                    window.showMsg(translateErr(e), true); 
+                } finally {
+                    resendVerifyEmailBtn.innerText = 'إعادة إرسال الرابط';
+                    resendVerifyEmailBtn.disabled = false;
+                }
+            } else {
+                window.showMsg("عذراً، يرجى تسجيل الدخول أولاً لإرسال الرابط", true);
             }
         };
     }
@@ -79,12 +81,14 @@ export function initAuth() {
     if(verifyDoneBtn) {
         verifyDoneBtn.onclick = async () => {
             if(auth.currentUser) {
+                verifyDoneBtn.innerText = 'جاري التحقق...';
                 await auth.currentUser.reload();
                 if(auth.currentUser.emailVerified) {
                     window.showMsg("تم التفعيل بنجاح! جاري الدخول...", false);
                     window.location.reload();
                 } else {
                     window.showMsg("الحساب لا زال غير مفعل، شيكي إيميلك واضغطي الرابط.", true);
+                    verifyDoneBtn.innerText = 'تم التفعيل (دخول)';
                 }
             }
         };
@@ -98,10 +102,7 @@ export function initAuth() {
         try {
             if(newNm) {
                 await update(ref(db, `users/${auth.currentUser.uid}/profile`), { name: newNm });
-                if(window.activeUserData) {
-                    window.activeUserData.profile = window.activeUserData.profile || {};
-                    window.activeUserData.profile.name = newNm;
-                }
+                if(window.activeUserData) { window.activeUserData.profile = window.activeUserData.profile || {}; window.activeUserData.profile.name = newNm; }
                 document.getElementById('userEmailDisplay').innerText = newNm;
             }
             if(newEm && newEm !== auth.currentUser.email) {
@@ -109,16 +110,13 @@ export function initAuth() {
                 await update(ref(db, `users/${auth.currentUser.uid}`), { email: newEm });
                 if(!newNm) document.getElementById('userEmailDisplay').innerText = newEm;
             }
-            if(newPw) {
-                await updatePassword(auth.currentUser, newPw);
-            }
+            if(newPw) { await updatePassword(auth.currentUser, newPw); }
             window.showMsg("تم تحديث البيانات بنجاح ✔️", false);
             document.getElementById('updateEmailInput').value = ''; document.getElementById('updatePassInput').value = '';
             document.getElementById('profileModal').classList.add('hidden');
         } catch(e) {
-            if(e.code === 'auth/requires-recent-login') {
-                window.showMsg("يرجى تسجيل الخروج والدخول مجدداً لتأكيد التعديل للأمان", true);
-            } else { window.showMsg(translateErr(e), true); }
+            if(e.code === 'auth/requires-recent-login') { window.showMsg("يرجى تسجيل الخروج والدخول مجدداً لتأكيد التعديل للأمان", true); } 
+            else { window.showMsg(translateErr(e), true); }
         }
     };
 
@@ -135,9 +133,9 @@ export function initAuth() {
             mainAuthBtn.innerText = 'جاري التحميل...';
             if(isRegisterMode) {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                window.tempRegisterName = name; // نخزن الاسم مؤقتاً عشان نحفظه بالداتا بيز بعدين
+                window.tempRegisterName = name; 
                 await sendEmailVerification(cred.user);
-                window.showMsg("تم إنشاء الحساب! شيكي إيميلك لتفعيل الحساب قبل الدخول.", false);
+                window.showMsg("تم إنشاء الحساب! شيكي إيميلك لتفعيله قبل الدخول.", false);
                 window.showSection('verifyEmailSection');
             } else {
                 const cred = await signInWithEmailAndPassword(auth, email, pass);
@@ -172,9 +170,7 @@ export function initAuth() {
         const initialHistory = {}; initialHistory[timestamp] = weight;
         
         let storedName = window.tempRegisterName || auth.currentUser.email.split('@')[0];
-        if(window.activeUserData && window.activeUserData.profile && window.activeUserData.profile.name) {
-            storedName = window.activeUserData.profile.name;
-        }
+        if(window.activeUserData && window.activeUserData.profile && window.activeUserData.profile.name) { storedName = window.activeUserData.profile.name; }
 
         await update(ref(db, `users/${auth.currentUser.uid}`), { onboardingCompleted: true, profile: { name: storedName, goal, weight, height, notes }, goalPlan: { startWeight: weight, targetWeight: targetKg, startDate: new Date().toISOString(), targetDate: targetDate.toISOString() }, progress: { weightHistory: initialHistory, currentWeight: weight } });
         const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`)); window.renderUserDashboard(snap.val()); window.showSection('userDashboard');
@@ -220,7 +216,6 @@ export function initAuth() {
                     if(window.renderUserDashboard) window.renderUserDashboard(data);
                 }
             } else {
-                // إذا حساب جديد توه مفعل يدخل قسم البداية مباشرة
                 window.showSection('onboardingSection');
             }
         });

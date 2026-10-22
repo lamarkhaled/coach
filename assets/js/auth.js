@@ -134,7 +134,6 @@ export function initAuth() {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 window.tempRegisterName = name; 
                 
-                // حفظ حالة التسجيل في الداتا بيز فورا
                 const d = new Date(); const ts = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                 await set(ref(db, `users/${cred.user.uid}`), {
                     email: email,
@@ -165,7 +164,13 @@ export function initAuth() {
             const c = snap.val(); const ms = ((c.days||0)*86400000) + ((c.hours||0)*3600000) + ((c.mins||0)*60000); const end = new Date(Date.now() + ms);
             await update(ref(db, `users/${auth.currentUser.uid}`), { email: auth.currentUser.email, emailVerified: true, startDate: window.activeUserData?.startDate || new Date().toISOString(), endDate: end.toISOString(), onboardingCompleted: window.activeUserData?.onboardingCompleted || false, usedCode: code });
             await update(ref(db, `codes/${code}`), { used: true, usedBy: auth.currentUser.email });
-            if(window.activeUserData?.onboardingCompleted) { window.showSection('userDashboard'); } else { window.showSection('onboardingSection'); }
+            
+            // بعد إدخال الكود، نشيك هل كملت معلوماتها (الطول/الوزن) أو لا
+            if(window.activeUserData?.onboardingCompleted) { 
+                window.showSection('userDashboard'); 
+            } else { 
+                window.showSection('onboardingSection'); 
+            }
         } catch(e) { window.showMsg(translateErr(e), true); }
     };
 
@@ -182,7 +187,17 @@ export function initAuth() {
         if(window.activeUserData && window.activeUserData.profile && window.activeUserData.profile.name) { storedName = window.activeUserData.profile.name; }
 
         await update(ref(db, `users/${auth.currentUser.uid}`), { onboardingCompleted: true, emailVerified: true, profile: { name: storedName, goal, weight, height, notes }, goalPlan: { startWeight: weight, targetWeight: targetKg, startDate: new Date().toISOString(), targetDate: targetDate.toISOString() }, progress: { weightHistory: initialHistory, currentWeight: weight } });
-        const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`)); window.renderUserDashboard(snap.val()); window.showSection('userDashboard');
+        const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`)); 
+        const updatedData = snap.val();
+        window.activeUserData = updatedData;
+        
+        // هنا قفلنا الثغرة: بعد ما تجاوب الأسئلة، نرجع نشيك على تاريخ الاشتراك
+        if (!updatedData.endDate || new Date() > new Date(updatedData.endDate)) {
+            window.showSection('activationSection');
+        } else {
+            window.renderUserDashboard(updatedData); 
+            window.showSection('userDashboard');
+        }
     };
 
     onValue(ref(db, 'admin_settings/workHours'), (snap) => {
@@ -203,6 +218,7 @@ export function initAuth() {
             const adminStatusRef = ref(db, 'admin_status'); onDisconnect(adminStatusRef).set({ online: false, lastSeen: serverTimestamp() }); set(adminStatusRef, { online: true, lastSeen: serverTimestamp() });
             if(window.loadAdminCodes) window.loadAdminCodes(); if(window.loadAdminUsers) window.loadAdminUsers();
             const profBtn = document.getElementById('profileBtn'); if(profBtn) profBtn.classList.add('hidden'); 
+            const subBtn = document.getElementById('subDetailsBtn'); if(subBtn) subBtn.classList.add('hidden'); 
             return;
         }
 
@@ -211,27 +227,30 @@ export function initAuth() {
             return;
         }
         
-        const profBtn = document.getElementById('profileBtn'); if(profBtn) profBtn.classList.remove('hidden'); 
-        
         onValue(ref(db, `users/${user.uid}`), (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val(); window.activeUserData = data;
                 
-                // تحديث حالة تفعيل الايميل في قاعدة البيانات
                 if(!data.emailVerified) {
                     update(ref(db, `users/${user.uid}`), { emailVerified: true });
                 }
 
                 const emailDisp = document.getElementById('userEmailDisplay'); if(emailDisp) emailDisp.innerText = data.profile?.name || user.email;
 
-                if (data.endDate && new Date() > new Date(data.endDate)) { window.showSection('activationSection'); } 
-                else if (!data.onboardingCompleted) { window.showSection('onboardingSection'); } 
+                // التعديل الجذري للحماية: إذا ما فيه نهاية اشتراك، أو انتهى، يقفل بوجهها.
+                if (!data.endDate || new Date() > new Date(data.endDate)) { 
+                    window.showSection('activationSection'); 
+                } 
+                else if (!data.onboardingCompleted) { 
+                    window.showSection('onboardingSection'); 
+                } 
                 else {
                     if(document.getElementById('userDashboard')?.classList.contains('hidden')) window.showSection('userDashboard');
                     if(window.renderUserDashboard) window.renderUserDashboard(data);
                 }
             } else {
-                window.showSection('onboardingSection');
+                // إذا الحساب ما فيه أي بيانات أبداً، يوجهها لإدخال الكود أولاً كإجراء أمني إضافي
+                window.showSection('activationSection');
             }
         });
     });

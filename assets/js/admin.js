@@ -1,4 +1,4 @@
-import { db, firebaseConfig } from './firebase-config.js';
+import { db } from './firebase-config.js';
 import { ref, set, get, child, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 export function initAdmin() {
@@ -42,9 +42,37 @@ export function initAdmin() {
         });
     };
 
+    window.loadAdminRegLog = async () => {
+        const list = document.getElementById('adminRegLogList');
+        if(!list) return;
+        const snap = await get(child(ref(db), 'users'));
+        list.innerHTML = '';
+        if(!snap.exists()) return list.innerHTML = '<p class="text-center py-4 text-sm text-muted">لا يوجد سجلات حالياً</p>';
+        
+        let logs = [];
+        snap.forEach(uSnap => {
+            const d = uSnap.val();
+            if(d.email === window.adminEmail) return;
+            logs.push({
+                email: d.email, name: d.profile?.name || 'بدون اسم', verified: d.emailVerified === true, onboarding: d.onboardingCompleted === true,
+                date: d.createdAt || 'تاريخ غير معروف', timestamp: new Date(d.createdAt || 0).getTime()
+            });
+        });
+        
+        logs.sort((a,b) => b.timestamp - a.timestamp);
+        
+        logs.forEach(log => {
+            let statusHtml = '';
+            if(log.verified && log.onboarding) { statusHtml = '<span class="text-[10px] bg-green-500/20 text-green-500 border border-green-500/30 px-3 py-1.5 rounded-md font-bold shadow-sm">مكتملة ومفعلة ✔️</span>'; } 
+            else if (log.verified && !log.onboarding) { statusHtml = '<span class="text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-3 py-1.5 rounded-md font-bold shadow-sm">سجلت وفعلت (باقي البيانات)</span>'; } 
+            else { statusHtml = '<span class="text-[10px] bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 px-3 py-1.5 rounded-md font-bold shadow-sm">سجلت ولم تفعل ⏳</span>'; }
+            
+            list.innerHTML += `<div class="bg-input p-5 rounded-xl border border-theme flex flex-col gap-3 shadow-sm fade-in"><div class="flex justify-between items-center"><span class="text-sm font-bold text-primary">${log.name}</span><span class="text-[10px] text-muted font-bold">${log.date}</span></div><div class="flex justify-between items-center mt-1"><span class="text-xs text-muted">${log.email}</span>${statusHtml}</div></div>`;
+        });
+    };
+
     window.openUserDetail = async (uid) => {
         window.currentAdminViewUid = uid; const snap = await get(child(ref(db), `users/${uid}`)); const d = snap.val(); window.activeUserData = d; 
-        
         await update(ref(db, `users/${uid}`), { hasUnread: false }); 
 
         document.getElementById('adminMainView').classList.add('hidden'); document.getElementById('adminUserDetailView').classList.remove('hidden'); 
@@ -57,45 +85,86 @@ export function initAdmin() {
         document.getElementById('admCurrentW').innerText = d.profile?.weight || d.goalPlan?.startWeight || '--'; document.getElementById('admTargetW').innerText = d.goalPlan?.targetWeight || '--';
 
         const todayStr = window.getTodayStr();
-        const doneMeals = d.progress?.meals?.[todayStr] || {};
-        const todaySwaps = d.progress?.swaps?.[todayStr] || [];
         const allMeals = Array.isArray(d.plan?.meals || d.meals) ? (d.plan?.meals || d.meals) : Object.values(d.plan?.meals || d.meals || {});
-        const todayMeals = allMeals.map((m, i) => ({...m, _idx: i})).filter(m => (!m.date || m.date === todayStr) && m.title);
-        
-        let totalCal = 0;
-        todayMeals.forEach(m => { if(doneMeals[m._idx]) totalCal += Number(m.cal||0); });
-        todaySwaps.forEach(sw => { totalCal += Number(sw.cal||0); });
-
-        const isExceeded = totalCal > targets.cal;
-        const allMealsDone = todayMeals.length > 0 && todayMeals.every(m => doneMeals[m._idx]);
-
-        const doneWorkouts = d.progress?.workouts?.[todayStr] || {};
         const allEx = Array.isArray(d.plan?.exercises || d.exercises) ? (d.plan?.exercises || d.exercises) : Object.values(d.plan?.exercises || d.exercises || {});
-        const todayEx = allEx.map((ex, i) => ({...ex, _idx: i})).filter(ex => (!ex.date || ex.date === todayStr) && ex.title);
 
-        let allExDone = todayEx.length > 0;
+        // ملخص أداء اليوم
+        const todayMeals = allMeals.map((m, i) => ({...m, _idx: i})).filter(m => (!m.date || m.date === todayStr) && m.title);
+        const todayEx = allEx.map((ex, i) => ({...ex, _idx: i})).filter(ex => (!ex.date || ex.date === todayStr) && ex.title);
+        const doneMealsToday = d.progress?.meals?.[todayStr] || {};
+        const doneSwapsToday = d.progress?.swaps?.[todayStr] || [];
+        const doneWorkoutsToday = d.progress?.workouts?.[todayStr] || {};
+
+        let totalCalToday = 0;
+        todayMeals.forEach(m => { if(doneMealsToday[m._idx]) totalCalToday += Number(m.cal||0); });
+        doneSwapsToday.forEach(sw => { totalCalToday += Number(sw.cal||0); });
+
+        const isExceededToday = totalCalToday > targets.cal;
+        const allMealsDoneToday = todayMeals.length > 0 && todayMeals.every(m => doneMealsToday[m._idx]);
+
+        let allExDoneToday = todayEx.length > 0;
         if(todayEx.length > 0) {
             todayEx.forEach(ex => {
-                if(ex.type === 'timer') { if(!doneWorkouts[ex._idx]?.completed) allExDone = false; } 
-                else { if((doneWorkouts[ex._idx] || 0) < ex.sets) allExDone = false; }
+                if(ex.type === 'timer') { if(!doneWorkoutsToday[ex._idx]?.completed) allExDoneToday = false; } 
+                else { if((doneWorkoutsToday[ex._idx] || 0) < ex.sets) allExDoneToday = false; }
             });
-        } else { allExDone = false; }
+        } else { allExDoneToday = false; }
 
         const sumHTML = `
-            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner">
-                <span class="text-xl block mb-2">${allExDone ? '✅' : '⏳'}</span><span class="text-[11px] font-bold text-muted block mb-1">التمارين</span><span class="text-xs font-black ${allExDone ? 'text-green-500' : 'text-yellow-500'}">${allExDone ? 'مكتملة' : 'غير مكتملة'}</span>
-            </div>
-            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner">
-                <span class="text-xl block mb-2">${allMealsDone ? '✅' : '⏳'}</span><span class="text-[11px] font-bold text-muted block mb-1">الوجبات</span><span class="text-xs font-black ${allMealsDone ? 'text-green-500' : 'text-yellow-500'}">${allMealsDone ? 'مكتملة' : 'غير مكتملة'}</span>
-            </div>
-            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner">
-                <span class="text-xl block mb-2">${isExceeded ? '⚠️' : '👌'}</span><span class="text-[11px] font-bold text-muted block mb-1">السعرات</span><span class="text-xs font-black ${isExceeded ? 'text-red-500' : 'text-accent'}">${isExceeded ? 'متجاوزة' : 'بالسليم'}</span>
-            </div>`;
+            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner"><span class="text-xl block mb-2">${allExDoneToday ? '✅' : '⏳'}</span><span class="text-[11px] font-bold text-muted block mb-1">التمارين</span><span class="text-xs font-black ${allExDoneToday ? 'text-green-500' : 'text-yellow-500'}">${allExDoneToday ? 'مكتملة' : 'غير مكتملة'}</span></div>
+            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner"><span class="text-xl block mb-2">${allMealsDoneToday ? '✅' : '⏳'}</span><span class="text-[11px] font-bold text-muted block mb-1">الوجبات</span><span class="text-xs font-black ${allMealsDoneToday ? 'text-green-500' : 'text-yellow-500'}">${allMealsDoneToday ? 'مكتملة' : 'غير مكتملة'}</span></div>
+            <div class="bg-input p-4 rounded-xl border border-theme shadow-inner"><span class="text-xl block mb-2">${isExceededToday ? '⚠️' : '👌'}</span><span class="text-[11px] font-bold text-muted block mb-1">السعرات</span><span class="text-xs font-black ${isExceededToday ? 'text-red-500' : 'text-accent'}">${isExceededToday ? 'متجاوزة' : 'بالسليم'}</span></div>`;
         document.getElementById('adminUserDailySummary').innerHTML = sumHTML;
 
-        window.currentAdminExercises = Array.isArray(d.plan?.exercises || d.exercises) ? (d.plan?.exercises || d.exercises) : Object.values(d.plan?.exercises || d.exercises || {});
-        window.currentAdminMeals = Array.isArray(d.plan?.meals || d.meals) ? (d.plan?.meals || d.meals) : Object.values(d.plan?.meals || d.meals || {});
-        window.currentAdminBadges = Array.isArray(d.badges) ? d.badges : Object.values(d.badges || {}); window.currentAdminTimeline = Array.isArray(d.plan?.timeline) ? d.plan?.timeline : Object.values(d.plan?.timeline || {});
+        // سجل الأداء للأيام السابقة (خوارزمية جديدة)
+        const historyLogContainer = document.getElementById('adminUserHistoryLog');
+        if(historyLogContainer) {
+            let logHtml = '';
+            let allDates = new Set([...Object.keys(d.progress?.meals || {}), ...Object.keys(d.progress?.workouts || {}), ...Object.keys(d.progress?.swaps || {})]);
+            let sortedDates = Array.from(allDates).sort((a,b)=>b.localeCompare(a)).filter(date => date !== todayStr);
+            
+            sortedDates.forEach(date => {
+                let dayTotalCal = 0;
+                let dayMealsDoneObj = d.progress?.meals?.[date] || {};
+                let daySwapsArr = d.progress?.swaps?.[date] || [];
+                let dayWorkoutsObj = d.progress?.workouts?.[date] || {};
+                
+                const dateMeals = allMeals.map((m, i) => ({...m, _idx: i})).filter(m => (!m.date || m.date === date) && m.title);
+                const dateEx = allEx.map((ex, i) => ({...ex, _idx: i})).filter(ex => (!ex.date || ex.date === date) && ex.title);
+
+                dateMeals.forEach(m => { if(dayMealsDoneObj[m._idx]) dayTotalCal += Number(m.cal||0); });
+                daySwapsArr.forEach(sw => { dayTotalCal += Number(sw.cal||0); });
+
+                let dayExceeded = dayTotalCal > targets.cal;
+                let dayMealsCompleted = dateMeals.length > 0 && dateMeals.every(m => dayMealsDoneObj[m._idx]);
+                let dayExCompleted = dateEx.length > 0;
+                if(dateEx.length > 0) {
+                    dateEx.forEach(ex => {
+                        if(ex.type === 'timer') { if(!dayWorkoutsObj[ex._idx]?.completed) dayExCompleted = false; } 
+                        else { if((dayWorkoutsObj[ex._idx] || 0) < ex.sets) dayExCompleted = false; }
+                    });
+                } else { dayExCompleted = false; }
+
+                let issues = [];
+                if(dayExceeded) issues.push('تجاوزت السعرات ⚠️');
+                if(!dayMealsCompleted && dateMeals.length > 0) issues.push('لم تكمل التغذية 🍎');
+                if(!dayExCompleted && dateEx.length > 0) issues.push('لم تكمل التمارين 🏋️‍♀️');
+                
+                if(issues.length > 0) {
+                    logHtml += `<div class="bg-input p-3 rounded-lg border border-red-500/30 text-xs shadow-sm flex flex-col gap-1 fade-in">
+                        <span class="text-primary font-bold border-b border-theme pb-1 mb-1 opacity-80">${date}</span>
+                        <span class="text-red-400 font-bold leading-relaxed">${issues.join(' | ')}</span>
+                    </div>`;
+                } else {
+                    logHtml += `<div class="bg-input p-3 rounded-lg border border-accent/30 text-xs shadow-sm flex flex-col gap-1 fade-in">
+                        <span class="text-primary font-bold border-b border-theme pb-1 mb-1 opacity-80">${date}</span>
+                        <span class="text-accent font-bold">التزام ممتاز 🌟</span>
+                    </div>`;
+                }
+            });
+            if(logHtml === '') logHtml = '<p class="text-[11px] text-muted text-center py-2">لا توجد سجلات أداء سابقة.</p>';
+            historyLogContainer.innerHTML = logHtml;
+        }
 
         window.currentAdminExercises = window.currentAdminExercises.filter(x => x != null && x.title); window.currentAdminMeals = window.currentAdminMeals.filter(x => x != null && x.title);
         window.currentAdminBadges = window.currentAdminBadges.filter(x => x != null && x.title); window.currentAdminTimeline = window.currentAdminTimeline.filter(x => x != null && x.title);
@@ -105,29 +174,19 @@ export function initAdmin() {
     };
 
     window.addMilestone = () => {
-        const title = document.getElementById('msTitle').value.trim(); 
-        const weight = parseFloat(document.getElementById('msWeight').value) || 0; 
-        const preNote = document.getElementById('msPreNote').value.trim();
-        const postNote = document.getElementById('msPostNote').value.trim();
-
+        const title = document.getElementById('msTitle').value.trim(); const weight = parseFloat(document.getElementById('msWeight').value) || 0; 
+        const preNote = document.getElementById('msPreNote').value.trim(); const postNote = document.getElementById('msPostNote').value.trim();
         if(!title || !weight) return window.showMsg("أدخلي اسم المرحلة والوزن المستهدف", true);
         window.currentAdminTimeline.push({ title, targetWeight: weight, preNote, postNote });
-        
-        document.getElementById('msTitle').value = ''; 
-        document.getElementById('msWeight').value = ''; 
-        document.getElementById('msPreNote').value = ''; 
-        document.getElementById('msPostNote').value = '';
-        window.renderAdminTimeline();
+        document.getElementById('msTitle').value = ''; document.getElementById('msWeight').value = ''; document.getElementById('msPreNote').value = ''; document.getElementById('msPostNote').value = ''; window.renderAdminTimeline();
     };
 
     window.renderAdminTimeline = () => {
         const list = document.getElementById('adminTimelineList'); list.innerHTML = '';
         if(window.currentAdminTimeline.length === 0) { list.innerHTML = '<p class="text-xs text-muted py-4 text-center">لم يتم بناء خطة مخصصة بعد. ستظهر الخطة التلقائية للمتدربة.</p>'; return; }
-        
         window.currentAdminTimeline.forEach((m, idx) => { 
             const preHtml = m.preNote ? `<div class="text-[11px] text-primary font-bold bg-input p-3 rounded-lg border border-theme mt-2 opacity-90">قبل: ${m.preNote}</div>` : '';
             const postHtml = m.postNote ? `<div class="text-[11px] text-accent font-bold bg-input p-3 rounded-lg border border-theme mt-1 text-accent">بعد: ${m.postNote}</div>` : '';
-            
             list.innerHTML += `<div class="bg-card p-4 rounded-xl border border-theme flex flex-col gap-2 relative shadow-sm fade-in"><button onclick="window.remMilestone(${idx})" class="absolute left-3 top-3 text-red-500 font-bold px-2 py-1 text-lg leading-none">✕</button><div class="flex items-center gap-3"><span class="text-sm font-bold text-primary">${m.title}</span><span class="text-[10px] bg-accent text-accent-text px-3 py-1 rounded-md font-bold shadow-sm">${m.targetWeight} كج</span></div>${preHtml}${postHtml}</div>`; 
         });
     };
@@ -216,6 +275,7 @@ export function initAdmin() {
 
                 await set(ref(db, `users/${newUid}`), {
                     email: email,
+                    emailVerified: true, 
                     onboardingCompleted: true,
                     startDate: new Date().toISOString(),
                     endDate: new Date(Date.now() + 30*86400000).toISOString(),

@@ -15,6 +15,7 @@ export function initWidgets() {
         return `<a href="${url}" target="_blank" class="block w-full bg-input text-accent text-center py-4 rounded-xl text-sm font-bold my-4 border border-theme shadow-sm transition-transform active:scale-95">فتح الرابط المرفق</a>`;
     }
 
+    // --- دوال نافذة "اشتراكي" والتجديد ---
     window.openSubscriptionModal = () => {
         if(!window.activeUserData || !window.activeUserData.endDate) return;
         const start = new Date(window.activeUserData.startDate || Date.now());
@@ -51,7 +52,7 @@ export function initWidgets() {
         renewEarlyBtn.onclick = () => {
             document.getElementById('subscriptionModal').classList.add('hidden');
             window.showSection('activationSection');
-            document.getElementById('cancelActivationBtn').classList.remove('hidden');
+            document.getElementById('cancelActivationBtn')?.classList.remove('hidden');
         };
     }
 
@@ -61,6 +62,7 @@ export function initWidgets() {
             window.showSection('userDashboard');
         };
     }
+    // ------------------------------------
 
     window.renderUserDashboard = (data) => {
         window.activeUserData = data; const todayStr = window.getTodayStr(); const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };

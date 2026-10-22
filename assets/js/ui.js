@@ -46,10 +46,16 @@ export function initUI() {
     };
 
     window.showSection = (sectionId) => {
-        ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard', 'verifyEmailSection'].forEach(id => {
+        ['welcomeSection', 'authSection', 'activationSection', 'onboardingSection', 'userDashboard', 'adminDashboard', 'verifyEmailSection', 'adminTabRegLog'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
         });
+        
+        if (sectionId === 'adminTabRegLog') {
+            document.getElementById('adminDashboard')?.classList.remove('hidden');
+            document.getElementById('adminMainView')?.classList.add('hidden');
+        }
+        
         const sectionEl = document.getElementById(sectionId);
         if(sectionEl) sectionEl.classList.remove('hidden');
         
@@ -59,6 +65,11 @@ export function initUI() {
         
         const logoutBtn = document.getElementById('logoutBtn');
         if(logoutBtn) logoutBtn.classList.toggle('hidden', sectionId === 'welcomeSection' || sectionId === 'authSection');
+
+        const profileBtn = document.getElementById('profileBtn');
+        const subDetailsBtn = document.getElementById('subDetailsBtn');
+        if(profileBtn) profileBtn.classList.toggle('hidden', !isUserMain);
+        if(subDetailsBtn) subDetailsBtn.classList.toggle('hidden', !isUserMain);
     };
 
     window.showMsg = (text, isError=true) => {
@@ -82,13 +93,18 @@ export function initUI() {
     };
 
     window.switchAdminTab = (tabId) => {
+        if(tabId === 'adminTabRegLog') {
+            window.showSection('adminTabRegLog');
+            window.loadAdminRegLog();
+            return;
+        }
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
         document.getElementById(tabId)?.classList.remove('hidden');
-        ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabTimeline', 'btnAdmTabChat', 'btnAdmTabBadges'].forEach(id => {
+        ['btnAdmTabMacros', 'btnAdmTabMeals', 'btnAdmTabWorkouts', 'btnAdmTabTimeline', 'btnAdmTabChat', 'btnAdmTabBadges', 'btnAdmTabRegLog'].forEach(id => {
             const btn = document.getElementById(id);
             if(btn) btn.className = 'flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl text-muted border border-transparent transition-all';
         });
-        const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabTimeline': 'btnAdmTabTimeline', 'adminTabChat': 'btnAdmTabChat', 'adminTabBadges': 'btnAdmTabBadges' };
+        const activeMap = { 'adminTabMacros': 'btnAdmTabMacros', 'adminTabMeals': 'btnAdmTabMeals', 'adminTabWorkouts': 'btnAdmTabWorkouts', 'adminTabTimeline': 'btnAdmTabTimeline', 'adminTabChat': 'btnAdmTabChat', 'adminTabBadges': 'btnAdmTabBadges', 'adminTabRegLog': 'btnAdmTabRegLog' };
         if(activeMap[tabId] && document.getElementById(activeMap[tabId])) {
             document.getElementById(activeMap[tabId]).className = 'flex-1 min-w-[30%] py-3.5 text-[11px] font-bold rounded-xl bg-card text-primary shadow-sm border border-theme transition-all';
         }

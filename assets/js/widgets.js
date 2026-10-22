@@ -15,9 +15,8 @@ export function initWidgets() {
         return `<a href="${url}" target="_blank" class="block w-full bg-input text-accent text-center py-4 rounded-xl text-sm font-bold my-4 border border-theme shadow-sm transition-transform active:scale-95">فتح الرابط المرفق</a>`;
     }
 
-    // --- دوال نافذة "اشتراكي" والتجديد ---
     window.openSubscriptionModal = () => {
-        if(!window.activeUserData || !window.activeUserData.endDate) return;
+        if(!window.activeUserData || !window.activeUserData.endDate) return window.showMsg("لا توجد بيانات اشتراك", true);
         const start = new Date(window.activeUserData.startDate || Date.now());
         const end = new Date(window.activeUserData.endDate);
         const now = new Date();
@@ -34,35 +33,26 @@ export function initWidgets() {
         if(progressPercent > 100) progressPercent = 100;
         if(progressPercent < 0) progressPercent = 0;
 
-        document.getElementById('subEndDateTxt').innerText = end.toLocaleDateString('ar-SA');
-        document.getElementById('subElapsedTxt').innerText = elapsedDays;
-        document.getElementById('subLeftTxt').innerText = leftDays;
-        document.getElementById('subProgressBar').style.width = `${progressPercent}%`;
+        const endDateTxt = document.getElementById('subEndDateTxt');
+        if(endDateTxt) endDateTxt.innerText = end.toLocaleDateString('ar-SA');
+        const elapsedTxt = document.getElementById('subElapsedTxt');
+        if(elapsedTxt) elapsedTxt.innerText = elapsedDays;
+        const leftTxt = document.getElementById('subLeftTxt');
+        if(leftTxt) leftTxt.innerText = leftDays;
+        const bar = document.getElementById('subProgressBar');
+        if(bar) bar.style.width = `${progressPercent}%`;
 
-        document.getElementById('subscriptionModal').classList.remove('hidden');
+        const modal = document.getElementById('subscriptionModal');
+        if(modal) modal.classList.remove('hidden');
     };
 
-    const subDetailsBtn = document.getElementById('subDetailsBtn');
-    if(subDetailsBtn) {
-        subDetailsBtn.onclick = window.openSubscriptionModal;
-    }
-
-    const renewEarlyBtn = document.getElementById('renewEarlyBtn');
-    if(renewEarlyBtn) {
-        renewEarlyBtn.onclick = () => {
-            document.getElementById('subscriptionModal').classList.add('hidden');
-            window.showSection('activationSection');
-            document.getElementById('cancelActivationBtn')?.classList.remove('hidden');
-        };
-    }
-
-    const cancelActivationBtn = document.getElementById('cancelActivationBtn');
-    if(cancelActivationBtn) {
-        cancelActivationBtn.onclick = () => {
-            window.showSection('userDashboard');
-        };
-    }
-    // ------------------------------------
+    window.renewEarlySub = () => {
+        const modal = document.getElementById('subscriptionModal');
+        if(modal) modal.classList.add('hidden');
+        window.showSection('activationSection');
+        const cancelBtn = document.getElementById('cancelActivationBtn');
+        if(cancelBtn) cancelBtn.classList.remove('hidden');
+    };
 
     window.renderUserDashboard = (data) => {
         window.activeUserData = data; const todayStr = window.getTodayStr(); const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };

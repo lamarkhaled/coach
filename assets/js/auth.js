@@ -5,7 +5,6 @@ import { ref, set, get, child, update, onValue, serverTimestamp, onDisconnect } 
 export function initAuth() {
     let isRegisterMode = false;
 
-    // دالة ترجمة أخطاء فايربيس للعربي
     const translateErr = (e) => {
         const msg = e.code || e.message || "";
         if (msg.includes('invalid-credential') || msg.includes('wrong-password') || msg.includes('user-not-found')) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
@@ -134,6 +133,16 @@ export function initAuth() {
             if(isRegisterMode) {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 window.tempRegisterName = name; 
+                
+                // حفظ حالة التسجيل في الداتا بيز فورا
+                const d = new Date(); const ts = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                await set(ref(db, `users/${cred.user.uid}`), {
+                    email: email,
+                    emailVerified: false,
+                    createdAt: ts,
+                    profile: { name: name }
+                });
+
                 await sendEmailVerification(cred.user);
                 window.showMsg("تم إنشاء الحساب! شيكي إيميلك لتفعيله قبل الدخول.", false);
                 window.showSection('verifyEmailSection');
@@ -154,7 +163,7 @@ export function initAuth() {
             const snap = await get(child(ref(db), `codes/${code}`));
             if(!snap.exists() || snap.val().used) throw new Error("كود غير صالح أو مستخدم");
             const c = snap.val(); const ms = ((c.days||0)*86400000) + ((c.hours||0)*3600000) + ((c.mins||0)*60000); const end = new Date(Date.now() + ms);
-            await update(ref(db, `users/${auth.currentUser.uid}`), { email: auth.currentUser.email, startDate: window.activeUserData?.startDate || new Date().toISOString(), endDate: end.toISOString(), onboardingCompleted: window.activeUserData?.onboardingCompleted || false, usedCode: code });
+            await update(ref(db, `users/${auth.currentUser.uid}`), { email: auth.currentUser.email, emailVerified: true, startDate: window.activeUserData?.startDate || new Date().toISOString(), endDate: end.toISOString(), onboardingCompleted: window.activeUserData?.onboardingCompleted || false, usedCode: code });
             await update(ref(db, `codes/${code}`), { used: true, usedBy: auth.currentUser.email });
             if(window.activeUserData?.onboardingCompleted) { window.showSection('userDashboard'); } else { window.showSection('onboardingSection'); }
         } catch(e) { window.showMsg(translateErr(e), true); }
@@ -172,7 +181,7 @@ export function initAuth() {
         let storedName = window.tempRegisterName || auth.currentUser.email.split('@')[0];
         if(window.activeUserData && window.activeUserData.profile && window.activeUserData.profile.name) { storedName = window.activeUserData.profile.name; }
 
-        await update(ref(db, `users/${auth.currentUser.uid}`), { onboardingCompleted: true, profile: { name: storedName, goal, weight, height, notes }, goalPlan: { startWeight: weight, targetWeight: targetKg, startDate: new Date().toISOString(), targetDate: targetDate.toISOString() }, progress: { weightHistory: initialHistory, currentWeight: weight } });
+        await update(ref(db, `users/${auth.currentUser.uid}`), { onboardingCompleted: true, emailVerified: true, profile: { name: storedName, goal, weight, height, notes }, goalPlan: { startWeight: weight, targetWeight: targetKg, startDate: new Date().toISOString(), targetDate: targetDate.toISOString() }, progress: { weightHistory: initialHistory, currentWeight: weight } });
         const snap = await get(child(ref(db), `users/${auth.currentUser.uid}`)); window.renderUserDashboard(snap.val()); window.showSection('userDashboard');
     };
 
@@ -207,6 +216,12 @@ export function initAuth() {
         onValue(ref(db, `users/${user.uid}`), (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val(); window.activeUserData = data;
+                
+                // تحديث حالة تفعيل الايميل في قاعدة البيانات
+                if(!data.emailVerified) {
+                    update(ref(db, `users/${user.uid}`), { emailVerified: true });
+                }
+
                 const emailDisp = document.getElementById('userEmailDisplay'); if(emailDisp) emailDisp.innerText = data.profile?.name || user.email;
 
                 if (data.endDate && new Date() > new Date(data.endDate)) { window.showSection('activationSection'); } 

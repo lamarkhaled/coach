@@ -11,4 +11,8 @@ export const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// هذا السطر يجبر فايربيس على إرسال كل الإيميلات باللغة العربية حصراً
+auth.languageCode = 'ar';
+
 export const db = getDatabase(app);

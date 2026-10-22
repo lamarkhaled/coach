@@ -15,6 +15,53 @@ export function initWidgets() {
         return `<a href="${url}" target="_blank" class="block w-full bg-input text-accent text-center py-4 rounded-xl text-sm font-bold my-4 border border-theme shadow-sm transition-transform active:scale-95">فتح الرابط المرفق</a>`;
     }
 
+    window.openSubscriptionModal = () => {
+        if(!window.activeUserData || !window.activeUserData.endDate) return;
+        const start = new Date(window.activeUserData.startDate || Date.now());
+        const end = new Date(window.activeUserData.endDate);
+        const now = new Date();
+
+        const totalMs = end - start;
+        const elapsedMs = now - start;
+        const leftMs = end - now;
+
+        const totalDays = Math.max(1, Math.ceil(totalMs / 86400000));
+        const elapsedDays = Math.max(0, Math.floor(elapsedMs / 86400000));
+        const leftDays = Math.max(0, Math.ceil(leftMs / 86400000));
+
+        let progressPercent = (elapsedDays / totalDays) * 100;
+        if(progressPercent > 100) progressPercent = 100;
+        if(progressPercent < 0) progressPercent = 0;
+
+        document.getElementById('subEndDateTxt').innerText = end.toLocaleDateString('ar-SA');
+        document.getElementById('subElapsedTxt').innerText = elapsedDays;
+        document.getElementById('subLeftTxt').innerText = leftDays;
+        document.getElementById('subProgressBar').style.width = `${progressPercent}%`;
+
+        document.getElementById('subscriptionModal').classList.remove('hidden');
+    };
+
+    const subDetailsBtn = document.getElementById('subDetailsBtn');
+    if(subDetailsBtn) {
+        subDetailsBtn.onclick = window.openSubscriptionModal;
+    }
+
+    const renewEarlyBtn = document.getElementById('renewEarlyBtn');
+    if(renewEarlyBtn) {
+        renewEarlyBtn.onclick = () => {
+            document.getElementById('subscriptionModal').classList.add('hidden');
+            window.showSection('activationSection');
+            document.getElementById('cancelActivationBtn').classList.remove('hidden');
+        };
+    }
+
+    const cancelActivationBtn = document.getElementById('cancelActivationBtn');
+    if(cancelActivationBtn) {
+        cancelActivationBtn.onclick = () => {
+            window.showSection('userDashboard');
+        };
+    }
+
     window.renderUserDashboard = (data) => {
         window.activeUserData = data; const todayStr = window.getTodayStr(); const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         if(document.getElementById('currentDayBanner')) document.getElementById('currentDayBanner').innerText = new Date().toLocaleDateString('ar-SA', dateOptions);

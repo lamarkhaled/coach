@@ -23,7 +23,6 @@
             <button onclick="window.toggleThemeMode()" id="themeToggleBtn" class="hidden sm:block text-xs bg-input border border-theme px-3 py-2 rounded-xl font-bold text-accent shadow-sm">☀️ فاتح</button>
             <span id="userEmailDisplay" class="text-xs font-bold text-accent hidden md:block"></span>
             
-            <!-- زر اشتراكي تم ربطه مباشرة -->
             <button id="subDetailsBtn" onclick="window.openSubscriptionModal()" class="hidden text-xs bg-accent text-accent-text px-4 py-2 rounded-xl font-bold shadow-sm transition-transform active:scale-95">اشتراكي</button>
             <button id="profileBtn" class="hidden text-xs bg-input border border-theme px-4 py-2 rounded-xl font-bold text-primary shadow-sm transition-transform active:scale-95">ملفي</button>
             <button id="logoutBtn" class="hidden text-xs bg-red-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm transition-transform active:scale-95">خروج</button>
@@ -181,7 +180,7 @@
                             <div class="bg-input p-3 rounded-xl border border-theme shadow-inner"><span class="text-[10px] text-muted font-bold block mb-1">كارب</span><span id="macroCarbVal" class="text-base font-black text-blue-500 block">0g</span><span class="text-[9px] text-muted">من <span id="targetCarbVal">0g</span></span></div>
                             <div class="bg-input p-3 rounded-xl border border-theme shadow-inner"><span class="text-[10px] text-muted font-bold block mb-1">دهون</span><span id="macroFatVal" class="text-base font-black text-yellow-500 block">0g</span><span class="text-[9px] text-muted">من <span id="targetFatVal">0g</span></span></div>
                         </div>
-                        <button onclick="window.openSwapModal()" class="w-full bg-input border border-theme text-primary font-bold text-sm py-4 rounded-xl mt-3 shadow-sm transition-transform active:scale-95">🔄 تسجيل وجبة خارجية بديلة</button>
+                        <button onclick="window.openSwapModal()" class="w-full bg-input border border-theme text-primary font-bold text-sm py-4 rounded-xl mt-3 shadow-sm transition-transform active:scale-95">🔄 تسجيل عنصر خارجي (وجبة أو مشروب)</button>
                     </div>
                     <div id="userNutritionCourse" class="space-y-5"></div>
                 </div>
@@ -304,6 +303,12 @@
                 <div class="bg-card p-6 rounded-ios-lg border border-theme shadow-sm fade-in">
                     <h3 class="text-sm font-bold text-primary mb-4 flex items-center gap-2">📊 ملخص أداء اليوم</h3>
                     <div class="grid grid-cols-3 gap-3 text-center" id="adminUserDailySummary"></div>
+                    
+                    <!-- سجل الأداء للأيام السابقة -->
+                    <div class="mt-6 border-t border-theme pt-5">
+                        <h4 class="text-xs font-bold text-primary mb-3">سجل أداء الأيام السابقة:</h4>
+                        <div id="adminUserHistoryLog" class="space-y-2 max-h-40 overflow-y-auto pr-2"></div>
+                    </div>
                 </div>
 
                 <div class="bg-card p-6 rounded-ios-lg border border-theme shadow-sm fade-in">
@@ -433,7 +438,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل ملف المتدربة (إيميل وباسورد واسم) -->
+    <!-- نافذة تعديل ملف المتدربة -->
     <div id="profileModal" class="hidden fixed inset-0 z-[60] bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
@@ -482,17 +487,28 @@
     <div id="mealSwapModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm flex flex-col p-5 justify-center fade-in">
         <div class="max-w-sm mx-auto w-full bg-card rounded-ios-lg p-7 border border-theme space-y-5 text-sm shadow-2xl">
             <div class="flex justify-between items-center border-b border-theme pb-4">
-                <h3 class="text-lg font-bold text-primary">تسجيل وجبة بديلة</h3>
+                <h3 class="text-lg font-bold text-primary">تسجيل عنصر خارجي</h3>
                 <button onclick="document.getElementById('mealSwapModal').classList.add('hidden')" class="text-muted font-bold px-3 py-1 text-lg">✕</button>
             </div>
-            <input type="text" id="swapMealName" class="w-full px-4 py-4 bg-input border border-theme rounded-xl text-sm text-primary shadow-sm" placeholder="اسم الوجبة">
+            <input type="text" id="swapMealName" class="w-full px-4 py-4 bg-input border border-theme rounded-xl text-sm text-primary shadow-sm" placeholder="اسم الوجبة أو المشروب">
             <div class="grid grid-cols-2 gap-3 text-center">
                 <div><label class="text-[11px] text-muted font-bold block mb-2">سعرات</label><input type="number" id="swapCal" class="w-full p-3 bg-input border border-theme rounded-xl text-primary text-center font-bold text-base shadow-inner" value="500"></div>
                 <div><label class="text-[11px] text-muted font-bold block mb-2">بروتين</label><input type="number" id="swapPro" class="w-full p-3 bg-input border border-theme rounded-xl text-accent text-center font-bold text-base shadow-inner" value="30"></div>
                 <div><label class="text-[11px] text-muted font-bold block mb-2">كارب</label><input type="number" id="swapCarb" class="w-full p-3 bg-input border border-theme rounded-xl text-blue-500 text-center font-bold text-base shadow-inner" value="50"></div>
                 <div><label class="text-[11px] text-muted font-bold block mb-2">دهون</label><input type="number" id="swapFat" class="w-full p-3 bg-input border border-theme rounded-xl text-yellow-500 text-center font-bold text-base shadow-inner" value="15"></div>
             </div>
-            <button onclick="window.saveSwapMeal()" class="w-full bg-accent font-bold py-4 rounded-xl text-base mt-4 shadow-sm transition-transform active:scale-95 text-accent-text">إضافة الوجبة</button>
+            <div class="mt-2">
+                <label class="flex items-center gap-3 p-3 bg-input rounded-xl border border-theme cursor-pointer shadow-sm">
+                    <input type="checkbox" id="saveAsFavoriteMeal" class="accent-accent">
+                    <span class="text-xs font-bold text-primary">حفظ كعنصر ثابت (في المفضلة)</span>
+                </label>
+            </div>
+            <button onclick="window.saveSwapMeal()" class="w-full bg-accent font-bold py-4 rounded-xl text-base mt-2 shadow-sm transition-transform active:scale-95 text-accent-text">إضافة لليوم</button>
+            
+            <div id="savedMealsListContainer" class="mt-4 pt-4 border-t border-theme hidden">
+                <h4 class="text-[11px] font-bold text-muted mb-3">وجباتي ومشروباتي الثابتة:</h4>
+                <div id="savedMealsList" class="space-y-2 max-h-32 overflow-y-auto pr-1"></div>
+            </div>
         </div>
     </div>
 

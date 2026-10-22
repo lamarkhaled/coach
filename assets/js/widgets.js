@@ -279,8 +279,6 @@ export function initWidgets() {
                 const wDone = val.progress?.workouts?.[today] || {}; const mDone = val.progress?.meals?.[today] || {};
                 score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
                 if(val.badges) { const bList = Array.isArray(val.badges) ? val.badges : Object.values(val.badges); score += bList.filter(b=>b!=null&&b.title).length * 50; }
-                
-                // هنا التعديل: جلب الاسم بدلاً من الإيميل، وإذا لم يوجد اسم نجلب الإيميل
                 const displayName = val.profile?.name || val.email.split('@')[0];
                 usersArr.push({ name: displayName, score });
             });
@@ -355,12 +353,92 @@ export function initWidgets() {
         document.getElementById('mealDetailModal').classList.remove('hidden');
     };
 
-    window.openSwapModal = () => document.getElementById('mealSwapModal').classList.remove('hidden');
+    // --- نظام الوجبات الخارجية المحفوظة ---
+    window.openSwapModal = () => { 
+        document.getElementById('mealSwapModal').classList.remove('hidden');
+        
+        // عرض قائمة المحفوظات
+        const savedList = window.activeUserData?.savedMeals || [];
+        const container = document.getElementById('savedMealsList');
+        const containerWrapper = document.getElementById('savedMealsListContainer');
+        
+        if(container && containerWrapper) {
+            containerWrapper.classList.remove('hidden');
+            if(savedList.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-muted text-center py-2">لا توجد عناصر محفوظة حتى الآن.</p>';
+            } else {
+                container.innerHTML = savedList.map((sm, idx) => `
+                    <div class="flex justify-between items-center bg-card p-3 rounded-lg border border-theme text-xs shadow-sm">
+                        <div>
+                            <strong class="text-primary block">${sm.name}</strong>
+                            <span class="text-[9px] text-muted block mt-1">${sm.cal} سعرة | ${sm.pro} برو | ${sm.carb} كارب | ${sm.fat} دهون</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="window.quickAddSavedMeal(${idx})" class="bg-accent text-accent-text px-3 py-2 rounded-md font-bold transition-transform active:scale-95 shadow-sm">+ لليوم</button>
+                            <button onclick="window.deleteSavedMeal(${idx})" class="text-red-500 font-bold px-3 py-2 rounded-md bg-red-500/10 border border-red-500/20 transition-transform active:scale-95">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    };
+
     window.saveSwapMeal = async () => {
-        const name = document.getElementById('swapMealName').value.trim() || 'وجبة بديلة'; const cal = parseInt(document.getElementById('swapCal').value) || 0; const pro = parseInt(document.getElementById('swapPro').value) || 0; const carb = parseInt(document.getElementById('swapCarb').value) || 0; const fat = parseInt(document.getElementById('swapFat').value) || 0;
-        const today = window.getTodayStr(); const uid = auth.currentUser.uid; window.activeUserData.progress = window.activeUserData.progress || {}; window.activeUserData.progress.swaps = window.activeUserData.progress.swaps || {}; window.activeUserData.progress.swaps[today] = window.activeUserData.progress.swaps[today] || [];
+        const name = document.getElementById('swapMealName').value.trim() || 'وجبة/مشروب بديل'; 
+        const cal = parseInt(document.getElementById('swapCal').value) || 0; 
+        const pro = parseInt(document.getElementById('swapPro').value) || 0; 
+        const carb = parseInt(document.getElementById('swapCarb').value) || 0; 
+        const fat = parseInt(document.getElementById('swapFat').value) || 0;
+        
+        const today = window.getTodayStr(); 
+        const uid = auth.currentUser.uid; 
+        
+        window.activeUserData.progress = window.activeUserData.progress || {}; 
+        window.activeUserData.progress.swaps = window.activeUserData.progress.swaps || {}; 
+        window.activeUserData.progress.swaps[today] = window.activeUserData.progress.swaps[today] || [];
+        
+        // إضافة لليوميات
         window.activeUserData.progress.swaps[today].push({ name, cal, pro, carb, fat });
-        await update(ref(db, `users/${uid}/progress/swaps`), window.activeUserData.progress.swaps); document.getElementById('mealSwapModal').classList.add('hidden'); window.renderUserDashboard(window.activeUserData);
+        await update(ref(db, `users/${uid}/progress/swaps`), window.activeUserData.progress.swaps); 
+        
+        // إذا تم اختيار حفظ كعنصر ثابت
+        const saveFav = document.getElementById('saveAsFavoriteMeal')?.checked;
+        if(saveFav) {
+            window.activeUserData.savedMeals = window.activeUserData.savedMeals || [];
+            window.activeUserData.savedMeals.push({ name, cal, pro, carb, fat });
+            await update(ref(db, `users/${uid}/savedMeals`), window.activeUserData.savedMeals);
+            document.getElementById('saveAsFavoriteMeal').checked = false; // إعادة تعيين
+        }
+        
+        document.getElementById('swapMealName').value = '';
+        document.getElementById('mealSwapModal').classList.add('hidden'); 
+        window.showMsg("تمت الإضافة لليوميات ✔️", false);
+        window.renderUserDashboard(window.activeUserData);
+    };
+
+    window.quickAddSavedMeal = async (idx) => {
+        const sm = window.activeUserData.savedMeals[idx];
+        const today = window.getTodayStr(); 
+        const uid = auth.currentUser.uid; 
+        
+        window.activeUserData.progress = window.activeUserData.progress || {}; 
+        window.activeUserData.progress.swaps = window.activeUserData.progress.swaps || {}; 
+        window.activeUserData.progress.swaps[today] = window.activeUserData.progress.swaps[today] || [];
+        
+        // أخذ نسخة من العنصر المحفوظ وإضافته ليوميات اليوم
+        window.activeUserData.progress.swaps[today].push({...sm});
+        
+        await update(ref(db, `users/${uid}/progress/swaps`), window.activeUserData.progress.swaps); 
+        document.getElementById('mealSwapModal').classList.add('hidden'); 
+        window.showMsg("تم إضافة العنصر لليوميات بنجاح ✔️", false);
+        window.renderUserDashboard(window.activeUserData);
+    };
+
+    window.deleteSavedMeal = async (idx) => {
+        if(!confirm('متأكدة من حذف هذا العنصر الثابت؟')) return;
+        window.activeUserData.savedMeals.splice(idx, 1);
+        await update(ref(db, `users/${auth.currentUser.uid}/savedMeals`), window.activeUserData.savedMeals);
+        window.openSwapModal(); // تحديث القائمة المفتوحة مباشرة
     };
 
     window.startCoursePlayer = () => {

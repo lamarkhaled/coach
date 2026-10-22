@@ -279,12 +279,15 @@ export function initWidgets() {
                 const wDone = val.progress?.workouts?.[today] || {}; const mDone = val.progress?.meals?.[today] || {};
                 score += Object.keys(wDone).length * 10 + Object.keys(mDone).length * 5;
                 if(val.badges) { const bList = Array.isArray(val.badges) ? val.badges : Object.values(val.badges); score += bList.filter(b=>b!=null&&b.title).length * 50; }
-                usersArr.push({ email: val.email.split('@')[0], score });
+                
+                // هنا التعديل: جلب الاسم بدلاً من الإيميل، وإذا لم يوجد اسم نجلب الإيميل
+                const displayName = val.profile?.name || val.email.split('@')[0];
+                usersArr.push({ name: displayName, score });
             });
             usersArr.sort((a,b) => b.score - a.score); container.innerHTML = '';
             usersArr.slice(0, 3).forEach((usr, idx) => {
                 let medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'; let bg = idx === 0 ? 'bg-gradient-to-r from-accent/20 to-transparent border-accent/30' : 'bg-input border-theme';
-                container.innerHTML += `<div class="flex justify-between items-center ${bg} px-4 py-4 rounded-xl border text-sm shadow-sm fade-in"><div class="flex items-center gap-3"><span class="font-bold text-2xl drop-shadow-sm">${medal}</span><span class="font-bold text-primary text-base">${usr.email}</span></div><span class="bg-card border border-theme px-3 py-1.5 rounded-lg text-primary text-xs font-bold shadow-sm">${usr.score} نقطة</span></div>`;
+                container.innerHTML += `<div class="flex justify-between items-center ${bg} px-4 py-4 rounded-xl border text-sm shadow-sm fade-in"><div class="flex items-center gap-3"><span class="font-bold text-2xl drop-shadow-sm">${medal}</span><span class="font-bold text-primary text-base">${usr.name}</span></div><span class="bg-card border border-theme px-3 py-1.5 rounded-lg text-primary text-xs font-bold shadow-sm">${usr.score} نقطة</span></div>`;
             });
         });
     }
